@@ -1,8 +1,8 @@
 package cardmanager
 
 import (
-	"example.com/deresute/testo/models"
-	"example.com/deresute/testo/parser"
+	"github.com/hadisiswanto62/deresute-simulator-go/models"
+	"github.com/hadisiswanto62/deresute-simulator-go/parser"
 )
 
 // CardManager manages cards

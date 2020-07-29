@@ -1,7 +1,7 @@
 package models
 
 import (
-	"example.com/deresute/testo/enum"
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 )
 
 // Idol is a idol

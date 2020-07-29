@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
-	"example.com/deresute/testo/models"
+	"github.com/hadisiswanto62/deresute-simulator-go/models"
 )
 
 const (
