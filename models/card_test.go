@@ -1,0 +1,47 @@
+package models
+
+import (
+	"testing"
+
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
+)
+
+func sampleCard() Card {
+	idol := Idol{
+		ID:        233,
+		Name:      "Takafuji Kako",
+		Attribute: enum.AttrCool,
+	}
+	return Card{
+		ID:           200698,
+		SeriesID:     200697,
+		Idol:         &idol,
+		Rarity:       enum.RaritySSR,
+		IsEvolved:    true,
+		MaxLevel:     90,
+		BonusDance:   184,
+		BonusHp:      2,
+		BonusVisual:  152,
+		BonusVocal:   284,
+		DanceMax:     4471,
+		DanceMin:     2317,
+		HpMax:        42,
+		HpMin:        42,
+		OverallMax:   15054,
+		OverallMin:   7802,
+		OverallBonus: 620,
+		VisualMax:    3685,
+		VisualMin:    1910,
+		VocalMax:     6898,
+		VocalMin:     3575,
+		TmpRarity:    TmpRarity{8},
+	}
+}
+
+func BenchmarkRarityMember(b *testing.B) {
+	card := sampleCard()
+	for i := 0; i < b.N; i++ {
+		a := card.Rarity
+		_ = a
+	}
+}
