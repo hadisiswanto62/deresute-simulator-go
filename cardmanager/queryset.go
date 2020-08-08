@@ -14,7 +14,7 @@ type QuerySet struct {
 func (q *QuerySet) Attribute(attr enum.Attribute) *QuerySet {
 	result := []models.Card{}
 	for i := range q.cards {
-		if q.cards[i].Attribute == attr {
+		if q.cards[i].Idol.Attribute == attr {
 			result = append(result, q.cards[i])
 		}
 	}

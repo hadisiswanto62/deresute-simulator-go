@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+const (
+	DebugMode = true
+)
+
 // MeasureTime is used to log execution time of a function.
 // How to use: put `defer helper.MeasureTime(time.Now(), func_name_here`
 // on the first line of the function

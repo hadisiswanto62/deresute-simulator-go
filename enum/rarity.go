@@ -4,7 +4,7 @@ package enum
 type Rarity string
 
 // All rarities
-var (
+const (
 	RaritySSR Rarity = "SSR"
 	RaritySR  Rarity = "SR"
 	RarityR   Rarity = "R"

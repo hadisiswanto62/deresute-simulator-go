@@ -3,6 +3,8 @@ package models
 import (
 	"fmt"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/helper"
+
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 )
 
@@ -22,11 +24,9 @@ func GetLeadSkill(name string) (*LeadSkill, error) {
 		return &LeadSkillCuteMakeup, nil
 	}
 
-	returnError := false
-	if returnError {
-		err := fmt.Errorf("invalid skill name: %s", name)
-		return &LeadSkillBase, err
-	} else {
+	if helper.DebugMode {
 		return &LeadSkillBase, nil
 	}
+	err := fmt.Errorf("invalid skill name: %s", name)
+	return &LeadSkillBase, err
 }

@@ -13,3 +13,20 @@ func makeLeadSkill(tmp TmpLeadSkill) (*models.LeadSkill, error) {
 	}
 	return lskill, nil
 }
+
+func makeRarity(tmp TmpRarity) *models.Rarity {
+	return &models.Rarity{
+		ID:        tmp.Rarity,
+		Rarity:    tmp.ToEnum(),
+		IsEvolved: tmp.IsEvolved(),
+		MaxLevel:  tmp.BaseMaxLevel,
+	}
+}
+
+func makeIdol(tmp TmpIdol) *models.Idol {
+	return &models.Idol{
+		ID:        tmp.ID,
+		Name:      tmp.Name,
+		Attribute: tmp.Attribute,
+	}
+}

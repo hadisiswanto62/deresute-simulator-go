@@ -10,8 +10,8 @@ func TestAttribute(t *testing.T) {
 	cm, _ := Default()
 	for _, attr := range enum.AllIdolAttributes {
 		card := cm.Filter().Attribute(attr).First()
-		if card.Attribute != attr {
-			t.Errorf("Incorrect card attribute! %v != %v", card.Attribute, attr)
+		if card.Idol.Attribute != attr {
+			t.Errorf("Incorrect card attribute! %v != %v", card.Idol.Attribute, attr)
 		}
 	}
 }

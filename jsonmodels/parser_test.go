@@ -1,9 +1,6 @@
 package jsonmodels
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -12,29 +9,18 @@ func init() {
 	os.Chdir("../")
 }
 
-func TestParseLeadSkill(t *testing.T) {
+func TestParse(t *testing.T) {
 	dp := JSONDataParser{}
-	tmpLeadSkill := []TmpLeadSkill{sampleLeadSkill}
-	lskills, err := dp.parseLeadSkills(tmpLeadSkill)
+	cards, err := dp.Parse()
 	if err != nil {
-		t.Errorf("Test failed: %v", err)
+		t.Errorf("Test failed! %v", err)
 	}
-	fmt.Println(len(lskills))
-	for _, lskill := range lskills {
-		fmt.Printf("%v", lskill)
+	if cards == nil {
+		t.Errorf("Card parsing failed!")
 	}
-}
-
-func TestParseAllLeadSkill(t *testing.T) {
-	dp := JSONDataParser{}
-	text, _ := ioutil.ReadFile(leadSkillPath)
-	var tmpLeadSkills []TmpLeadSkill
-	json.Unmarshal(text, &tmpLeadSkills)
-	lskills, err := dp.parseLeadSkills(tmpLeadSkills)
-	if err != nil {
-		t.Errorf("Test failed: %v", err)
-	}
-	for _, lskill := range lskills {
-		fmt.Printf("%p: %v\n", lskill, *lskill)
-	}
+	// for _, card := range cards {
+	// 	if card.ID < 100100 {
+	// 		fmt.Printf("%d: %p %v\n", card.ID, &card.Rarity.Rarity, *(card.Rarity))
+	// 	}
+	// }
 }

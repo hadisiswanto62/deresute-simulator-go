@@ -37,10 +37,12 @@ type TmpRarity struct {
 	BaseMaxLevel uint8 `json:"base_max_level"`
 }
 
+// IsEvolved returns if the rarity belongs to an evolved card or not.
 func (r TmpRarity) IsEvolved() bool {
 	return r.Rarity%2 == 0
 }
 
+// ToEnum converts the object to enum.Rarity
 func (r TmpRarity) ToEnum() enum.Rarity {
 	switch r.Rarity {
 	case 1, 2:

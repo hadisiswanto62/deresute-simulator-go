@@ -15,6 +15,8 @@ const (
 	allCardsDir2  = "data/all_cards2.json"
 	leadSkillPath = "data/lead_skill.json"
 	cardPath      = "data/cards.json"
+	rarityPath    = "data/rarity.json"
+	idolPath      = "data/idol.json"
 )
 
 // JSONDataParser manages card data that is stored in JSON form
@@ -58,7 +60,7 @@ func (p JSONDataParser) InitData() error {
 	for i := range tmpRarities {
 		lst = append(lst, i)
 	}
-	if err := save(lst, "data/rarity.json"); err != nil {
+	if err := save(lst, rarityPath); err != nil {
 		return fmt.Errorf("could not save rarities: %v", err)
 	}
 
@@ -82,7 +84,7 @@ func (p JSONDataParser) InitData() error {
 	for i := range tmpIdols {
 		lst4 = append(lst4, i)
 	}
-	if err := save(lst4, "data/idol.json"); err != nil {
+	if err := save(lst4, idolPath); err != nil {
 		return fmt.Errorf("could not save idols: %v", err)
 	}
 
@@ -94,30 +96,40 @@ func (p JSONDataParser) InitData() error {
 func (p JSONDataParser) Parse() ([]models.Card, error) {
 	var ret []models.Card
 
-	// Parsing lead skills
-	text, err := ioutil.ReadFile(leadSkillPath)
-	if err != nil {
-		return nil, fmt.Errorf("cannot read file (%s): %v", leadSkillPath, err)
-	}
-	var tmpLeadSkills []TmpLeadSkill
-	if err = json.Unmarshal(text, &tmpLeadSkills); err != nil {
-		return nil, fmt.Errorf("cannot unmarshal lead skill json: %v", err)
-	}
-	leadSkills, err := p.parseLeadSkills(tmpLeadSkills)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(len(leadSkills))
-
 	// Parsing skills
-	// Parsing idols
 	// Parsing rarities
+	var tmpRarities []TmpRarity
+	var rarities []*models.Rarity
+	text, err := ioutil.ReadFile(rarityPath)
+	if err != nil {
+		return nil, fmt.Errorf("cannot read file (%s): %v", rarityPath, err)
+	}
+	if err = json.Unmarshal(text, &tmpRarities); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal (%s): %v", rarityPath, err)
+	}
+	for _, tmpRarity := range tmpRarities {
+		rarities = append(rarities, makeRarity(tmpRarity))
+	}
+
+	// Parsing idols
+	var tmpIdols []TmpIdol
+	var idols []*models.Idol
+	text, err = ioutil.ReadFile(idolPath)
+	if err != nil {
+		return nil, fmt.Errorf("cannot read file (%s): %v", idolPath, err)
+	}
+	if err = json.Unmarshal(text, &tmpIdols); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal (%s): %v", rarityPath, err)
+	}
+	for _, tmpIdol := range tmpIdols {
+		idols = append(idols, makeIdol(tmpIdol))
+	}
 
 	// Parsing cards
 	var cards []TmpCard
 	text, err = ioutil.ReadFile(cardPath)
 	if err != nil {
-		return nil, fmt.Errorf("cannot read file: %v", err)
+		return nil, fmt.Errorf("cannot read file (%s): %v", cardPath, err)
 	}
 	if err = json.Unmarshal(text, &cards); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal %s : %v", cardPath, err)
@@ -125,12 +137,36 @@ func (p JSONDataParser) Parse() ([]models.Card, error) {
 
 	for _, tmpCard := range cards {
 		isEvolved := tmpCard.TmpRarity.IsEvolved()
+		leadSkill, err := makeLeadSkill(tmpCard.TmpLeadSkill)
+		if err != nil {
+			return nil, fmt.Errorf("cannot get lead skill for card id (%d): %v", tmpCard.ID, err)
+		}
+		var chosenRarity *models.Rarity
+		for _, rarity := range rarities {
+			if rarity.ID == tmpCard.TmpRarity.Rarity {
+				chosenRarity = rarity
+			}
+		}
+		if chosenRarity == nil {
+			return nil, fmt.Errorf("cannot get rarity for card id (%d)", tmpCard.ID)
+		}
+
+		var chosenIdol *models.Idol
+		for _, idol := range idols {
+			if idol.ID == tmpCard.TmpIdol.ID {
+				chosenIdol = idol
+			}
+		}
+		if chosenIdol == nil {
+			return nil, fmt.Errorf("cannot get idol for card id (%d)", tmpCard.ID)
+		}
+
 		card := models.Card{
 			ID:          tmpCard.ID,
 			SeriesID:    tmpCard.SeriesID,
-			Idol:        nil,
-			Rarity:      nil,
-			LeadSkill:   nil,
+			Idol:        chosenIdol,
+			Rarity:      chosenRarity,
+			LeadSkill:   leadSkill,
 			IsEvolved:   isEvolved,
 			MaxLevel:    tmpCard.TmpRarity.BaseMaxLevel,
 			BonusDance:  tmpCard.BonusDance,
@@ -150,18 +186,6 @@ func (p JSONDataParser) Parse() ([]models.Card, error) {
 	}
 
 	return ret, nil
-}
-
-func (p JSONDataParser) parseLeadSkills(tmpLeadSkills []TmpLeadSkill) ([]*models.LeadSkill, error) {
-	var leadSkills []*models.LeadSkill
-	for _, tmpLeadSkill := range tmpLeadSkills {
-		leadSkill, err := models.GetLeadSkill(tmpLeadSkill.Name)
-		if err != nil {
-			return nil, fmt.Errorf("cannot get lead skill for (%s): %v", tmpLeadSkill.Name, err)
-		}
-		leadSkills = append(leadSkills, leadSkill)
-	}
-	return leadSkills, nil
 }
 
 func save(obj interface{}, filename string) error {

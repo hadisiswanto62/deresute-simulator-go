@@ -33,7 +33,7 @@ var LeadSkillCuteMakeup = LeadSkill{
 			bonus = 0.9
 		case enum.RaritySR:
 			bonus = 0.6
-		case enum.RaritySR:
+		case enum.RarityR:
 			bonus = 0.3
 		}
 		if cardAttr == requiredAttr && stat == requiredStat {
