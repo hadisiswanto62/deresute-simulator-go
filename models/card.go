@@ -7,7 +7,7 @@ type Card struct {
 	Idol      *Idol `json:"chara"`
 	Rarity    *Rarity
 	LeadSkill *LeadSkill
-	// Skill     *skill
+	Skill     *Skill
 	IsEvolved bool
 	MaxLevel  uint8
 
@@ -24,6 +24,3 @@ type Card struct {
 	VocalMax    uint16 `json:"vocal_max"`
 	VocalMin    uint16 `json:"vocal_min"`
 }
-
-// missing fields:
-// lead_skill, skill

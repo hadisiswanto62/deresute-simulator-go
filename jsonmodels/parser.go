@@ -17,6 +17,7 @@ const (
 	cardPath      = "data/cards.json"
 	rarityPath    = "data/rarity.json"
 	idolPath      = "data/idol.json"
+	skillPath     = "data/skill.json"
 )
 
 // JSONDataParser manages card data that is stored in JSON form
@@ -76,7 +77,7 @@ func (p JSONDataParser) InitData() error {
 	for i := range tmpSkills {
 		lst3 = append(lst3, i)
 	}
-	if err := save(lst3, "data/skill.json"); err != nil {
+	if err := save(lst3, skillPath); err != nil {
 		return fmt.Errorf("could not save skills: %v", err)
 	}
 
@@ -97,10 +98,27 @@ func (p JSONDataParser) Parse() ([]models.Card, error) {
 	var ret []models.Card
 
 	// Parsing skills
+	var tmpSkills []TmpSkill
+	var skills []*models.Skill
+	text, err := ioutil.ReadFile(skillPath)
+	if err != nil {
+		return nil, fmt.Errorf("cannot read file (%s): %v", skillPath, err)
+	}
+	if err = json.Unmarshal(text, &tmpSkills); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal (%s): %v", rarityPath, err)
+	}
+	for _, tmpSkill := range tmpSkills {
+		skill, err := makeSkill(tmpSkill)
+		if err != nil {
+			return nil, fmt.Errorf("cannot make skill: %v", err)
+		}
+		skills = append(skills, skill)
+	}
+
 	// Parsing rarities
 	var tmpRarities []TmpRarity
 	var rarities []*models.Rarity
-	text, err := ioutil.ReadFile(rarityPath)
+	text, err = ioutil.ReadFile(rarityPath)
 	if err != nil {
 		return nil, fmt.Errorf("cannot read file (%s): %v", rarityPath, err)
 	}
@@ -155,10 +173,22 @@ func (p JSONDataParser) Parse() ([]models.Card, error) {
 		for _, idol := range idols {
 			if idol.ID == tmpCard.TmpIdol.ID {
 				chosenIdol = idol
+				break
 			}
 		}
 		if chosenIdol == nil {
 			return nil, fmt.Errorf("cannot get idol for card id (%d)", tmpCard.ID)
+		}
+
+		var chosenSkill *models.Skill
+		for _, skill := range skills {
+			if skill.ID == tmpCard.TmpSkill.ID {
+				chosenSkill = skill
+				break
+			}
+		}
+		if chosenSkill == nil {
+			return nil, fmt.Errorf("cannot get skill for card id (%d)", tmpCard.ID)
 		}
 
 		card := models.Card{
@@ -167,6 +197,7 @@ func (p JSONDataParser) Parse() ([]models.Card, error) {
 			Idol:        chosenIdol,
 			Rarity:      chosenRarity,
 			LeadSkill:   leadSkill,
+			Skill:       chosenSkill,
 			IsEvolved:   isEvolved,
 			MaxLevel:    tmpCard.TmpRarity.BaseMaxLevel,
 			BonusDance:  tmpCard.BonusDance,
