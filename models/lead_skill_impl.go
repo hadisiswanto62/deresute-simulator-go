@@ -2,10 +2,11 @@ package models
 
 import "github.com/hadisiswanto62/deresute-simulator-go/enum"
 
+// LeadSkillBase is a base lead skill (for unimplemented lead skills)
 var LeadSkillBase = LeadSkill{
-	Name: "BASE",
+	Name: "BASE LEAD SKILL",
 	IsActive: func([6]enum.Attribute) bool {
-		return true
+		return false
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
 		return 0.0

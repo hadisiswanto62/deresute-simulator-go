@@ -57,3 +57,20 @@ func TestMakeIdol(t *testing.T) {
 		t.Errorf("Cannot make idol")
 	}
 }
+
+func TestMakeSkill(t *testing.T) {
+	x := TmpSkill{
+		ID:           300591,
+		Condition:    11,
+		EffectLength: [2]int{500, 750},
+		ProcChance:   [2]int{4000, 6000},
+		SkillType:    "Perfect Score Bonus",
+	}
+	s, err := makeSkill(x)
+	if err != nil {
+		t.Errorf("Cannot make skill: %v", err)
+	}
+	if s == nil {
+		t.Errorf("Cannot make skill!")
+	}
+}

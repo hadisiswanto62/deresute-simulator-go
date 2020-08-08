@@ -14,6 +14,21 @@ func makeLeadSkill(tmp TmpLeadSkill) (*models.LeadSkill, error) {
 	return lskill, nil
 }
 
+func makeSkill(tmp TmpSkill) (*models.Skill, error) {
+	skillType, err := models.GetSkillType(tmp.SkillType)
+	if err != nil {
+		return nil, fmt.Errorf("could not make skill: %v", err)
+	}
+	skill := models.Skill{
+		ID:           tmp.ID,
+		ProcChance:   tmp.ProcChance,
+		EffectLength: tmp.EffectLength,
+		SkillType:    skillType,
+	}
+	// TODO: Add ActivationCost for Overload when Overload is implemented
+	return &skill, nil
+}
+
 func makeRarity(tmp TmpRarity) *models.Rarity {
 	return &models.Rarity{
 		ID:        tmp.Rarity,
