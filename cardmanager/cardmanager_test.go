@@ -12,13 +12,16 @@ func init() {
 }
 
 func TestCreateDefault(t *testing.T) {
-	cm := Default()
+	cm, err := Default()
+	if err != nil {
+		t.Errorf("Failed to parse cards. %v", err)
+	}
 	if len(cm.Cards) == 0 {
 		t.Errorf("Failed to parse cards.")
 	}
 }
 func TestCardFields(t *testing.T) {
-	cm := Default()
+	cm, _ := Default()
 	card := cm.Filter().ID(300083).First()
 	if have, want := card.ID, 300083; want != have {
 		t.Errorf("Error on fields ID! want = %v have = %v", want, have)
@@ -29,7 +32,7 @@ func TestCardFields(t *testing.T) {
 	if have, want := card.Name, "Wakabayashi Tomoka"; want != have {
 		t.Errorf("Error on fields name! want = %v have = %v", want, have)
 	}
-	if have, want := card.Rarity, enum.RarityR; want != have {
+	if have, want := card.Rarity.Rarity, enum.RarityR; want != have {
 		t.Errorf("Error on fields Rarity! want = %v have = %v", want, have)
 	}
 	if have, want := card.SeriesID, 300083; want != have {
@@ -83,8 +86,8 @@ func TestCardFields(t *testing.T) {
 }
 
 func TestSameInstance(t *testing.T) {
-	cm := Default()
-	cm2 := Default()
+	cm, _ := Default()
+	cm2, _ := Default()
 	if cm != cm2 {
 		t.Errorf("cardmanager.Default() returns different CardManager object")
 	}

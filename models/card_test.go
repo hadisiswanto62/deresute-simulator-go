@@ -12,11 +12,17 @@ func sampleCard() Card {
 		Name:      "Takafuji Kako",
 		Attribute: enum.AttrCool,
 	}
+	rarity := Rarity{
+		ID:        8,
+		Rarity:    enum.RaritySSR,
+		IsEvolved: true,
+		MaxLevel:  90,
+	}
 	return Card{
 		ID:           200698,
 		SeriesID:     200697,
 		Idol:         &idol,
-		Rarity:       enum.RaritySSR,
+		Rarity:       &rarity,
 		IsEvolved:    true,
 		MaxLevel:     90,
 		BonusDance:   184,
@@ -34,7 +40,6 @@ func sampleCard() Card {
 		VisualMin:    1910,
 		VocalMax:     6898,
 		VocalMin:     3575,
-		TmpRarity:    TmpRarity{8},
 	}
 }
 

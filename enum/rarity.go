@@ -1,17 +1,14 @@
 package enum
 
 // Rarity represents card's rarity
-type Rarity struct {
-	Value        string
-	BaseMaxLevel int8
-}
+type Rarity string
 
 // All rarities
 var (
-	RaritySSR = Rarity{"ssr", 80}
-	RaritySR  = Rarity{"sr", 60}
-	RarityR   = Rarity{"r", 40}
-	RarityN   = Rarity{"n", 20}
+	RaritySSR Rarity = "SSR"
+	RaritySR  Rarity = "SR"
+	RarityR   Rarity = "R"
+	RarityN   Rarity = "N"
 )
 
 // AllRarities is all valid rarities

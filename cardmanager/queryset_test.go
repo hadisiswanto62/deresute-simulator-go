@@ -7,7 +7,7 @@ import (
 )
 
 func TestAttribute(t *testing.T) {
-	cm := Default()
+	cm, _ := Default()
 	for _, attr := range enum.AllIdolAttributes {
 		card := cm.Filter().Attribute(attr).First()
 		if card.Attribute != attr {
@@ -17,7 +17,7 @@ func TestAttribute(t *testing.T) {
 }
 
 func TestID(t *testing.T) {
-	cm := Default()
+	cm, _ := Default()
 	testcases := [5]int{
 		100001,
 		200609,

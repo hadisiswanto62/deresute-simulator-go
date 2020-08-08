@@ -7,14 +7,14 @@ import (
 // OwnedCard represents a custom card
 type OwnedCard struct {
 	*Card
-	level      int8
-	skillLevel int8
-	StarRank   int8
-	potVisual  int8
-	potDance   int8
-	potVocal   int8
-	potHp      int8
-	potSkill   int8
+	level      uint8
+	skillLevel uint8
+	StarRank   uint8
+	potVisual  uint8
+	potDance   uint8
+	potVocal   uint8
+	potHp      uint8
+	potSkill   uint8
 	Visual     uint16
 	Vocal      uint16
 	Dance      uint16
@@ -23,12 +23,12 @@ type OwnedCard struct {
 }
 
 // Level get the level of the card
-func (oc *OwnedCard) Level() int8 {
+func (oc *OwnedCard) Level() uint8 {
 	return oc.level
 }
 
 // SetLevel sets level of the card (and recalculate Visual, Vocal, Dance)
-func (oc *OwnedCard) SetLevel(level int8) {
+func (oc *OwnedCard) SetLevel(level uint8) {
 	if level > oc.MaxLevel {
 		level = oc.MaxLevel
 	}
@@ -37,12 +37,12 @@ func (oc *OwnedCard) SetLevel(level int8) {
 }
 
 // SkillLevel get the skill level of the card
-func (oc *OwnedCard) SkillLevel() int8 {
+func (oc *OwnedCard) SkillLevel() uint8 {
 	return oc.skillLevel
 }
 
 // SetSkillLevel sets skill level of the card (and recalculate skill prob/duration NOT IMPLEMENTED)
-func (oc *OwnedCard) SetSkillLevel(skillLevel int8) {
+func (oc *OwnedCard) SetSkillLevel(skillLevel uint8) {
 	if skillLevel > 10 {
 		skillLevel = 10
 	}
@@ -50,12 +50,12 @@ func (oc *OwnedCard) SetSkillLevel(skillLevel int8) {
 }
 
 // PotVisual gets the potential visual of the card
-func (oc *OwnedCard) PotVisual() int8 {
+func (oc *OwnedCard) PotVisual() uint8 {
 	return oc.potVisual
 }
 
 // SetPotVisual sets potential visual of the card (and recalculate)
-func (oc *OwnedCard) SetPotVisual(value int8) {
+func (oc *OwnedCard) SetPotVisual(value uint8) {
 	if value > 10 {
 		value = 10
 	}
@@ -64,12 +64,12 @@ func (oc *OwnedCard) SetPotVisual(value int8) {
 }
 
 // PotDance gets the potential dance of the card
-func (oc *OwnedCard) PotDance() int8 {
+func (oc *OwnedCard) PotDance() uint8 {
 	return oc.potDance
 }
 
 // SetPotDance sets potential dance of the card (and recalculate)
-func (oc *OwnedCard) SetPotDance(value int8) {
+func (oc *OwnedCard) SetPotDance(value uint8) {
 	if value > 10 {
 		value = 10
 	}
@@ -78,12 +78,12 @@ func (oc *OwnedCard) SetPotDance(value int8) {
 }
 
 // PotVocal gets the potential vocal of the card
-func (oc *OwnedCard) PotVocal() int8 {
+func (oc *OwnedCard) PotVocal() uint8 {
 	return oc.potVocal
 }
 
 // SetPotVocal sets potential vocal of the card (and recalculate)
-func (oc *OwnedCard) SetPotVocal(value int8) {
+func (oc *OwnedCard) SetPotVocal(value uint8) {
 	if value > 10 {
 		value = 10
 	}
@@ -92,12 +92,12 @@ func (oc *OwnedCard) SetPotVocal(value int8) {
 }
 
 // PotHp gets the potential hp of the card
-func (oc *OwnedCard) PotHp() int8 {
+func (oc *OwnedCard) PotHp() uint8 {
 	return oc.potHp
 }
 
 // SetPotHp sets potential hp of the card (and recalculate)
-func (oc *OwnedCard) SetPotHp(value int8) {
+func (oc *OwnedCard) SetPotHp(value uint8) {
 	if value > 10 {
 		value = 10
 	}
@@ -106,12 +106,12 @@ func (oc *OwnedCard) SetPotHp(value int8) {
 }
 
 // PotSkill gets the potential skill of the card
-func (oc *OwnedCard) PotSkill() int8 {
+func (oc *OwnedCard) PotSkill() uint8 {
 	return oc.potSkill
 }
 
 // SetPotSkill sets potential skill of the card (and recalculate skill prob NOT IMPLEMENTED)
-func (oc *OwnedCard) SetPotSkill(value int8) {
+func (oc *OwnedCard) SetPotSkill(value uint8) {
 	if value > 10 {
 		value = 10
 	}
@@ -119,8 +119,8 @@ func (oc *OwnedCard) SetPotSkill(value int8) {
 }
 
 func (oc *OwnedCard) recalculate() {
-	statLookup := helper.StatPotentialBonusLookupFor(oc.Rarity)
-	lifeLookup := helper.LifePotentialBonusLookupFor(oc.Rarity)
+	statLookup := helper.StatPotentialBonusLookupFor(oc.Rarity.Rarity)
+	lifeLookup := helper.LifePotentialBonusLookupFor(oc.Rarity.Rarity)
 
 	oc.Dance = helper.Scale(oc.Card.DanceMin, oc.Card.DanceMax, oc.Card.MaxLevel, oc.level) + oc.Card.BonusDance + statLookup[oc.potDance]
 	oc.Visual = helper.Scale(oc.Card.VisualMin, oc.Card.VisualMax, oc.Card.MaxLevel, oc.level) + oc.Card.BonusVisual + statLookup[oc.potVisual]

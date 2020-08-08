@@ -7,7 +7,7 @@ import (
 )
 
 // Scale scales from min to max (max-min is divided into `steps`-1 parts evenly) (in uint16)
-func Scale(min, max uint16, maxLevel, currentLevel int8) uint16 {
+func Scale(min, max uint16, maxLevel, currentLevel uint8) uint16 {
 	step := float64(max-min) / (float64(maxLevel) - 1)
 	add := step * float64(currentLevel-1)
 	x := math.Floor(float64(min) + add)
