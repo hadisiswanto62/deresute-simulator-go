@@ -24,7 +24,7 @@ func makeSkill(tmp TmpSkill) (*models.Skill, error) {
 		ProcChance:   tmp.ProcChance,
 		EffectLength: tmp.EffectLength,
 		SkillType:    skillType,
-		Duration:     tmp.Condition,
+		Timer:        tmp.Condition,
 	}
 	// TODO: Add ActivationCost for Overload when Overload is implemented
 	return &skill, nil

@@ -45,7 +45,7 @@ func LifePotentialBonusLookupFor(rarity enum.Rarity) [11]uint16 {
 }
 
 // SkillProbPotentialBonusLookup is lookup table of skill probability bonus from potential
-var SkillProbPotentialBonusLookup = [11]uint16{0, 1, 2, 3, 4, 6, 8, 10, 13, 16, 20}
+var SkillProbPotentialBonusLookup = [11]uint16{0, 100, 200, 300, 400, 600, 800, 1000, 1300, 1600, 2000}
 
 var ssrStatPotentialBonusLookup = [11]uint16{0, 40, 80, 120, 170, 220, 270, 320, 380, 440, 500}
 var ssrLifePotentialBonusLookup = [11]uint16{0, 1, 2, 4, 6, 8, 10, 13, 16, 19, 22}

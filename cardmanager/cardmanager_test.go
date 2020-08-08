@@ -56,8 +56,8 @@ func TestCardFields(t *testing.T) {
 	if have, want := card.Skill.ID, 100001; want != have {
 		t.Errorf("Error on fields skill id! want = %v have = %v", want, have)
 	}
-	if have, want := card.Skill.Duration, 6; want != have {
-		t.Errorf("Error on fields skill duration! want = %v have = %v", want, have)
+	if have, want := card.Skill.Timer, 6; want != have {
+		t.Errorf("Error on fields skill timer! want = %v have = %v", want, have)
 	}
 	if have, want := card.Skill.ProcChance[1], 4500; want != have {
 		t.Errorf("Error on fields skill proc chance! want = %v have = %v", want, have)

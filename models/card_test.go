@@ -8,35 +8,45 @@ import (
 
 func sampleCard() Card {
 	idol := Idol{
-		ID:        233,
-		Name:      "Takafuji Kako",
+		ID:        181,
+		Name:      "Mifune Miyu",
 		Attribute: enum.AttrCool,
 	}
 	rarity := Rarity{
-		ID:        8,
-		Rarity:    enum.RaritySSR,
+		ID:        6,
+		Rarity:    enum.RaritySR,
 		IsEvolved: true,
-		MaxLevel:  90,
+		MaxLevel:  70,
 	}
+	skillType, _ := GetSkillType("Perfect Score Bonus")
+	skill := &Skill{
+		ID:           200803,
+		Timer:        13,
+		ProcChance:   [2]uint16{4000, 6000},
+		EffectLength: [2]uint16{600, 900},
+		SkillType:    skillType,
+	}
+	leadSkill, _ := GetLeadSkill("クールボイス")
 	return Card{
-		ID:          200698,
-		SeriesID:    200697,
-		Idol:        &idol,
-		Rarity:      &rarity,
-		IsEvolved:   true,
-		MaxLevel:    90,
-		BonusDance:  184,
+		ID:        200804,
+		SeriesID:  200803,
+		Idol:      &idol,
+		Rarity:    &rarity,
+		LeadSkill: leadSkill,
+		Skill:     skill,
+
+		BonusDance:  143,
 		BonusHp:     2,
-		BonusVisual: 152,
-		BonusVocal:  284,
-		DanceMax:    4471,
-		DanceMin:    2317,
-		HpMax:       42,
-		HpMin:       42,
-		VisualMax:   3685,
-		VisualMin:   1910,
-		VocalMax:    6898,
-		VocalMin:    3575,
+		BonusVisual: 119,
+		BonusVocal:  224,
+		DanceMax:    3517,
+		DanceMin:    1913,
+		HpMax:       37,
+		HpMin:       37,
+		VisualMax:   2906,
+		VisualMin:   1583,
+		VocalMax:    5501,
+		VocalMin:    2993,
 	}
 }
 

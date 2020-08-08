@@ -8,8 +8,6 @@ type Card struct {
 	Rarity    *Rarity
 	LeadSkill *LeadSkill
 	Skill     *Skill
-	IsEvolved bool
-	MaxLevel  uint8
 
 	BonusDance  uint16 `json:"bonus_dance"`
 	BonusHp     uint16 `json:"bonus_hp"`
