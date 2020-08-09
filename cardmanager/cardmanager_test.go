@@ -38,7 +38,7 @@ func TestCardFields(t *testing.T) {
 	if have, want := card.Idol.Name, "Shimamura Uzuki"; want != have {
 		t.Errorf("Error on fields Idol name! want = %v have = %v", want, have)
 	}
-	if have, want := card.Rarity.ID, uint8(3); want != have {
+	if have, want := card.Rarity.ID, 3; want != have {
 		t.Errorf("Error on fields Rarity ID! want = %v have = %v", want, have)
 	}
 	if have, want := card.Rarity.Rarity, enum.RarityR; want != have {
@@ -47,7 +47,7 @@ func TestCardFields(t *testing.T) {
 	if have, want := card.Rarity.IsEvolved, false; want != have {
 		t.Errorf("Error on fields IsEvolved! want = %v have = %v", want, have)
 	}
-	if have, want := card.Rarity.MaxLevel, uint8(40); want != have {
+	if have, want := card.Rarity.MaxLevel, 40; want != have {
 		t.Errorf("Error on fields Max Level! want = %v have = %v", want, have)
 	}
 	if have, want := card.LeadSkill.Name, "Cute Makeup"; want != have {
@@ -71,40 +71,40 @@ func TestCardFields(t *testing.T) {
 	if have, want := card.Skill.ActivationCost, 0; want != have {
 		t.Errorf("Error on fields skill activation cost! want = %v have = %v", want, have)
 	}
-	if have, want := card.BonusDance, uint16(106); want != have {
+	if have, want := card.BonusDance, 106; want != have {
 		t.Errorf("Error on fields BonusDance! want = %v have = %v", want, have)
 	}
-	if have, want := card.BonusHp, uint16(2); want != have {
+	if have, want := card.BonusHp, 2; want != have {
 		t.Errorf("Error on fields BonusDance! want = %v have = %v", want, have)
 	}
-	if have, want := card.BonusVisual, uint16(167); want != have {
+	if have, want := card.BonusVisual, 167; want != have {
 		t.Errorf("Error on fields BonusHp! want = %v have = %v", want, have)
 	}
-	if have, want := card.BonusVocal, uint16(87); want != have {
+	if have, want := card.BonusVocal, 87; want != have {
 		t.Errorf("Error on fields BonusVocal! want = %v have = %v", want, have)
 	}
-	if have, want := card.DanceMax, uint16(2115); want != have {
+	if have, want := card.DanceMax, 2115; want != have {
 		t.Errorf("Error on fields DanceMax! want = %v have = %v", want, have)
 	}
-	if have, want := card.DanceMin, uint16(1248); want != have {
+	if have, want := card.DanceMin, 1248; want != have {
 		t.Errorf("Error on fields DanceMin! want = %v have = %v", want, have)
 	}
-	if have, want := card.HpMax, uint16(25); want != have {
+	if have, want := card.HpMax, 25; want != have {
 		t.Errorf("Error on fields HpMax! want = %v have = %v", want, have)
 	}
-	if have, want := card.HpMin, uint16(25); want != have {
+	if have, want := card.HpMin, 25; want != have {
 		t.Errorf("Error on fields HpMin! want = %v have = %v", want, have)
 	}
-	if have, want := card.VisualMax, uint16(3330); want != have {
+	if have, want := card.VisualMax, 3330; want != have {
 		t.Errorf("Error on fields VisualMax! want = %v have = %v", want, have)
 	}
-	if have, want := card.VisualMin, uint16(1965); want != have {
+	if have, want := card.VisualMin, 1965; want != have {
 		t.Errorf("Error on fields VisualMin! want = %v have = %v", want, have)
 	}
-	if have, want := card.VocalMax, uint16(1728); want != have {
+	if have, want := card.VocalMax, 1728; want != have {
 		t.Errorf("Error on fields VocalMax! want = %v have = %v", want, have)
 	}
-	if have, want := card.VocalMin, uint16(1020); want != have {
+	if have, want := card.VocalMin, 1020; want != have {
 		t.Errorf("Error on fields VocalMin! want = %v have = %v", want, have)
 	}
 }

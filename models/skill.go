@@ -4,8 +4,8 @@ package models
 type Skill struct {
 	ID             int
 	Timer          int
-	ProcChance     [2]uint16
-	EffectLength   [2]uint16
+	ProcChance     [2]int
+	EffectLength   [2]int
 	SkillType      *SkillType
 	ActivationCost int
 }

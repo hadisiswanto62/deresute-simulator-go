@@ -13,7 +13,7 @@ type SkillType struct {
 	IsActive   func(attr [6]enum.Attribute) bool
 	ComboBonus func(rarity enum.Rarity, currentHp float64) float64
 	ScoreBonus func(rarity enum.Rarity) float64
-	TapHeal    func(rarity enum.Rarity) uint16
+	TapHeal    func(rarity enum.Rarity) int
 }
 
 // GetSkillType returns pointer to skill with the requested name

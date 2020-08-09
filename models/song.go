@@ -11,7 +11,7 @@ type Note struct {
 // Song is a song
 type Song struct {
 	Name      string
-	Level     uint8
+	Level     int
 	Attribute enum.Attribute
 	Duration  float64
 	Notes     []Note
@@ -23,7 +23,7 @@ func (s Song) NotesCount() int {
 }
 
 // NewDefaultSong generates a Song with linearly distributed Notes
-func NewDefaultSong(name string, level uint8, attr enum.Attribute, duration float64, notesCount int) Song {
+func NewDefaultSong(name string, level int, attr enum.Attribute, duration float64, notesCount int) Song {
 	startBuffer := 1.0
 	endBuffer := 1.0
 	effectiveDuration := duration - startBuffer - endBuffer

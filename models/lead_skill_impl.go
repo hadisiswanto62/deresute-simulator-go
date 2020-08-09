@@ -14,7 +14,7 @@ var LeadSkillBase = LeadSkill{
 	SkillProbBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) float64 {
 		return 0.0
 	},
-	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) uint8 {
+	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) int {
 		return 0
 	},
 }
@@ -45,7 +45,7 @@ var LeadSkillCuteMakeup = LeadSkill{
 	SkillProbBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) float64 {
 		return 0.0
 	},
-	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) uint8 {
+	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) int {
 		return 0
 	},
 }

@@ -22,8 +22,8 @@ func sampleCard() Card {
 	skill := &Skill{
 		ID:           200803,
 		Timer:        13,
-		ProcChance:   [2]uint16{4000, 6000},
-		EffectLength: [2]uint16{600, 900},
+		ProcChance:   [2]int{4000, 6000},
+		EffectLength: [2]int{600, 900},
 		SkillType:    skillType,
 	}
 	leadSkill, _ := GetLeadSkill("クールボイス")

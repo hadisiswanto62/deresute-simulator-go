@@ -7,30 +7,30 @@ import (
 // OwnedCard represents a custom card
 type OwnedCard struct {
 	*Card
-	level             uint8
-	skillLevel        uint8
-	StarRank          uint8
-	potVisual         uint8
-	potDance          uint8
-	potVocal          uint8
-	potHp             uint8
-	potSkill          uint8
-	Visual            uint16
-	Vocal             uint16
-	Dance             uint16
-	Appeal            uint16
-	Hp                uint16
-	SkillEffectLength uint16
-	SkillProcChance   uint16
+	level             int
+	skillLevel        int
+	StarRank          int
+	potVisual         int
+	potDance          int
+	potVocal          int
+	potHp             int
+	potSkill          int
+	Visual            int
+	Vocal             int
+	Dance             int
+	Appeal            int
+	Hp                int
+	SkillEffectLength int
+	SkillProcChance   int
 }
 
 // Level get the level of the card
-func (oc *OwnedCard) Level() uint8 {
+func (oc *OwnedCard) Level() int {
 	return oc.level
 }
 
 // SetLevel sets level of the card (and recalculate Visual, Vocal, Dance)
-func (oc *OwnedCard) SetLevel(level uint8) {
+func (oc *OwnedCard) SetLevel(level int) {
 	if level > oc.Rarity.MaxLevel {
 		level = oc.Rarity.MaxLevel
 	}
@@ -39,12 +39,12 @@ func (oc *OwnedCard) SetLevel(level uint8) {
 }
 
 // SkillLevel get the skill level of the card
-func (oc *OwnedCard) SkillLevel() uint8 {
+func (oc *OwnedCard) SkillLevel() int {
 	return oc.skillLevel
 }
 
 // SetSkillLevel sets skill level of the card (and recalculate skill prob/duration)
-func (oc *OwnedCard) SetSkillLevel(skillLevel uint8) {
+func (oc *OwnedCard) SetSkillLevel(skillLevel int) {
 	if skillLevel > 10 {
 		skillLevel = 10
 	}
@@ -53,12 +53,12 @@ func (oc *OwnedCard) SetSkillLevel(skillLevel uint8) {
 }
 
 // PotVisual gets the potential visual of the card
-func (oc *OwnedCard) PotVisual() uint8 {
+func (oc *OwnedCard) PotVisual() int {
 	return oc.potVisual
 }
 
 // SetPotVisual sets potential visual of the card (and recalculate)
-func (oc *OwnedCard) SetPotVisual(value uint8) {
+func (oc *OwnedCard) SetPotVisual(value int) {
 	if value > 10 {
 		value = 10
 	}
@@ -67,12 +67,12 @@ func (oc *OwnedCard) SetPotVisual(value uint8) {
 }
 
 // PotDance gets the potential dance of the card
-func (oc *OwnedCard) PotDance() uint8 {
+func (oc *OwnedCard) PotDance() int {
 	return oc.potDance
 }
 
 // SetPotDance sets potential dance of the card (and recalculate)
-func (oc *OwnedCard) SetPotDance(value uint8) {
+func (oc *OwnedCard) SetPotDance(value int) {
 	if value > 10 {
 		value = 10
 	}
@@ -81,12 +81,12 @@ func (oc *OwnedCard) SetPotDance(value uint8) {
 }
 
 // PotVocal gets the potential vocal of the card
-func (oc *OwnedCard) PotVocal() uint8 {
+func (oc *OwnedCard) PotVocal() int {
 	return oc.potVocal
 }
 
 // SetPotVocal sets potential vocal of the card (and recalculate)
-func (oc *OwnedCard) SetPotVocal(value uint8) {
+func (oc *OwnedCard) SetPotVocal(value int) {
 	if value > 10 {
 		value = 10
 	}
@@ -95,12 +95,12 @@ func (oc *OwnedCard) SetPotVocal(value uint8) {
 }
 
 // PotHp gets the potential hp of the card
-func (oc *OwnedCard) PotHp() uint8 {
+func (oc *OwnedCard) PotHp() int {
 	return oc.potHp
 }
 
 // SetPotHp sets potential hp of the card (and recalculate)
-func (oc *OwnedCard) SetPotHp(value uint8) {
+func (oc *OwnedCard) SetPotHp(value int) {
 	if value > 10 {
 		value = 10
 	}
@@ -109,12 +109,12 @@ func (oc *OwnedCard) SetPotHp(value uint8) {
 }
 
 // PotSkill gets the potential skill of the card
-func (oc *OwnedCard) PotSkill() uint8 {
+func (oc *OwnedCard) PotSkill() int {
 	return oc.potSkill
 }
 
 // SetPotSkill sets potential skill of the card (and recalculate skill prob)
-func (oc *OwnedCard) SetPotSkill(value uint8) {
+func (oc *OwnedCard) SetPotSkill(value int) {
 	if value > 10 {
 		value = 10
 	}

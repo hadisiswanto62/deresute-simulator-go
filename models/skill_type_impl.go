@@ -14,7 +14,7 @@ var SkillTypeBase = SkillType{
 	ScoreBonus: func(rarity enum.Rarity) float64 {
 		return 0.0
 	},
-	TapHeal: func(rarity enum.Rarity) uint16 {
+	TapHeal: func(rarity enum.Rarity) int {
 		return 0
 	},
 }
@@ -38,7 +38,7 @@ var SkillTypeScoreBonus = SkillType{
 		}
 		return bonusMap[rarity]
 	},
-	TapHeal: func(rarity enum.Rarity) uint16 {
+	TapHeal: func(rarity enum.Rarity) int {
 		return 0
 	},
 }

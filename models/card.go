@@ -9,16 +9,16 @@ type Card struct {
 	LeadSkill *LeadSkill
 	Skill     *Skill
 
-	BonusDance  uint16 `json:"bonus_dance"`
-	BonusHp     uint16 `json:"bonus_hp"`
-	BonusVisual uint16 `json:"bonus_visual"`
-	BonusVocal  uint16 `json:"bonus_vocal"`
-	DanceMax    uint16 `json:"dance_max"`
-	DanceMin    uint16 `json:"dance_min"`
-	HpMax       uint16 `json:"hp_max"`
-	HpMin       uint16 `json:"hp_min"`
-	VisualMax   uint16 `json:"visual_max"`
-	VisualMin   uint16 `json:"visual_min"`
-	VocalMax    uint16 `json:"vocal_max"`
-	VocalMin    uint16 `json:"vocal_min"`
+	BonusDance  int `json:"bonus_dance"`
+	BonusHp     int `json:"bonus_hp"`
+	BonusVisual int `json:"bonus_visual"`
+	BonusVocal  int `json:"bonus_vocal"`
+	DanceMax    int `json:"dance_max"`
+	DanceMin    int `json:"dance_min"`
+	HpMax       int `json:"hp_max"`
+	HpMin       int `json:"hp_min"`
+	VisualMax   int `json:"visual_max"`
+	VisualMin   int `json:"visual_min"`
+	VocalMax    int `json:"vocal_max"`
+	VocalMin    int `json:"vocal_min"`
 }

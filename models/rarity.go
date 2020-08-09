@@ -6,8 +6,8 @@ import (
 
 // Rarity represents rarity of a card
 type Rarity struct {
-	ID        uint8
+	ID        int
 	Rarity    enum.Rarity `json:"rarity"`
 	IsEvolved bool
-	MaxLevel  uint8
+	MaxLevel  int
 }
