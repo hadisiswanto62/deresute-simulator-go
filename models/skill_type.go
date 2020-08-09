@@ -9,7 +9,7 @@ import (
 
 // SkillType represents a card's skill
 type SkillType struct {
-	Name       string
+	Name       enum.SkillType
 	IsActive   func(attr [6]enum.Attribute) bool
 	ComboBonus func(rarity enum.Rarity, currentHp float64) float64
 	ScoreBonus func(rarity enum.Rarity) float64

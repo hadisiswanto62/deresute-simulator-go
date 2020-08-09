@@ -50,7 +50,7 @@ func TestCardFields(t *testing.T) {
 	if have, want := card.Rarity.MaxLevel, 40; want != have {
 		t.Errorf("Error on fields Max Level! want = %v have = %v", want, have)
 	}
-	if have, want := card.LeadSkill.Name, "Cute Makeup"; want != have {
+	if have, want := card.LeadSkill.Name, enum.LeadSkillCuteMakeup; want != have {
 		t.Errorf("Error on fields LeadSkill name! want = %v have = %v", want, have)
 	}
 	if have, want := card.Skill.ID, 100001; want != have {
@@ -65,7 +65,7 @@ func TestCardFields(t *testing.T) {
 	if have, want := card.Skill.EffectLength[1], 600; want != have {
 		t.Errorf("Error on fields effect length! want = %v have = %v", want, have)
 	}
-	if have, want := card.Skill.SkillType.Name, "Score Bonus"; want != have {
+	if have, want := card.Skill.SkillType.Name, enum.SkillTypeScoreBonus; want != have {
 		t.Errorf("Error on fields skilltype name! want = %v have = %v", want, have)
 	}
 	if have, want := card.Skill.ActivationCost, 0; want != have {

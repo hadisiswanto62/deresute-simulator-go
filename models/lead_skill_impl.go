@@ -4,7 +4,7 @@ import "github.com/hadisiswanto62/deresute-simulator-go/enum"
 
 // LeadSkillBase is a base lead skill (for unimplemented lead skills)
 var LeadSkillBase = LeadSkill{
-	Name: "BASE LEAD SKILL",
+	Name: enum.LeadSkillBase,
 	IsActive: func([6]enum.Attribute) bool {
 		return false
 	},
@@ -21,7 +21,7 @@ var LeadSkillBase = LeadSkill{
 
 // LeadSkillCuteMakeup = "Raises the Visual appeal of all Cute members by 90%/60%/30%."
 var LeadSkillCuteMakeup = LeadSkill{
-	Name: "Cute Makeup",
+	Name: enum.LeadSkillCuteMakeup,
 	IsActive: func([6]enum.Attribute) bool {
 		return true
 	},

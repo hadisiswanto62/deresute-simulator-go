@@ -4,7 +4,7 @@ import "github.com/hadisiswanto62/deresute-simulator-go/enum"
 
 // SkillTypeBase is a base skill (for unimplemented skills)
 var SkillTypeBase = SkillType{
-	Name: "BASE SKILL",
+	Name: enum.SkillTypeBase,
 	IsActive: func(attr [6]enum.Attribute) bool {
 		return false
 	},
@@ -22,7 +22,7 @@ var SkillTypeBase = SkillType{
 // SkillTypeScoreBonus = " Every k seconds: there is a l..m% chance
 // that Perfect notes will receive a n% score bonus for o..p seconds."
 var SkillTypeScoreBonus = SkillType{
-	Name: "Score Bonus",
+	Name: enum.SkillTypeScoreBonus,
 	IsActive: func(attr [6]enum.Attribute) bool {
 		return true
 	},
