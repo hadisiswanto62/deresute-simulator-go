@@ -36,16 +36,28 @@ func (q *QuerySet) ID(id int) *QuerySet {
 }
 
 // Rarity filters current cards by rarity
-// func (q *QuerySet) Rarity(rarity enum.Rarity) *QuerySet {
-// 	result := []models.Card{}
-// 	for i := range q.cards {
-// 		if q.cards[i].Rarity == rarity {
-// 			result = append(result, q.cards[i])
-// 		}
-// 	}
-// 	q.cards = result
-// 	return q
-// }
+func (q *QuerySet) Rarity(rarity enum.Rarity) *QuerySet {
+	result := []models.Card{}
+	for i := range q.cards {
+		if q.cards[i].Rarity.Rarity == rarity {
+			result = append(result, q.cards[i])
+		}
+	}
+	q.cards = result
+	return q
+}
+
+// Evolved filters current cards by evolved status
+func (q *QuerySet) IsEvolved(evolveStatus bool) *QuerySet {
+	result := []models.Card{}
+	for i := range q.cards {
+		if q.cards[i].Rarity.IsEvolved == evolveStatus {
+			result = append(result, q.cards[i])
+		}
+	}
+	q.cards = result
+	return q
+}
 
 // Get gets all cards that matches current filter
 func (q *QuerySet) Get() []models.Card {
