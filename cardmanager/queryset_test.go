@@ -13,6 +13,12 @@ func init() {
 	cm, _ = Default()
 }
 
+func TestQuerySetSameInstance(t *testing.T) {
+	card := cm.Filter().Rarity(enum.RaritySSR).First()
+	card2 := cm.Filter().Rarity(enum.RaritySSR).First()
+	assert.Equal(t, &card, &card2, "QuerySet creates new card object!")
+}
+
 func TestAttribute(t *testing.T) {
 	for _, attr := range enum.AllIdolAttributes {
 		card := cm.Filter().Attribute(attr).First()
@@ -27,6 +33,28 @@ func TestRarity(t *testing.T) {
 	for _, rarity := range enum.AllRarities {
 		card := cm.Filter().Rarity(rarity).First()
 		assert.Equal(card.Rarity.Rarity, rarity, "Incorrect rarity!")
+	}
+}
+
+func TestLeadSkill(t *testing.T) {
+	assert := assert.New(t)
+	testcases := [1]enum.LeadSkill{
+		enum.LeadSkillCuteMakeup,
+	}
+	for _, lskill := range testcases {
+		card := cm.Filter().LeadSkill(lskill).First()
+		assert.Equal(card.LeadSkill.Name, lskill, "Incorrect lead skill!")
+	}
+}
+
+func TestSkillType(t *testing.T) {
+	assert := assert.New(t)
+	testcases := [1]enum.SkillType{
+		enum.SkillTypeScoreBonus,
+	}
+	for _, skill := range testcases {
+		card := cm.Filter().SkillType(skill).First()
+		assert.Equal(card.Skill.SkillType.Name, skill, "Incorrect skill!")
 	}
 }
 

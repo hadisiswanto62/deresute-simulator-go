@@ -93,9 +93,9 @@ func (p JSONDataParser) InitData() error {
 	return nil
 }
 
-// Parse parse card data into `[]models.Card`
-func (p JSONDataParser) Parse() ([]models.Card, error) {
-	var ret []models.Card
+// Parse parse card data into `[]*models.Card`
+func (p JSONDataParser) Parse() ([]*models.Card, error) {
+	var ret []*models.Card
 
 	// Parsing skills
 	var tmpSkills []TmpSkill
@@ -210,7 +210,7 @@ func (p JSONDataParser) Parse() ([]models.Card, error) {
 			VocalMax:    tmpCard.VocalMax,
 			VocalMin:    tmpCard.VocalMin,
 		}
-		ret = append(ret, card)
+		ret = append(ret, &card)
 	}
 
 	return ret, nil
