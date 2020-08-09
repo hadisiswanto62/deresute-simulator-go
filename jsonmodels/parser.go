@@ -154,7 +154,6 @@ func (p JSONDataParser) Parse() ([]models.Card, error) {
 	}
 
 	for _, tmpCard := range cards {
-		isEvolved := tmpCard.TmpRarity.IsEvolved()
 		leadSkill, err := makeLeadSkill(tmpCard.TmpLeadSkill)
 		if err != nil {
 			return nil, fmt.Errorf("cannot get lead skill for card id (%d): %v", tmpCard.ID, err)
@@ -198,8 +197,6 @@ func (p JSONDataParser) Parse() ([]models.Card, error) {
 			Rarity:      chosenRarity,
 			LeadSkill:   leadSkill,
 			Skill:       chosenSkill,
-			IsEvolved:   isEvolved,
-			MaxLevel:    tmpCard.TmpRarity.BaseMaxLevel,
 			BonusDance:  tmpCard.BonusDance,
 			BonusHp:     tmpCard.BonusHp,
 			BonusVisual: tmpCard.BonusVisual,
