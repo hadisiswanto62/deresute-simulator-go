@@ -5,6 +5,7 @@ type LeadSkill string
 
 // All rarities
 const (
-	LeadSkillBase       LeadSkill = "Base Lead Skill"
-	LeadSkillCuteMakeup LeadSkill = "Cute Makeup"
+	LeadSkillBase         LeadSkill = "Base Lead Skill"
+	LeadSkillCuteMakeup   LeadSkill = "キュートメイク"
+	LeadSkillPassionVoice LeadSkill = "パッションボイス"
 )
