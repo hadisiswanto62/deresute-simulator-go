@@ -3,6 +3,8 @@ package helper
 import (
 	"math"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/config"
+
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 )
 
@@ -42,6 +44,19 @@ func LifePotentialBonusLookupFor(rarity enum.Rarity) [11]int {
 		return nLifePotentialBonusLookup
 	}
 	return [11]int{}
+}
+
+// GetRoomItemBonus gets room item bonus for specified attributes from config
+func GetRoomItemBonus(attr enum.Attribute) float64 {
+	switch attr {
+	case enum.AttrCool:
+		return config.CoolRoomItemBonus
+	case enum.AttrCute:
+		return config.CuteRoomItemBonus
+	case enum.AttrPassion:
+		return config.PassionRoomItemBonus
+	}
+	return 0.0
 }
 
 // SkillProbPotentialBonusLookup is lookup table of skill probability bonus from potential
