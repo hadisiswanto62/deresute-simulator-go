@@ -3,8 +3,7 @@ package jsonmodels
 import (
 	"testing"
 
-	"github.com/hadisiswanto62/deresute-simulator-go/helper"
-
+	"github.com/hadisiswanto62/deresute-simulator-go/config"
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 )
 
@@ -23,7 +22,7 @@ func TestMakeLeadSkill(t *testing.T) {
 	}
 	_, err = makeLeadSkill(sampleInvalidLeadSkill)
 	if err == nil {
-		if !helper.DebugMode {
+		if !config.DebugMode {
 			t.Errorf("error should not be nil: %v", err)
 		}
 	}

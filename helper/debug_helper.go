@@ -7,16 +7,12 @@ import (
 	"time"
 )
 
-const (
-	DebugMode = true
-)
-
 // MeasureTime is used to log execution time of a function.
 // How to use: put `defer helper.MeasureTime(time.Now(), func_name_here`
 // on the first line of the function
 func MeasureTime(init time.Time, name string) {
 	elapsed := time.Since(init)
-	log.Printf("%s took %s", name, elapsed)
+	log.Printf("%s took %f s", name, elapsed.Seconds())
 }
 
 // PrintMemUsage outputs the current, total and OS memory being used. As well as the number

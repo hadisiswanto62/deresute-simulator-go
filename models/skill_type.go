@@ -3,8 +3,8 @@ package models
 import (
 	"fmt"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/config"
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
-	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 )
 
 // SkillType represents a card's skill
@@ -22,7 +22,7 @@ func GetSkillType(name string) (*SkillType, error) {
 	case "Score Bonus", "Perfect Score Bonus":
 		return &SkillTypeScoreBonus, nil
 	}
-	if helper.DebugMode {
+	if config.DebugMode {
 		return &SkillTypeBase, nil
 	}
 	err := fmt.Errorf("invalid skill name: %s", name)

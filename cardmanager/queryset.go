@@ -47,7 +47,7 @@ func (q *QuerySet) Rarity(rarity enum.Rarity) *QuerySet {
 	return q
 }
 
-// Evolved filters current cards by evolved status
+// IsEvolved filters current cards by evolved status
 func (q *QuerySet) IsEvolved(evolveStatus bool) *QuerySet {
 	result := []*models.Card{}
 	for i := range q.cards {
