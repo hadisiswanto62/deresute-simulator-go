@@ -1,14 +1,65 @@
-package models
+package usermodel
 
 import (
 	"testing"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
+	"github.com/hadisiswanto62/deresute-simulator-go/models"
 	"github.com/stretchr/testify/assert"
 )
 
+func sampleCard() models.Card {
+	idol := models.Idol{
+		ID:        181,
+		Name:      "Mifune Miyu",
+		Attribute: enum.AttrCool,
+	}
+	rarity := models.Rarity{
+		ID:        6,
+		Rarity:    enum.RaritySR,
+		IsEvolved: true,
+		MaxLevel:  70,
+	}
+	skillType, _ := models.GetSkillType("Perfect Score Bonus")
+	skill := &models.Skill{
+		ID:           200803,
+		Timer:        13,
+		ProcChance:   [2]int{4000, 6000},
+		EffectLength: [2]int{600, 900},
+		SkillType:    skillType,
+	}
+	leadSkill, _ := models.GetLeadSkill("クールボイス")
+	return models.Card{
+		ID:        200804,
+		SeriesID:  200803,
+		Idol:      &idol,
+		Rarity:    &rarity,
+		LeadSkill: leadSkill,
+		Skill:     skill,
+
+		BonusDance:  143,
+		BonusHp:     2,
+		BonusVisual: 119,
+		BonusVocal:  224,
+		DanceMax:    3517,
+		DanceMin:    1913,
+		HpMax:       37,
+		HpMin:       37,
+		VisualMax:   2906,
+		VisualMin:   1583,
+		VocalMax:    5501,
+		VocalMin:    2993,
+	}
+}
+
+func sampleOwnedCard() *OwnedCard {
+	card := sampleCard()
+	return NewOwnedCard(&card)
+}
+
 func TestCreate(t *testing.T) {
 	card := sampleCard()
-	ocard := New(&card)
+	ocard := NewOwnedCard(&card)
 	if want, have := ocard.Card, &card; want != have {
 		t.Errorf("Error on Card field! want = %v have = %v", want, have)
 	}
@@ -24,8 +75,7 @@ func TestCreate(t *testing.T) {
 }
 
 func TestRecalculate(t *testing.T) {
-	card := sampleCard()
-	ocard := New(&card)
+	ocard := sampleOwnedCard()
 	if want, have := ocard.Dance, 3517+143; want != have {
 		t.Errorf("Wrong Dance value! want = %d have = %d", want, have)
 	}
@@ -109,8 +159,7 @@ func TestRecalculate(t *testing.T) {
 
 func TestRecalculateSkill(t *testing.T) {
 	assert := assert.New(t)
-	card := sampleCard()
-	ocard := New(&card)
+	ocard := sampleOwnedCard()
 	assert.Equal(ocard.SkillLevel(), 1, "Default skill level is not 1!")
 	assert.Equal(ocard.SkillProcChance, 4000, "Default skill level is not 1!")
 	assert.Equal(ocard.SkillEffectLength, 600, "Default skill level is not 1!")
@@ -128,8 +177,7 @@ func TestRecalculateSkill(t *testing.T) {
 }
 
 func BenchmarkRecalculate(b *testing.B) {
-	card := sampleCard()
-	ocard := New(&card)
+	ocard := sampleOwnedCard()
 	for i := 0; i < b.N; i++ {
 		ocard.recalculate()
 	}

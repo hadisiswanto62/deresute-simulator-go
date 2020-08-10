@@ -1,12 +1,14 @@
-package models
+package usermodel
 
 import (
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
+	"github.com/hadisiswanto62/deresute-simulator-go/models"
 )
 
 // OwnedCard represents a custom card
 type OwnedCard struct {
-	*Card
+	*models.Card
 	level             int
 	skillLevel        int
 	StarRank          int
@@ -140,8 +142,17 @@ func (oc *OwnedCard) recalculateSkill() {
 	oc.SkillProcChance = helper.Scale(oc.Skill.ProcChance[0], oc.Skill.ProcChance[1], 10, oc.skillLevel) + procChanceLookup[oc.potSkill]
 }
 
-// New creates a new OwnedCard object with max level and skillLevel&starRank=1
-func New(card *Card) OwnedCard {
+// Stats returns the ocard's stats in the form of map
+func (oc OwnedCard) Stats() map[enum.Stat]int {
+	return map[enum.Stat]int{
+		enum.StatVisual: oc.Visual,
+		enum.StatVocal:  oc.Vocal,
+		enum.StatDance:  oc.Dance,
+	}
+}
+
+// NewOwnedCard creates a new OwnedCard object with max level and skillLevel&starRank=1
+func NewOwnedCard(card *models.Card) *OwnedCard {
 	oc := OwnedCard{
 		Card:       card,
 		level:      card.Rarity.MaxLevel,
@@ -150,5 +161,5 @@ func New(card *Card) OwnedCard {
 	}
 	oc.recalculate()
 	oc.recalculateSkill()
-	return oc
+	return &oc
 }

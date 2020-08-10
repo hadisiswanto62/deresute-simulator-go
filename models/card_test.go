@@ -1,8 +1,6 @@
 package models
 
 import (
-	"testing"
-
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 )
 
@@ -47,13 +45,5 @@ func sampleCard() Card {
 		VisualMin:   1583,
 		VocalMax:    5501,
 		VocalMin:    2993,
-	}
-}
-
-func BenchmarkRarityMember(b *testing.B) {
-	card := sampleCard()
-	for i := 0; i < b.N; i++ {
-		a := card.Rarity
-		_ = a
 	}
 }
