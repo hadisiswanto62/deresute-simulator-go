@@ -163,3 +163,11 @@ func NewOwnedCard(card *models.Card) *OwnedCard {
 	oc.recalculateSkill()
 	return &oc
 }
+
+func BatchNewOwnedCards(cards []*models.Card) []*OwnedCard {
+	var ret []*OwnedCard
+	for _, card := range cards {
+		ret = append(ret, NewOwnedCard(card))
+	}
+	return ret
+}

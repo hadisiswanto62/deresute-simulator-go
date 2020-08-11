@@ -1,6 +1,20 @@
 package helper
 
-import "testing"
+import (
+	"testing"
+)
+
+func TestRandom(t *testing.T) {
+	count := 0
+	for i := 0; i < 100; i++ {
+		if Roll(0.1) {
+			count++
+		}
+	}
+	if count > 30 {
+		t.Errorf("RNG is suspiciously wrong. want = %d, have = %d", 30, count)
+	}
+}
 
 func TestScale(t *testing.T) {
 	x := Scale(2465, 4180, 50, 1)

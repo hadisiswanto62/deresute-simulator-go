@@ -2,6 +2,22 @@ package models
 
 import "github.com/hadisiswanto62/deresute-simulator-go/enum"
 
+func attrStatUp(cardStat enum.Stat, cardAttr enum.Attribute, rarity enum.Rarity,
+	requiredStat enum.Stat, requiredAttr enum.Attribute) float64 {
+	bonus := 0.0
+	if cardStat == requiredStat && cardAttr == requiredAttr {
+		switch rarity {
+		case enum.RaritySSR:
+			bonus = 0.9
+		case enum.RaritySR:
+			bonus = 0.6
+		case enum.RarityR:
+			bonus = 0.3
+		}
+	}
+	return bonus
+}
+
 // LeadSkillBase is a base lead skill (for unimplemented lead skills)
 var LeadSkillBase = LeadSkill{
 	Name: enum.LeadSkillBase,
@@ -14,8 +30,8 @@ var LeadSkillBase = LeadSkill{
 	SkillProbBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) float64 {
 		return 0.0
 	},
-	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) int {
-		return 0
+	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) float64 {
+		return 0.0
 	},
 }
 
@@ -26,27 +42,13 @@ var LeadSkillCuteMakeup = LeadSkill{
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
-		requiredStat := enum.StatVisual
-		requiredAttr := enum.AttrCute
-		bonus := 0.0
-		switch rarity {
-		case enum.RaritySSR:
-			bonus = 0.9
-		case enum.RaritySR:
-			bonus = 0.6
-		case enum.RarityR:
-			bonus = 0.3
-		}
-		if cardAttr == requiredAttr && stat == requiredStat {
-			return bonus
-		}
-		return 0.0
+		return attrStatUp(stat, cardAttr, rarity, enum.StatVisual, enum.AttrCute)
 	},
 	SkillProbBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) float64 {
 		return 0.0
 	},
-	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) int {
-		return 0
+	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) float64 {
+		return 0.0
 	},
 }
 
@@ -57,26 +59,12 @@ var LeadSkillPassionVoice = LeadSkill{
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
-		requiredStat := enum.StatVocal
-		requiredAttr := enum.AttrPassion
-		bonus := 0.0
-		switch rarity {
-		case enum.RaritySSR:
-			bonus = 0.9
-		case enum.RaritySR:
-			bonus = 0.6
-		case enum.RarityR:
-			bonus = 0.3
-		}
-		if cardAttr == requiredAttr && stat == requiredStat {
-			return bonus
-		}
-		return 0.0
+		return attrStatUp(stat, cardAttr, rarity, enum.StatVocal, enum.AttrPassion)
 	},
 	SkillProbBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) float64 {
 		return 0.0
 	},
-	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) int {
-		return 0
+	HpBonus: func(rarity enum.Rarity, cardAttr enum.Attribute) float64 {
+		return 0.0
 	},
 }

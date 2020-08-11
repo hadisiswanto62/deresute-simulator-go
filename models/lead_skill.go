@@ -13,7 +13,7 @@ type LeadSkill struct {
 	IsActive       func(attr [6]enum.Attribute) bool
 	StatBonus      func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64
 	SkillProbBonus func(rarity enum.Rarity, cardAttr enum.Attribute) float64
-	HpBonus        func(rarity enum.Rarity, cardAttr enum.Attribute) int
+	HpBonus        func(rarity enum.Rarity, cardAttr enum.Attribute) float64
 }
 
 // GetLeadSkill returns pointer to lead skill with the requested name

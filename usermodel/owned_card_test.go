@@ -57,6 +57,17 @@ func sampleOwnedCard() *OwnedCard {
 	return NewOwnedCard(&card)
 }
 
+func TestBatchCreate(t *testing.T) {
+	var cards []*models.Card
+	length := 10
+	for i := 0; i < length; i++ {
+		card := sampleCard()
+		cards = append(cards, &card)
+	}
+	ocards := BatchNewOwnedCards(cards)
+	assert.Equal(t, len(ocards), length, "Failed to batch create!")
+}
+
 func TestCreate(t *testing.T) {
 	card := sampleCard()
 	ocard := NewOwnedCard(&card)

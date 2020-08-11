@@ -1,7 +1,6 @@
-package game
+package simulator
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
@@ -11,7 +10,7 @@ import (
 )
 
 func sampleGameConfig() *GameConfig {
-	song := models.Song{Attribute: enum.AttrCool}
+	song := models.NewDefaultSong("Default", 26, enum.AttrCool, 120000, 200)
 	return NewGameConfig(
 		&usermodel.Team{
 			Ocards: [5]*usermodel.OwnedCard{
@@ -73,6 +72,5 @@ func TestRecalculateGameConfig(t *testing.T) {
 	})
 	assert.Equal(t, 271367, gc.Appeal, "Appeal is not recalculated when setting guest!")
 	gc.SetSong(&models.Song{Attribute: enum.AttrAll})
-	fmt.Println(gc.Appeal)
 	assert.NotEqual(t, 271367, gc.Appeal, "Appeal is not recalculated when setting song!")
 }

@@ -2,6 +2,8 @@ package helper
 
 import (
 	"math"
+	"math/rand"
+	"time"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/config"
 
@@ -58,6 +60,14 @@ func GetRoomItemBonus(attr enum.Attribute) float64 {
 	}
 	return 0.0
 }
+
+// Roll returns true prob*100% of the time
+func Roll(prob float64) bool {
+	roll := randomGenerator.Float64()
+	return roll < prob
+}
+
+var randomGenerator = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 // SkillProbPotentialBonusLookup is lookup table of skill probability bonus from potential
 var SkillProbPotentialBonusLookup = [11]int{0, 100, 200, 300, 400, 600, 800, 1000, 1300, 1600, 2000}

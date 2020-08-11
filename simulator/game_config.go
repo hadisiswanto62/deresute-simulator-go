@@ -1,4 +1,4 @@
-package game
+package simulator
 
 import (
 	"math"
@@ -17,18 +17,19 @@ type GameConfig struct {
 	song     *models.Song
 
 	Appeal int
+	Hp     int
 }
 
 // SetGuest set guest and recalculate Appeal
 func (gc *GameConfig) SetGuest(guest *usermodel.OwnedCard) {
 	gc.guest = guest
-	gc.recalculateAppeal()
+	gc.recalculate()
 }
 
 // SetSong set song and recalculate Appeal
 func (gc *GameConfig) SetSong(song *models.Song) {
 	gc.song = song
-	gc.recalculateAppeal()
+	gc.recalculate()
 }
 
 // NewGameConfig returns pointer to a new GameConfig with calculated Appeal
@@ -41,21 +42,28 @@ func NewGameConfig(
 		guest:    guest,
 		song:     song,
 	}
-	gc.recalculateAppeal()
+	gc.recalculate()
 	return &gc
 }
 
+func (gc *GameConfig) getTeamAttributes() [6]enum.Attribute {
+	var ret [6]enum.Attribute
+	ocards := append(gc.team.Ocards[:], gc.guest)
+	for i, ocard := range ocards {
+		ret[i] = ocard.Card.Idol.Attribute
+	}
+	return ret
+}
+
 // from: https://hpt.moe/deresute/Appeal_Score_Calculations
-func (gc *GameConfig) recalculateAppeal() {
+func (gc *GameConfig) recalculate() {
 	appeal := 0
+	hp := 0
 
 	// Stat Appeal (team/guest) = ceiling(Base * (1 + C + (G or B) + R + T))
 	ocards := append(gc.team.Ocards[:], gc.guest)
 	leader := gc.team.Leader()
-	var teamAttributes [6]enum.Attribute
-	for i, ocard := range ocards {
-		teamAttributes[i] = ocard.Card.Idol.Attribute
-	}
+	teamAttributes := gc.getTeamAttributes()
 
 	leadSkillActive := leader.Card.LeadSkill.IsActive(teamAttributes)
 	guestLeadSkillActive := gc.guest.Card.LeadSkill.IsActive(teamAttributes)
@@ -84,6 +92,12 @@ func (gc *GameConfig) recalculateAppeal() {
 			}
 			appeal += int(math.Ceil(multiplier * float64(statValue)))
 		}
+		multiplier := 1.0
+		if leadSkillActive {
+			multiplier += leader.Card.LeadSkill.HpBonus(leader.Card.Rarity.Rarity, ocard.Card.Idol.Attribute)
+		}
+		// TODO: confirm rounding in-game (floor/round/ceil)
+		hp += int(multiplier * float64(ocard.Hp))
 	}
 	for _, ocard := range gc.supports {
 		for _, statValue := range ocard.Stats() {
@@ -95,4 +109,6 @@ func (gc *GameConfig) recalculateAppeal() {
 		}
 	}
 	gc.Appeal = appeal
+	gc.Hp = hp
+
 }
