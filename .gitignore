@@ -1,4 +1,4 @@
-simulator.go
+/simulator.go
 resources/*
 data/*
 log/*
