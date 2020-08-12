@@ -88,12 +88,12 @@ func TestFindSupports(t *testing.T) {
 func TestMaxTeamID(t *testing.T) {
 	n := 20
 	album := sampleAlbum(n)
-	assert.Equal(t, album.MaxTeamID(), 15503, "Wrong max team id!")
+	assert.Equal(t, album.MaxTeamID(), 77519, "Wrong max team id!")
 }
 
 func TestMakeTeam(t *testing.T) {
 	assertion := assert.New(t)
-	n := 10
+	n := 7
 	album := sampleAlbum(n)
 	i := 0
 	for album.Next() {
@@ -101,5 +101,5 @@ func TestMakeTeam(t *testing.T) {
 		assertion.NotNil(team, "Team not generated!")
 		i++
 	}
-	assertion.Equal(i, album.MaxTeamID()+1, "Not enough team generated?")
+	assertion.Equal(album.MaxTeamID()+1, i, "Not enough team generated?")
 }

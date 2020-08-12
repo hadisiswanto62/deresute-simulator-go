@@ -12,36 +12,54 @@ import (
 type Album struct {
 	Ocards               []*OwnedCard
 	combinationGenerator *combin.CombinationGenerator
+	currentIndices       []int
+	currentLeaderIndex   int
 }
 
+// NewAlbum creates Album object from owned cards
 func NewAlbum(ocards []*OwnedCard) *Album {
 	gen := combin.NewCombinationGenerator(len(ocards), 5)
-	album := Album{Ocards: ocards, combinationGenerator: gen}
+	album := Album{Ocards: ocards, combinationGenerator: gen, currentLeaderIndex: -1}
 	return &album
 }
 
+// Next moves the team generator to next team
 func (a *Album) Next() bool {
 	if a.combinationGenerator == nil {
 		panic("combination generator not set")
 	}
-	return a.combinationGenerator.Next()
+	if (a.currentLeaderIndex == 4) || (a.currentLeaderIndex == -1) {
+		a.currentLeaderIndex = 0
+		return a.combinationGenerator.Next()
+	}
+	a.currentLeaderIndex++
+	return true
 }
 
+// GetTeam returns a new Team from generator
 func (a *Album) GetTeam() *Team {
 	if a.combinationGenerator == nil {
 		panic("combination generator not set")
 	}
 	indices := make([]int, 5)
-	a.combinationGenerator.Combination(indices)
+	// if currentLeaderIndex = 0, that means generator will return new combination (from album.Next())
+	// so get the new combination and store it
+	// else, that means generator only change leaderIndex so just retrieve the stored combination
+	if a.currentLeaderIndex == 0 {
+		a.combinationGenerator.Combination(indices)
+		a.currentIndices = indices
+	} else {
+		indices = a.currentIndices
+	}
 	ocards := [5]*OwnedCard{}
 	for i, index := range indices {
 		ocards[i] = a.Ocards[index]
 	}
-	return &Team{Ocards: ocards, LeaderIndex: 2}
+	return &Team{Ocards: ocards, LeaderIndex: a.currentLeaderIndex}
 }
 
 func (a Album) MaxTeamID() int {
-	return combin.Binomial(len(a.Ocards), 5) - 1
+	return combin.Binomial(len(a.Ocards), 5)*5 - 1
 }
 
 func (a Album) FindSupportsFor(team *Team, attr enum.Attribute) [10]*OwnedCard {
