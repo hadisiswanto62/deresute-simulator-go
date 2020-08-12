@@ -53,6 +53,7 @@ func (gs *GameState) log(item string) {
 }
 
 func (gs *GameState) logf(format string, a ...interface{}) {
+	return // uncomment this if need logs
 	text := fmt.Sprintf(format, a...)
 	gs.log(text)
 	return
