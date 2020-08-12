@@ -64,7 +64,7 @@ func TestBatchCreate(t *testing.T) {
 		card := sampleCard()
 		cards = append(cards, &card)
 	}
-	ocards := BatchNewOwnedCards(cards)
+	ocards := BatchNewOwnedCards(cards, 1, 1, 0, 0, 0, 0, 0)
 	assert.Equal(t, len(ocards), length, "Failed to batch create!")
 }
 

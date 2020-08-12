@@ -1,6 +1,8 @@
 package usermodel
 
 import (
+	"fmt"
+
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
@@ -24,6 +26,13 @@ type OwnedCard struct {
 	Hp                int
 	SkillEffectLength int
 	SkillProcChance   int
+}
+
+func (oc OwnedCard) String() string {
+	return fmt.Sprintf("<OwnedCard (%s); %d,%d,%d; %d,%d,%d,%d,%d",
+		oc.Card, oc.level, oc.skillLevel, oc.StarRank,
+		oc.potVisual, oc.potDance, oc.potVocal, oc.potHp, oc.potSkill,
+	)
 }
 
 // Level get the level of the card
@@ -151,23 +160,40 @@ func (oc OwnedCard) Stats() map[enum.Stat]int {
 	}
 }
 
-// NewOwnedCard creates a new OwnedCard object with max level and skillLevel&starRank=1
-func NewOwnedCard(card *models.Card) *OwnedCard {
+// NewCustomOwnedCard creates a new OwnedCard object with max level and specified skillLevel and starRank
+func NewCustomOwnedCard(card *models.Card, skillLevel, starRank,
+	potVisual, potDance, potVocal, potHp, potSkill int) *OwnedCard {
 	oc := OwnedCard{
 		Card:       card,
 		level:      card.Rarity.MaxLevel,
-		skillLevel: 1,
-		StarRank:   1,
+		skillLevel: skillLevel,
+		StarRank:   starRank,
+		potHp:      potHp,
+		potVisual:  potVisual,
+		potDance:   potDance,
+		potVocal:   potVocal,
+		potSkill:   potSkill,
 	}
 	oc.recalculate()
 	oc.recalculateSkill()
 	return &oc
 }
 
-func BatchNewOwnedCards(cards []*models.Card) []*OwnedCard {
+// NewOwnedCard creates a new OwnedCard object with max level and skillLevel&starRank=1
+func NewOwnedCard(card *models.Card) *OwnedCard {
+	return NewCustomOwnedCard(
+		card, 1, 1, 0, 0, 0, 0, 0,
+	)
+}
+
+// BatchNewOwnedCards creates slice of OwnedCards object (from NewCustomOwnedCard)
+func BatchNewOwnedCards(cards []*models.Card, skillLevel, starRank,
+	potVisual, potDance, potVocal, potHp, potSkill int) []*OwnedCard {
 	var ret []*OwnedCard
 	for _, card := range cards {
-		ret = append(ret, NewOwnedCard(card))
+		ret = append(ret, NewCustomOwnedCard(
+			card, skillLevel, starRank,
+			potVisual, potDance, potVocal, potHp, potSkill))
 	}
 	return ret
 }

@@ -26,6 +26,7 @@ type Card struct {
 }
 
 func (c Card) String() string {
-	return fmt.Sprintf("<Card %d (%s); %s; %s; %s>",
-		c.ID, c.Idol.Name, c.Rarity.Rarity, c.LeadSkill.Name, c.Skill.SkillType.Name)
+	return fmt.Sprintf("%d (%s) %s; %s; %s",
+		c.ID, c.Idol, c.Rarity.Rarity, c.LeadSkill.Name, c.Skill.SkillType.Name,
+	)
 }

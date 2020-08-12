@@ -1,6 +1,10 @@
 package models
 
-import "github.com/hadisiswanto62/deresute-simulator-go/enum"
+import (
+	"fmt"
+
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
+)
 
 // Note is a single note in the song
 type Note struct {
@@ -15,6 +19,10 @@ type Song struct {
 	Attribute  enum.Attribute
 	DurationMs int
 	Notes      []Note
+}
+
+func (s Song) String() string {
+	return fmt.Sprintf("%s %d (%s)", s.Name, s.Level, s.Attribute)
 }
 
 // NotesCount is the count of notes in the song
