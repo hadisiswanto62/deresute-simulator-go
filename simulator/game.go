@@ -3,6 +3,8 @@ package simulator
 import (
 	"fmt"
 	"math"
+	"math/rand"
+	"time"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
@@ -36,6 +38,7 @@ type GameState struct {
 	activeSkills         []*activeSkill
 	teamAttributes       [6]enum.Attribute
 	Log                  []string
+	randomGenerator      *rand.Rand
 }
 
 // PrintLog prints the log for the gamestate
@@ -129,7 +132,7 @@ func (g *Game) rollSkill(state *GameState) {
 			)
 		}
 		prob := float64(ocard.SkillProcChance) / 10000.0 * probMultiplier
-		if helper.Roll(prob) {
+		if helper.RollSafe(prob, state.randomGenerator) {
 			cost := ocard.Card.Skill.ActivationCost
 			if cost > 0 {
 				if state.currentHp > 1 {
@@ -168,8 +171,11 @@ func (g Game) scoreAndComboBonus(state GameState, judgement enum.TapJudgement, n
 }
 
 // Play plays the game and return the final state
-func (g Game) Play() GameState {
+func (g Game) Play(seed int64) GameState {
 	// defer helper.MeasureTime(time.Now(), "Play")
+	if seed == 0 {
+		seed = time.Now().UnixNano()
+	}
 	if g.UseAppealsOnly {
 		score := int(1.41 * g.songDifficultyMultiplier * float64(g.config.Appeal))
 		return GameState{Score: score}
@@ -183,6 +189,7 @@ func (g Game) Play() GameState {
 		currentNoteIndex:     -1,
 		currentHp:            g.config.Hp,
 		teamAttributes:       teamAttributes,
+		randomGenerator:      rand.New(rand.NewSource(seed)),
 	}
 	state.logf("Playing with appeal %d:", g.config.Appeal)
 	for state.timestamp < g.config.song.DurationMs {
@@ -194,7 +201,7 @@ func (g Game) Play() GameState {
 
 			// Play note here
 			judgement := enum.TapJudgementPerfect
-			if helper.Roll(greatProb) {
+			if helper.RollSafe(greatProb, state.randomGenerator) {
 				judgement = enum.TapJudgementGreat
 			}
 			noteType := g.config.song.Notes[i].NoteType

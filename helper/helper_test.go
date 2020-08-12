@@ -1,7 +1,9 @@
 package helper
 
 import (
+	"math/rand"
 	"testing"
+	"time"
 )
 
 func TestRandom(t *testing.T) {
@@ -11,10 +13,24 @@ func TestRandom(t *testing.T) {
 			count++
 		}
 	}
-	if count > 30 {
+	if (count > 30) || (count == 0) {
 		t.Errorf("RNG is suspiciously wrong. want = %d, have = %d", 30, count)
 	}
 }
+
+func TestRandomSafe(t *testing.T) {
+	generator := rand.New(rand.NewSource(time.Now().UnixNano()))
+	count := 0
+	for i := 0; i < 100; i++ {
+		if RollSafe(0.1, generator) {
+			count++
+		}
+	}
+	if (count > 30) || (count == 0) {
+		t.Errorf("RNG is suspiciously wrong. want = %d, have = %d", 30, count)
+	}
+}
+
 func TestScale(t *testing.T) {
 	x := Scale(2465, 4180, 50, 1)
 	if x != 2465 {

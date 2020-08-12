@@ -62,8 +62,14 @@ func GetRoomItemBonus(attr enum.Attribute) float64 {
 
 // Roll returns true prob*100% of the time
 func Roll(prob float64) bool {
-	// roll := randomGenerator.Float64()
 	roll := rand.Float64()
+	return roll < prob
+}
+
+// RollSafe returns true prob*100% of the time.
+// Safe because the caller need to provides their own random generator
+func RollSafe(prob float64, generator *rand.Rand) bool {
+	roll := generator.Float64()
 	return roll < prob
 }
 
