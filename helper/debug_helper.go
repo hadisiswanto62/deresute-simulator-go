@@ -3,6 +3,7 @@ package helper
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"runtime"
 	"time"
 )
@@ -35,6 +36,6 @@ func bToKb(b uint64) uint64 {
 
 // RandInt returns a random integer between min and max-1 [min, max)
 func RandInt(min, max int) int {
-	roll := randomGenerator.Intn(max - min)
+	roll := rand.Intn(max - min)
 	return roll + min
 }

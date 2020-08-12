@@ -15,7 +15,6 @@ func TestRandom(t *testing.T) {
 		t.Errorf("RNG is suspiciously wrong. want = %d, have = %d", 30, count)
 	}
 }
-
 func TestScale(t *testing.T) {
 	x := Scale(2465, 4180, 50, 1)
 	if x != 2465 {
