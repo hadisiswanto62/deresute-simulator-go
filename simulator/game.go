@@ -62,6 +62,7 @@ type Game struct {
 	UseAppealsOnly           bool
 	songDifficultyMultiplier float64
 	comboBonusMap            map[int]float64
+	maxHp                    int
 }
 
 func (g *Game) rollSkill(state *GameState) {
@@ -205,10 +206,26 @@ func (g Game) Play() GameState {
 				float64(g.config.song.NotesCount())
 
 			// TODO: Tap heal here
+			tapHeal := 0
+			for _, activeSkill := range state.activeSkills {
+				heal := activeSkill.ocard.Skill.SkillType.TapHeal(
+					activeSkill.ocard.Card.Rarity.Rarity,
+					judgement, noteType,
+				)
+				if heal > tapHeal {
+					tapHeal = heal
+				}
+			}
+			state.currentHp += tapHeal
+			if state.currentHp > g.maxHp {
+				state.currentHp = g.maxHp
+			}
 
 			score := int(math.Ceil(noteScoreMultiplier * float64(g.config.Appeal)))
 			state.Score += score
-			state.logf("%6d: Note %d tapped for %d/%d (scoreComboBonus = %f)", state.timestamp, i, score, state.Score, scoreComboBonus)
+			state.logf("%6d: Note %d tapped for %d/%d. Hp is %d (scoreComboBonus = %f)",
+				state.timestamp, i, score, state.Score, state.currentHp, scoreComboBonus,
+			)
 
 			state.currentNoteIndex = i
 		}
@@ -223,6 +240,7 @@ func NewGame(config *GameConfig) *Game {
 		config:                   config,
 		songDifficultyMultiplier: getSongDifficultyMultiplier(config.song.Level),
 		comboBonusMap:            getComboBonusMap(config.song.NotesCount()),
+		maxHp:                    config.Hp * 2,
 	}
 }
 

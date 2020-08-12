@@ -9,6 +9,7 @@ const (
 	SkillTypeScoreBonus    SkillType = "Score Bonus"
 	SkillTypeComboBonus    SkillType = "Combo Bonus"
 	SkillTypeConcentration SkillType = "Concentration"
+	SkillTypeHealer        SkillType = "Healer"
 )
 
 /*

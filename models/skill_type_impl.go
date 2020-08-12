@@ -103,3 +103,32 @@ var SkillTypeConcentration = SkillType{
 		return 0
 	},
 }
+
+// SkillTypeBase = "Every k seconds: there is a l..m% chance
+// that Perfect notes will restore n health for o..p seconds."
+var SkillTypeHealer = SkillType{
+	Name: enum.SkillTypeHealer,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		if judgement != enum.TapJudgementPerfect {
+			return 0
+		}
+		switch rarity {
+		case enum.RaritySSR:
+			return 3
+		case enum.RaritySR:
+			return 3
+		case enum.RarityN:
+			return 2
+		}
+		return 0
+	},
+}

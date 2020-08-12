@@ -25,6 +25,8 @@ func GetSkillType(name string) (*SkillType, error) {
 		return &SkillTypeComboBonus, nil
 	case string(enum.SkillTypeConcentration):
 		return &SkillTypeConcentration, nil
+	case string(enum.SkillTypeHealer):
+		return &SkillTypeHealer, nil
 	}
 	if config.DebugMode {
 		return &SkillTypeBase, nil

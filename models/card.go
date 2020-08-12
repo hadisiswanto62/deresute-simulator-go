@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 // Card is a card
 type Card struct {
 	ID        int
@@ -21,4 +23,9 @@ type Card struct {
 	VisualMin   int `json:"visual_min"`
 	VocalMax    int `json:"vocal_max"`
 	VocalMin    int `json:"vocal_min"`
+}
+
+func (c Card) String() string {
+	return fmt.Sprintf("<Card %d (%s); %s; %s; %s>",
+		c.ID, c.Idol.Name, c.Rarity.Rarity, c.LeadSkill.Name, c.Skill.SkillType.Name)
 }
