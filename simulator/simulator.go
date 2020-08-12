@@ -18,6 +18,7 @@ type SimulationSummary struct {
 	Results  []int
 }
 
+// Report reports the simulation summary
 func (ss SimulationSummary) Report() {
 	var data []float64
 	for _, score := range ss.Results {
