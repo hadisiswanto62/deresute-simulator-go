@@ -32,3 +32,9 @@ func PrintMemUsage() {
 func bToKb(b uint64) uint64 {
 	return b / 1024
 }
+
+// RandInt returns a random integer between min and max-1 [min, max)
+func RandInt(min, max int) int {
+	roll := randomGenerator.Intn(max - min)
+	return roll + min
+}

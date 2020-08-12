@@ -20,7 +20,7 @@ func TestQuerySetSameInstance(t *testing.T) {
 }
 
 func TestAttribute(t *testing.T) {
-	for _, attr := range enum.AllIdolAttributes {
+	for _, attr := range enum.AttrForIdol {
 		card := cm.Filter().Attribute(attr).First()
 		if card.Idol.Attribute != attr {
 			t.Errorf("Incorrect card attribute! %v != %v", card.Idol.Attribute, attr)

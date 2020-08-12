@@ -1,3 +1,4 @@
 simulator.go
 resources/*
 data/*
+log/*

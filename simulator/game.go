@@ -25,6 +25,7 @@ func (as activeSkill) isActiveOn(timestamp int) bool {
 	return timestamp <= endTimestamp
 }
 
+// GameState represents the state of the game. Including Score and Log for exports
 type GameState struct {
 	timestamp            int
 	Score                int
@@ -37,6 +38,7 @@ type GameState struct {
 	Log                  []string
 }
 
+// PrintLog prints the log for the gamestate
 func (gs GameState) PrintLog() {
 	for _, item := range gs.Log {
 		fmt.Println(item)
@@ -53,6 +55,7 @@ func (gs *GameState) logf(format string, a ...interface{}) {
 	return
 }
 
+// Game represents a simulation of a game. (use simulator.NewGame() instead)
 type Game struct {
 	config *GameConfig
 
@@ -163,6 +166,7 @@ func (g Game) scoreAndComboBonus(state GameState, judgement enum.TapJudgement, n
 	return (1 + maxScoreBonus) * (1 + maxComboBonus)
 }
 
+// Play plays the game and return the final state
 func (g Game) Play() GameState {
 	// defer helper.MeasureTime(time.Now(), "Play")
 	if g.UseAppealsOnly {
@@ -170,7 +174,6 @@ func (g Game) Play() GameState {
 		return GameState{Score: score}
 	}
 
-	g.comboBonusMap = getComboBonusMap(g.config.song.NotesCount())
 	teamAttributes := g.config.getTeamAttributes()
 	state := GameState{
 		timestamp:            0,
@@ -201,6 +204,8 @@ func (g Game) Play() GameState {
 				scoreComboBonus /
 				float64(g.config.song.NotesCount())
 
+			// TODO: Tap heal here
+
 			score := int(math.Ceil(noteScoreMultiplier * float64(g.config.Appeal)))
 			state.Score += score
 			state.logf("%6d: Note %d tapped for %d/%d (scoreComboBonus = %f)", state.timestamp, i, score, state.Score, scoreComboBonus)
@@ -212,10 +217,12 @@ func (g Game) Play() GameState {
 	return state
 }
 
+// NewGame creates new game
 func NewGame(config *GameConfig) *Game {
 	return &Game{
 		config:                   config,
 		songDifficultyMultiplier: getSongDifficultyMultiplier(config.song.Level),
+		comboBonusMap:            getComboBonusMap(config.song.NotesCount()),
 	}
 }
 

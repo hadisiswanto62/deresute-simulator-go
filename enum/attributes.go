@@ -11,8 +11,8 @@ const (
 	AttrAll     Attribute = "all"
 )
 
-// AllIdolAttributes is all valid attributes for idols
-var AllIdolAttributes = [3]Attribute{AttrCute, AttrCool, AttrPassion}
+// AttrForIdol is all valid attributes for idols
+var AttrForIdol = [3]Attribute{AttrCute, AttrCool, AttrPassion}
 
-// AllSongAttributes is all valid attributes for songs
-var AllSongAttributes = [4]Attribute{AttrCute, AttrCool, AttrPassion, AttrAll}
+// AttrForSong is all valid attributes for songs
+var AttrForSong = [4]Attribute{AttrCute, AttrCool, AttrPassion, AttrAll}
