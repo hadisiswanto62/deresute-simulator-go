@@ -29,7 +29,7 @@ type OwnedCard struct {
 }
 
 func (oc OwnedCard) String() string {
-	return fmt.Sprintf("<OwnedCard (%s); %d,%d,%d; %d,%d,%d,%d,%d",
+	return fmt.Sprintf("<OwnedCard (%s); %d,%d,%d; %d,%d,%d,%d,%d>",
 		oc.Card, oc.level, oc.skillLevel, oc.StarRank,
 		oc.potVisual, oc.potDance, oc.potVocal, oc.potHp, oc.potSkill,
 	)
@@ -42,9 +42,6 @@ func (oc *OwnedCard) Level() int {
 
 // SetLevel sets level of the card (and recalculate Visual, Vocal, Dance)
 func (oc *OwnedCard) SetLevel(level int) {
-	if level > oc.Rarity.MaxLevel {
-		level = oc.Rarity.MaxLevel
-	}
 	oc.level = level
 	oc.recalculate()
 }
@@ -56,9 +53,6 @@ func (oc *OwnedCard) SkillLevel() int {
 
 // SetSkillLevel sets skill level of the card (and recalculate skill prob/duration)
 func (oc *OwnedCard) SetSkillLevel(skillLevel int) {
-	if skillLevel > 10 {
-		skillLevel = 10
-	}
 	oc.skillLevel = skillLevel
 	oc.recalculateSkill()
 }
@@ -70,9 +64,6 @@ func (oc *OwnedCard) PotVisual() int {
 
 // SetPotVisual sets potential visual of the card (and recalculate)
 func (oc *OwnedCard) SetPotVisual(value int) {
-	if value > 10 {
-		value = 10
-	}
 	oc.potVisual = value
 	oc.recalculate()
 }
@@ -84,9 +75,6 @@ func (oc *OwnedCard) PotDance() int {
 
 // SetPotDance sets potential dance of the card (and recalculate)
 func (oc *OwnedCard) SetPotDance(value int) {
-	if value > 10 {
-		value = 10
-	}
 	oc.potDance = value
 	oc.recalculate()
 }
@@ -98,9 +86,6 @@ func (oc *OwnedCard) PotVocal() int {
 
 // SetPotVocal sets potential vocal of the card (and recalculate)
 func (oc *OwnedCard) SetPotVocal(value int) {
-	if value > 10 {
-		value = 10
-	}
 	oc.potVocal = value
 	oc.recalculate()
 }
@@ -112,9 +97,6 @@ func (oc *OwnedCard) PotHp() int {
 
 // SetPotHp sets potential hp of the card (and recalculate)
 func (oc *OwnedCard) SetPotHp(value int) {
-	if value > 10 {
-		value = 10
-	}
 	oc.potHp = value
 	oc.recalculate()
 }
@@ -126,14 +108,45 @@ func (oc *OwnedCard) PotSkill() int {
 
 // SetPotSkill sets potential skill of the card (and recalculate skill prob)
 func (oc *OwnedCard) SetPotSkill(value int) {
-	if value > 10 {
-		value = 10
-	}
 	oc.potSkill = value
 	oc.recalculateSkill()
 }
 
 func (oc *OwnedCard) recalculate() {
+	// recalculate is responsible for checking validity of:
+	// level, potVisual, potDance, potVocal, potHp, starrank
+	if oc.level < 1 {
+		oc.level = 1
+	} else if oc.level > oc.Rarity.MaxLevel {
+		oc.level = oc.Rarity.MaxLevel
+	}
+	if oc.potVisual < 0 {
+		oc.potVisual = 0
+	} else if oc.potVisual > 10 {
+		oc.potVisual = 10
+	}
+	if oc.potDance < 0 {
+		oc.potDance = 0
+	} else if oc.potDance > 10 {
+		oc.potDance = 10
+	}
+	if oc.potVocal < 0 {
+		oc.potVocal = 0
+	} else if oc.potVocal > 10 {
+		oc.potVocal = 10
+	}
+	if oc.potHp < 0 {
+		oc.potHp = 0
+	} else if oc.potHp > 10 {
+		oc.potHp = 10
+	}
+	// TODO: Star rank max is not always 20.
+	if oc.StarRank < 1 {
+		oc.StarRank = 1
+	} else if oc.StarRank > 20 {
+		oc.StarRank = 20
+	}
+
 	statLookup := helper.StatPotentialBonusLookupFor(oc.Rarity.Rarity)
 	lifeLookup := helper.LifePotentialBonusLookupFor(oc.Rarity.Rarity)
 
@@ -145,6 +158,18 @@ func (oc *OwnedCard) recalculate() {
 }
 
 func (oc *OwnedCard) recalculateSkill() {
+	// recalculateSkill is responseible for checking validity of:
+	// skillLevel, potSkill
+	if oc.potSkill < 0 {
+		oc.potSkill = 0
+	} else if oc.potSkill > 10 {
+		oc.potSkill = 10
+	}
+	if oc.skillLevel < 1 {
+		oc.skillLevel = 1
+	} else if oc.skillLevel > 10 {
+		oc.skillLevel = 10
+	}
 	procChanceLookup := helper.SkillProbPotentialBonusLookup
 
 	oc.SkillEffectLength = helper.Scale(oc.Skill.EffectLength[0], oc.Skill.EffectLength[1], 10, oc.skillLevel)
@@ -196,4 +221,60 @@ func BatchNewOwnedCards(cards []*models.Card, skillLevel, starRank,
 			potVisual, potDance, potVocal, potHp, potSkill))
 	}
 	return ret
+}
+
+// OwnedCardRequest is struct that can be converted directly to OwnedCard (to prettify NewOwnedCard2 only)
+type OwnedCardRequest struct {
+	Card       *models.Card
+	Level      int
+	SkillLevel int
+	StarRank   int
+	PotVisual  int
+	PotDance   int
+	PotVocal   int
+	PotHp      int
+	PotSkill   int
+}
+
+// NewOwnedCard2 converts object that implements OwnedCardRequester interface to OwnedCard
+func NewOwnedCard2(request OwnedCardRequest) *OwnedCard {
+	level := request.Level
+	skillLevel := request.SkillLevel
+	starRank := request.StarRank
+	if level == 0 {
+		level = request.Card.Rarity.MaxLevel
+	}
+	if request.SkillLevel == 0 {
+		skillLevel = 1
+	}
+	if request.StarRank == 0 {
+		starRank = 1
+	}
+	oc := OwnedCard{
+		Card:       request.Card,
+		level:      level,
+		skillLevel: skillLevel,
+		StarRank:   starRank,
+		potVisual:  request.PotVisual,
+		potDance:   request.PotDance,
+		potVocal:   request.PotVocal,
+		potHp:      request.PotHp,
+		potSkill:   request.PotSkill,
+	}
+	oc.recalculate()
+	oc.recalculateSkill()
+	return &oc
+}
+
+// OwnedCardRawData represents bare minimum of data that can uniquely define OwnedCard.
+// Cannot be converted to OwnedCard directly since it does not contain the actual Card
+type OwnedCardRawData struct {
+	CardID     int
+	SkillLevel int
+	StarRank   int
+	PotVisual  int
+	PotDance   int
+	PotVocal   int
+	PotHp      int
+	PotSkill   int
 }

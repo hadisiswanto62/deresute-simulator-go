@@ -187,6 +187,103 @@ func TestRecalculateSkill(t *testing.T) {
 
 }
 
+func TestInvalidValues(t *testing.T) {
+	assertion := assert.New(t)
+	ocard := sampleOwnedCard()
+	card := ocard.Card
+	// Invalid < value
+	request := OwnedCardRequest{
+		Card:       card,
+		Level:      0,
+		SkillLevel: 0,
+		StarRank:   -1,
+		PotVisual:  -1,
+		PotDance:   -1,
+		PotVocal:   -1,
+		PotHp:      -1,
+		PotSkill:   -1,
+	}
+	ocard = NewOwnedCard2(request)
+	assertion.Equal(ocard.Rarity.MaxLevel, ocard.level, "Invalid level is accepted!")
+	assertion.Equal(1, ocard.skillLevel, "Invalid skill level is accepted!")
+	assertion.Equal(1, ocard.StarRank, "Invalid star rank is accepted!")
+	assertion.Equal(0, ocard.potHp, "Invalid pothp is accepted!")
+	assertion.Equal(0, ocard.potVisual, "Invalid potvisual is accepted!")
+	assertion.Equal(0, ocard.potDance, "Invalid potdance is accepted!")
+	assertion.Equal(0, ocard.potVocal, "Invalid potvocal is accepted!")
+	assertion.Equal(0, ocard.potSkill, "Invalid potskill is accepted!")
+
+	// valid < value
+	request = OwnedCardRequest{
+		Card:       card,
+		Level:      1,
+		SkillLevel: 1,
+		StarRank:   1,
+		PotVisual:  0,
+		PotDance:   0,
+		PotVocal:   0,
+		PotHp:      0,
+		PotSkill:   0,
+	}
+	ocard = NewOwnedCard2(request)
+	assertion.Equal(1, ocard.level, "Invalid level is accepted!")
+	assertion.Equal(1, ocard.skillLevel, "Invalid skill level is accepted!")
+	assertion.Equal(1, ocard.StarRank, "Invalid star rank is accepted!")
+	assertion.Equal(0, ocard.potHp, "Invalid pothp is accepted!")
+	assertion.Equal(0, ocard.potVisual, "Invalid potvisual is accepted!")
+	assertion.Equal(0, ocard.potDance, "Invalid potdance is accepted!")
+	assertion.Equal(0, ocard.potVocal, "Invalid potvocal is accepted!")
+	assertion.Equal(0, ocard.potSkill, "Invalid potskill is accepted!")
+
+	// valid > value
+	request = OwnedCardRequest{
+		Card:       card,
+		Level:      card.Rarity.MaxLevel,
+		SkillLevel: 10,
+		StarRank:   20,
+		PotVisual:  10,
+		PotDance:   10,
+		PotVocal:   10,
+		PotHp:      10,
+		PotSkill:   10,
+	}
+	ocard = NewOwnedCard2(request)
+	assertion.Equal(ocard.Card.Rarity.MaxLevel, ocard.level, "Invalid level is accepted!")
+	assertion.Equal(10, ocard.skillLevel, "Invalid skill level is accepted!")
+	assertion.Equal(20, ocard.StarRank, "Invalid star rank is accepted!")
+	assertion.Equal(10, ocard.potHp, "Invalid pothp is accepted!")
+	assertion.Equal(10, ocard.potVisual, "Invalid potvisual is accepted!")
+	assertion.Equal(10, ocard.potDance, "Invalid potdance is accepted!")
+	assertion.Equal(10, ocard.potVocal, "Invalid potvocal is accepted!")
+	assertion.Equal(10, ocard.potSkill, "Invalid potskill is accepted!")
+
+	// Invalid > value
+	request = OwnedCardRequest{
+		Card:       card,
+		Level:      card.Rarity.MaxLevel + 1,
+		SkillLevel: 11,
+		StarRank:   21,
+		PotVisual:  11,
+		PotDance:   11,
+		PotVocal:   11,
+		PotHp:      11,
+		PotSkill:   11,
+	}
+	ocard = NewOwnedCard2(request)
+	assertion.Equal(ocard.Card.Rarity.MaxLevel, ocard.level, "Invalid level is accepted!")
+	assertion.Equal(10, ocard.skillLevel, "Invalid skill level is accepted!")
+	assertion.Equal(20, ocard.StarRank, "Invalid star rank is accepted!")
+	assertion.Equal(10, ocard.potHp, "Invalid pothp is accepted!")
+	assertion.Equal(10, ocard.potVisual, "Invalid potvisual is accepted!")
+	assertion.Equal(10, ocard.potDance, "Invalid potdance is accepted!")
+	assertion.Equal(10, ocard.potVocal, "Invalid potvocal is accepted!")
+	assertion.Equal(10, ocard.potSkill, "Invalid potskill is accepted!")
+
+	// setLevel(0) works
+	ocard.SetLevel(0)
+	assertion.Equal(1, ocard.level, "Invlaid level is accepted!")
+}
+
 func BenchmarkRecalculate(b *testing.B) {
 	ocard := sampleOwnedCard()
 	for i := 0; i < b.N; i++ {
