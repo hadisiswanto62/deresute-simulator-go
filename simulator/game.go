@@ -27,6 +27,10 @@ func (as activeSkill) isActiveOn(timestamp int) bool {
 	return timestamp <= endTimestamp
 }
 
+func (as activeSkill) String() string {
+	return fmt.Sprintf("%d. %s", as.cardIndex, as.ocard.Card.Skill.SkillType.Name)
+}
+
 // GameState represents the state of the game. Including Score and Log for exports
 type GameState struct {
 	timestamp            int
@@ -39,6 +43,7 @@ type GameState struct {
 	teamAttributes       [6]enum.Attribute
 	Log                  []string
 	randomGenerator      *rand.Rand
+	verbose              bool
 }
 
 // PrintLog prints the log for the gamestate
@@ -53,7 +58,9 @@ func (gs *GameState) log(item string) {
 }
 
 func (gs *GameState) logf(format string, a ...interface{}) {
-	return // uncomment this if need logs
+	if !gs.verbose {
+		return
+	}
 	text := fmt.Sprintf(format, a...)
 	gs.log(text)
 	return
@@ -67,6 +74,7 @@ type Game struct {
 	songDifficultyMultiplier float64
 	comboBonusMap            map[int]float64
 	maxHp                    int
+	verbose                  bool
 }
 
 func (g *Game) rollSkill(state *GameState) {
@@ -77,14 +85,14 @@ func (g *Game) rollSkill(state *GameState) {
 		if skill.isActiveOn(state.timestamp) {
 			newActiveSkills = append(newActiveSkills, skill)
 		} else {
-			state.logf("%6d: Skill %d is deactivated", state.timestamp, skill.cardIndex)
+			state.logf("%6d: Skill (%s) is deactivated", state.timestamp, skill)
 		}
 	}
 	state.activeSkills = newActiveSkills
 	// roll skill
 	// skill can't active in the first loop
 	if state.timestamp < tickRate*2 {
-		state.logf("Tried to activate skill but it is on first loop")
+		state.logf("%6d: Tried to activate skills but it is on first loop", state.timestamp)
 		return
 	}
 	for i, ocard := range g.config.team.Ocards {
@@ -95,12 +103,13 @@ func (g *Game) rollSkill(state *GameState) {
 		}
 		// skill can't active within 3 seconds before last note
 		if state.timestamp > g.config.song.Notes[g.config.song.NotesCount()-1].TimestampMs-3000 {
-			state.logf("Tried to activate %d but it is 3 seconds before last note", i)
+			state.logf("%6d: Tried to activate (%d. %s) but it is 3 seconds before last note", state.timestamp,
+				i, ocard.Card.Skill.SkillType.Name)
 			continue
 		}
 		// if inactive skill --> skip
 		if !ocard.Card.Skill.SkillType.IsActive(state.teamAttributes) {
-			state.logf("Tried to activate %d but it is inactive", i)
+			state.logf("%6d: Tried to activate (%d. %s) but it is inactive", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
 			continue
 		}
 		// if card is currently active --> skip
@@ -112,7 +121,8 @@ func (g *Game) rollSkill(state *GameState) {
 			}
 		}
 		if active {
-			state.logf("Tried to activate %d but it is currently active", i)
+			state.logf("%6d: Tried to activate (%d. %s) but it is currently active", state.timestamp,
+				i, ocard.Card.Skill.SkillType.Name)
 			continue
 		}
 
@@ -145,7 +155,7 @@ func (g *Game) rollSkill(state *GameState) {
 			state.logf("%6d: %d. %v activated.", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
 			state.activeSkills = append(state.activeSkills, &activeSkill{ocard: ocard, cardIndex: i, timestamp: state.timestamp})
 		} else {
-			state.logf("Tried to activate %d but it is roll failed", i)
+			state.logf("%6d: Tried to activate (%d. %s) but roll failed", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
 		}
 	}
 }
@@ -196,6 +206,7 @@ func (g Game) Play(seed int64) GameState {
 		currentHp:            g.config.Hp,
 		teamAttributes:       teamAttributes,
 		randomGenerator:      rand.New(rand.NewSource(seed)),
+		verbose:              g.verbose,
 	}
 	state.logf("Playing with appeal %d:", g.config.Appeal)
 	for state.timestamp < g.config.song.DurationMs {
@@ -248,12 +259,13 @@ func (g Game) Play(seed int64) GameState {
 }
 
 // NewGame creates new game
-func NewGame(config *GameConfig) *Game {
+func NewGame(config *GameConfig, verbose bool) *Game {
 	return &Game{
 		config:                   config,
 		songDifficultyMultiplier: getSongDifficultyMultiplier(config.song.Level),
 		comboBonusMap:            getComboBonusMap(config.song.NotesCount()),
 		maxHp:                    config.Hp * 2,
+		verbose:                  verbose,
 	}
 }
 

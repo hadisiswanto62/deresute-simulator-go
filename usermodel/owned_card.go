@@ -29,8 +29,9 @@ type OwnedCard struct {
 }
 
 func (oc OwnedCard) String() string {
-	return fmt.Sprintf("<OwnedCard (%s); %d,%d,%d; %d,%d,%d,%d,%d>",
-		oc.Card, oc.level, oc.skillLevel, oc.StarRank,
+	return fmt.Sprintf("<OwnedCard (%s); (%d); %d,%d,%d; %d,%d,%d,%d,%d>",
+		oc.Card, oc.Appeal,
+		oc.level, oc.skillLevel, oc.StarRank,
 		oc.potVisual, oc.potDance, oc.potVocal, oc.potHp, oc.potSkill,
 	)
 }

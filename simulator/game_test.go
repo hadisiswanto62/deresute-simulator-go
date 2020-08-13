@@ -7,7 +7,7 @@ import (
 
 func TestNewGame(t *testing.T) {
 	config := sampleGameConfig()
-	game := NewGame(config)
+	game := NewGame(config, false)
 	if game == nil {
 		t.Errorf("Cannot create a game!")
 	}
