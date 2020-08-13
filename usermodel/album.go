@@ -1,6 +1,7 @@
 package usermodel
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
@@ -62,7 +63,7 @@ func (a Album) MaxTeamID() int {
 	return combin.Binomial(len(a.Ocards), 5)*5 - 1
 }
 
-func (a Album) FindSupportsFor(team *Team, attr enum.Attribute) [10]*OwnedCard {
+func (a Album) FindSupportsFor(team *Team, attr enum.Attribute) ([10]*OwnedCard, error) {
 	ocards := a.Ocards
 	sort.SliceStable(ocards, func(i, j int) bool {
 		return ocards[i].Appeal > ocards[j].Appeal
@@ -71,6 +72,16 @@ func (a Album) FindSupportsFor(team *Team, attr enum.Attribute) [10]*OwnedCard {
 	nextIndex := 0
 	for _, ocard := range ocards {
 		if (attr != enum.AttrAll) && (attr != ocard.Card.Idol.Attribute) {
+			continue
+		}
+		isInTeam := false
+		for _, teamOcard := range team.Ocards {
+			if ocard == teamOcard {
+				isInTeam = true
+				break
+			}
+		}
+		if isInTeam {
 			continue
 		}
 		for i := 0; i < ocard.StarRank; i++ {
@@ -84,5 +95,10 @@ func (a Album) FindSupportsFor(team *Team, attr enum.Attribute) [10]*OwnedCard {
 			break
 		}
 	}
-	return ret
+	if nextIndex == 10 {
+		return ret, nil
+	} else {
+		err := fmt.Errorf("can only find %d supports", nextIndex)
+		return [10]*OwnedCard{}, err
+	}
 }

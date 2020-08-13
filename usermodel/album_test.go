@@ -36,7 +36,10 @@ func TestFindSupportsMultipleStarRank(t *testing.T) {
 	album := sampleAlbum(n)
 	album.Next()
 	team := album.GetTeam()
-	supports := album.FindSupportsFor(team, enum.AttrPassion)
+	supports, err := album.FindSupportsFor(team, enum.AttrPassion)
+	if err != nil {
+		t.Errorf("test failed: %v", err)
+	}
 	// sampleAlbum() generates cards with starRank=3 so should have 4 unique cards in supports
 	uniques := make(map[int]bool)
 	for _, ocard := range supports {
@@ -46,6 +49,29 @@ func TestFindSupportsMultipleStarRank(t *testing.T) {
 	assert.Equal(t, 10, len(supports), "Too many (or too less) supports!")
 }
 
+func TestFindSupportsNotPlaying(t *testing.T) {
+	assertion := assert.New(t)
+	album := sampleAlbum(5)
+	ocards := album.Ocards
+	ocards = append(ocards, &OwnedCard{
+		Card: &models.Card{
+			ID: 100,
+			Idol: &models.Idol{
+				Attribute: enum.AttrAll,
+			},
+		},
+		Appeal:   1,
+		StarRank: 20,
+	})
+	album = NewAlbum(ocards)
+	album.Next()
+	team := album.GetTeam()
+	supports, _ := album.FindSupportsFor(team, enum.AttrAll)
+	for _, support := range supports {
+		assertion.Equal(100, support.Card.ID, "Currently playing card is included in supports!")
+	}
+}
+
 func TestFindSupports(t *testing.T) {
 	assertion := assert.New(t)
 	threshold := 9000 * 10
@@ -53,14 +79,20 @@ func TestFindSupports(t *testing.T) {
 	album := sampleAlbum(n)
 	album.Next()
 	team := album.GetTeam()
-	supports := album.FindSupportsFor(team, enum.AttrAll)
+	supports, err := album.FindSupportsFor(team, enum.AttrAll)
+	if err != nil {
+		t.Errorf("test error: %v", err)
+	}
 	sum := 0
 	for _, ocard := range supports {
 		sum += ocard.Appeal
 	}
 	assertion.Greater(sum, threshold, "Appeal sum is suspiciously low! FindSupportsFor not sorted?")
 
-	supports = album.FindSupportsFor(team, enum.AttrCute)
+	supports, err = album.FindSupportsFor(team, enum.AttrCute)
+	if err != nil {
+		t.Errorf("test error: %v", err)
+	}
 	sum = 0
 	for _, ocard := range supports {
 		sum += ocard.Appeal
@@ -68,7 +100,10 @@ func TestFindSupports(t *testing.T) {
 	}
 	assertion.Greater(sum, threshold, "Appeal sum is suspiciously low! FindSupportsFor not sorted?")
 
-	supports = album.FindSupportsFor(team, enum.AttrCool)
+	supports, err = album.FindSupportsFor(team, enum.AttrCool)
+	if err != nil {
+		t.Errorf("test error: %v", err)
+	}
 	sum = 0
 	for _, ocard := range supports {
 		sum += ocard.Appeal
@@ -76,7 +111,10 @@ func TestFindSupports(t *testing.T) {
 	}
 	assertion.Greater(sum, threshold, "Appeal sum is suspiciously low! FindSupportsFor not sorted?")
 
-	supports = album.FindSupportsFor(team, enum.AttrPassion)
+	supports, err = album.FindSupportsFor(team, enum.AttrPassion)
+	if err != nil {
+		t.Errorf("test error: %v", err)
+	}
 	sum = 0
 	for _, ocard := range supports {
 		sum += ocard.Appeal
