@@ -5,7 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hadisiswanto62/deresute-simulator-go/jsonmodels"
+	"github.com/hadisiswanto62/deresute-simulator-go/csvmodels"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +15,8 @@ func init() {
 }
 func TestParseOcard(t *testing.T) {
 	assertion := assert.New(t)
-	dp := jsonmodels.JSONDataParser{}
+	// dp := jsonmodels.JSONDataParser{}
+	dp := csvmodels.CSVDataParser{}
 	ocards, err := ParseOwnedCard(dp, "")
 	assertion.Nilf(err, "Test failed: %v", err)
 	for _, ocard := range ocards {

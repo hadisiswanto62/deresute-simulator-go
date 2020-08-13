@@ -12,6 +12,15 @@ type dataParser interface {
 	ParseOwnedCardRawData(path string) ([]*usermodel.OwnedCardRawData, error)
 }
 
+func FindById(ocards []*usermodel.OwnedCard, id int) *usermodel.OwnedCard {
+	for _, ocard := range ocards {
+		if ocard.Card.ID == id {
+			return ocard
+		}
+	}
+	return nil
+}
+
 func ParseOwnedCard(dp dataParser, path string) ([]*usermodel.OwnedCard, error) {
 	cm, _ := cardmanager.Default()
 

@@ -87,3 +87,35 @@ var rLifePotentialBonusLookup = [11]int{0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14}
 
 var nStatPotentialBonusLookup = [11]int{0, 80, 160, 250, 340, 440, 540, 650, 760, 880, 1000}
 var nLifePotentialBonusLookup = [11]int{0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13}
+
+var unimplementedLeadSkills = []enum.LeadSkill{
+	enum.LeadSkillBase,
+	enum.LeadSkillResonantMakeup, enum.LeadSkillResonantStep, enum.LeadSkillResonantVoice,
+}
+
+var unimplementedSkills = []enum.SkillType{
+	enum.SkillTypeAlternate,
+	enum.SkillTypeBase,
+	enum.SkillTypeCoolEnsemble, enum.SkillTypeCuteEnsemble, enum.SkillTypePassionEnsemble,
+	enum.SkillTypeEncore,
+	enum.SkillTypeSkillBoost,
+	enum.SkillTypeTricolorSymphony,
+}
+
+func IsLeadSkillImplemented(ls enum.LeadSkill) bool {
+	for _, lskill := range unimplementedLeadSkills {
+		if lskill == ls {
+			return false
+		}
+	}
+	return true
+}
+
+func IsSkillImplemented(s enum.SkillType) bool {
+	for _, skill := range unimplementedSkills {
+		if skill == s {
+			return false
+		}
+	}
+	return true
+}
