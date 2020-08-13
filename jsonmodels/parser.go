@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
+
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
 )
 
@@ -18,6 +20,7 @@ const (
 	rarityPath    = "data/rarity.json"
 	idolPath      = "data/idol.json"
 	skillPath     = "data/skill.json"
+	ownedCardPath = "userdata/data.json"
 )
 
 // JSONDataParser manages card data that is stored in JSON form
@@ -225,4 +228,33 @@ func save(obj interface{}, filename string) error {
 		return fmt.Errorf("write failed: %v", err)
 	}
 	return nil
+}
+
+func (p JSONDataParser) ParseOwnedCardRawData(path string) ([]*usermodel.OwnedCardRawData, error) {
+	if path == "" {
+		path = ownedCardPath
+	}
+	var tocds []*TmpOwnedCardRawData
+	text, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("cannot read %s: %v", ownedCardPath, err)
+	}
+	if err = json.Unmarshal(text, &tocds); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal (%s): %v", ownedCardPath, err)
+	}
+	var ret []*usermodel.OwnedCardRawData
+	for _, tocd := range tocds {
+		ocd := &usermodel.OwnedCardRawData{
+			CardID:     tocd.CardID,
+			SkillLevel: tocd.SkillLevel,
+			StarRank:   tocd.StarRank,
+			PotVisual:  tocd.PotVisual,
+			PotDance:   tocd.PotDance,
+			PotVocal:   tocd.PotVocal,
+			PotHp:      tocd.PotHp,
+			PotSkill:   tocd.PotSkill,
+		}
+		ret = append(ret, ocd)
+	}
+	return ret, nil
 }

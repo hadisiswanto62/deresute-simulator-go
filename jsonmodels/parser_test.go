@@ -1,8 +1,11 @@
 package jsonmodels
 
 import (
+	"fmt"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {
@@ -23,4 +26,14 @@ func TestParse(t *testing.T) {
 	// 		fmt.Printf("%d: %p %v\n", card.ID, &card.Rarity.Rarity, *(card.Rarity))
 	// 	}
 	// }
+}
+
+func TestParseOwnedCardRawData(t *testing.T) {
+	assertion := assert.New(t)
+	dp := JSONDataParser{}
+	ocds, err := dp.ParseOwnedCardRawData("")
+	assertion.Nilf(err, "Test failed: %v", err)
+	for _, ocd := range ocds {
+		fmt.Println(ocd)
+	}
 }

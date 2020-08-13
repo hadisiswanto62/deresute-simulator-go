@@ -80,3 +80,14 @@ type TmpCard struct {
 	VocalMax    int `json:"vocal_max"`
 	VocalMin    int `json:"vocal_min"`
 }
+
+type TmpOwnedCardRawData struct {
+	CardID     int `json:"card_id,omitempty"`
+	SkillLevel int `json:"skill_level,omitempty"`
+	StarRank   int `json:"star_rank,omitempty"`
+	PotVisual  int `json:"pot_visual,omitempty"`
+	PotDance   int `json:"pot_dance,omitempty"`
+	PotVocal   int `json:"pot_vocal,omitempty"`
+	PotHp      int `json:"pot_hp,omitempty"`
+	PotSkill   int `json:"pot_skill,omitempty"`
+}
