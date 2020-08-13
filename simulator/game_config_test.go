@@ -31,7 +31,7 @@ func sampleGameConfig() *GameConfig {
 			},
 			LeaderIndex: 2,
 		},
-		[]*usermodel.OwnedCard{
+		[10]*usermodel.OwnedCard{
 			&usermodel.OwnedCard{Vocal: 6248, Dance: 4707, Visual: 4966, Card: &models.Card{Idol: &models.Idol{Attribute: enum.AttrCool}}},
 			&usermodel.OwnedCard{Vocal: 3744, Dance: 7356, Visual: 4608, Card: &models.Card{Idol: &models.Idol{Attribute: enum.AttrCool}}},
 			&usermodel.OwnedCard{Vocal: 4706, Dance: 7081, Visual: 3918, Card: &models.Card{Idol: &models.Idol{Attribute: enum.AttrCool}}},

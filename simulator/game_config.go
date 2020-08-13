@@ -12,7 +12,7 @@ import (
 // GameConfig represents full game configuration (team, supports, guest, and song)
 type GameConfig struct {
 	team     *usermodel.Team
-	supports []*usermodel.OwnedCard
+	supports [10]*usermodel.OwnedCard
 	guest    *usermodel.OwnedCard
 	song     *models.Song
 
@@ -34,7 +34,7 @@ func (gc *GameConfig) SetSong(song *models.Song) {
 
 // NewGameConfig returns pointer to a new GameConfig with calculated Appeal
 func NewGameConfig(
-	team *usermodel.Team, supports []*usermodel.OwnedCard,
+	team *usermodel.Team, supports [10]*usermodel.OwnedCard,
 	guest *usermodel.OwnedCard, song *models.Song) *GameConfig {
 	gc := GameConfig{
 		team:     team,
