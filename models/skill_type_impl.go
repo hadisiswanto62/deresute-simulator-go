@@ -104,7 +104,7 @@ var SkillTypeConcentration = SkillType{
 	},
 }
 
-// SkillTypeBase = "Every k seconds: there is a l..m% chance
+// SkillTypeHealer = "Every k seconds: there is a l..m% chance
 // that Perfect notes will restore n health for o..p seconds."
 var SkillTypeHealer = SkillType{
 	Name: enum.SkillTypeHealer,
@@ -129,6 +129,441 @@ var SkillTypeHealer = SkillType{
 		case enum.RarityN:
 			return 2
 		}
+		return 0
+	},
+}
+
+// SkillTypeAllRound = Every 9 seconds: there is a 35..52.5% chance
+// that you will gain an extra 13% combo bonus, and Perfect notes
+// will restore 1 health for 4..6 seconds.
+var SkillTypeAllRound = SkillType{
+	Name: enum.SkillTypeAllRound,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		switch rarity {
+		case enum.RaritySSR:
+			return 0.13
+		case enum.RaritySR:
+			return 0.10
+		}
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		if judgement == enum.TapJudgementPerfect {
+			return 1
+		}
+		return 0
+	},
+}
+
+// SkillTypeCoordinate = " Every 9 seconds: there is a 40..60% chance
+// that Perfect notes will receive a 10% score bonus, and you will
+// gain an extra 15% combo bonus for 4..6 seconds. "
+var SkillTypeCoordinate = SkillType{
+	Name: enum.SkillTypeCoordinate,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.15,
+			enum.RaritySR:  0.12,
+		}
+		if bonus, ok := rarityMap[rarity]; ok {
+			return bonus
+		}
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.1,
+			enum.RaritySR:  0.08,
+		}
+		if judgement == enum.TapJudgementPerfect {
+			if bonus, ok := rarityMap[rarity]; ok {
+				return bonus
+			}
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeOverload = " Every 9 seconds: there is a 35..52.5% chance
+// that 15 life will be consumed, then: Perfect/Great notes receive a
+// 18% score bonus, and Nice/Bad notes will not break combo for 5..7.5 seconds. "
+var SkillTypeOverload = SkillType{
+	Name: enum.SkillTypeOverload,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.18,
+			enum.RaritySR:  0.16,
+		}
+		if bonus, ok := rarityMap[rarity]; ok {
+			return bonus
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeTricolorSynergy = "Every 11 seconds: there is a 40..60% chance
+// that with all three types of idols on the team, you will gain an extra 15%
+// combo bonus, and Perfect notes will receive a 16% score bonus plus restore 1 HP, for 5..7.5 seconds.
+var SkillTypeTricolorSynergy = SkillType{
+	Name: enum.SkillTypeTricolorSynergy,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		attrMap := make(map[enum.Attribute]bool)
+		for _, attribute := range attr {
+			attrMap[attribute] = true
+		}
+		return len(attrMap) == 3
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.15
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		if judgement == enum.TapJudgementPerfect {
+			return 0.16
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		if judgement == enum.TapJudgementPerfect {
+			return 1
+		}
+		return 0
+	},
+}
+
+// SkillTypeTuning = " Every 11 seconds: there is a 35..52.5% chance
+// that you will gain an extra 12% combo bonus, and Nice/Great notes
+// will become Perfect notes for 6..9 seconds."
+var SkillTypeTuning = SkillType{
+	Name: enum.SkillTypeTuning,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.12
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypePerfectLock = "Every 9 seconds: there is a 40..60% chance
+// that Bad/Nice/Great notes will become Perfect notes for 3..4.5 seconds. "
+var SkillTypePerfectLock = SkillType{
+	Name: enum.SkillTypePerfectLock,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeComboGuard = " Every 12 seconds: there is a 35..52.5% chance
+// that Nice notes will not break combo for 5..7.5 seconds."
+var SkillTypeComboGuard = SkillType{
+	Name: enum.SkillTypeComboGuard,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeLifeSparkle = " Every 9 seconds: there is a 40..60% chance
+// that you will gain an extra combo bonus based on your current health for 4..6 seconds. "
+var SkillTypeLifeSparkle = SkillType{
+	Name: enum.SkillTypeLifeSparkle,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		ssrTable := map[int]int{
+			0: 9, 50: 10, 110: 11, 160: 12,
+			200: 13, 250: 14, 300: 15, 330: 16, 380: 17,
+			410: 18, 440: 19, 480: 20, 500: 21, 540: 22,
+			580: 23, 610: 24, 810: 25, 860: 26, 910: 27,
+			950: 28, 1000: 29, 1050: 30, 1100: 31, 1140: 32,
+			1190: 33, 1240: 34, 1290: 35, 1330: 36, 1380: 37,
+			1430: 38, 1480: 39, 1520: 40, 1570: 41,
+		}
+		srTable := map[int]int{
+			0: 7, 260: 12, 320: 13, 330: 14, 380: 15,
+			420: 16, 470: 17, 480: 18, 520: 19, 570: 20,
+			610: 21, 830: 22, 890: 23, 940: 24, 990: 25,
+			1040: 26, 1090: 27, 1140: 28, 1200: 29, 1250: 30,
+			1300: 31, 1350: 32, 1400: 33, 1460: 34, 1510: 35, 1560: 36,
+		}
+		rarityMap := map[enum.Rarity]map[int]int{
+			enum.RaritySSR: ssrTable,
+			enum.RaritySR:  srTable,
+		}
+		usedTable, ok := rarityMap[rarity]
+		if !ok {
+			return 0.0
+		}
+		nearest, chosenBonus := 9999, 0
+		// algorithm:
+		// iterate over every key, if key is lower than currentHP, check if it is the closest
+		// then return the value of closest key
+		for life, bonus := range usedTable {
+			lifeDiff := currentHp - life
+			if lifeDiff < 0 {
+				continue
+			}
+			if lifeDiff < nearest {
+				nearest = lifeDiff
+				chosenBonus = bonus
+			}
+		}
+		return float64(chosenBonus) / 100.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeLifeGuard = "Every 11 seconds: there is a 35..52.5% chance
+// that you will not lose health for 6..9 seconds."
+var SkillTypeLifeGuard = SkillType{
+	Name: enum.SkillTypeLifeGuard,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeSkillBoost = " Every 11 seconds: there is a 40..60% chance
+// to boost the effects of currently active skills for 5..7.5 seconds. "
+var SkillTypeSkillBoost = SkillType{
+	Name: enum.SkillTypeSkillBoost,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeCuteFocus = " Every 11 seconds: there is a 40..60% chance
+// that with only Cute idols on the team, Perfect notes will receive a
+// 14% score bonus, and you will gain an extra 11% combo bonus for 5..7.5 seconds. "
+var SkillTypeCuteFocus = SkillType{
+	Name: enum.SkillTypeCuteFocus,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		for _, attribute := range attr {
+			if attribute != enum.AttrCute {
+				return false
+			}
+		}
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.14,
+			enum.RaritySR:  0.11,
+		}
+		if bonus, ok := rarityMap[rarity]; ok {
+			return bonus
+		}
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.16,
+			enum.RaritySR:  0.14,
+		}
+		if bonus, ok := rarityMap[rarity]; ok {
+			return bonus
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeCoolFocus = " Every 11 seconds: there is a 40..60% chance
+// that with only Cool idols on the team, Perfect notes will receive a
+// 14% score bonus, and you will gain an extra 11% combo bonus for 5..7.5 seconds. "
+var SkillTypeCoolFocus = SkillType{
+	Name: enum.SkillTypeCoolFocus,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		for _, attribute := range attr {
+			if attribute != enum.AttrCool {
+				return false
+			}
+		}
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.14,
+			enum.RaritySR:  0.11,
+		}
+		if bonus, ok := rarityMap[rarity]; ok {
+			return bonus
+		}
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.16,
+			enum.RaritySR:  0.14,
+		}
+		if bonus, ok := rarityMap[rarity]; ok {
+			return bonus
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypePassionFocus = " Every 11 seconds: there is a 40..60% chance
+// that with only Passion idols on the team, Perfect notes will receive a
+// 14% score bonus, and you will gain an extra 11% combo bonus for 5..7.5 seconds. "
+var SkillTypePassionFocus = SkillType{
+	Name: enum.SkillTypePassionFocus,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		for _, attribute := range attr {
+			if attribute != enum.AttrPassion {
+				return false
+			}
+		}
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.14,
+			enum.RaritySR:  0.11,
+		}
+		if bonus, ok := rarityMap[rarity]; ok {
+			return bonus
+		}
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		rarityMap := map[enum.Rarity]float64{
+			enum.RaritySSR: 0.16,
+			enum.RaritySR:  0.14,
+		}
+		if bonus, ok := rarityMap[rarity]; ok {
+			return bonus
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeEncore = " Every 9 seconds: there is a 35..52.5% chance
+// to activate the previous skill again for 3..4.5 seconds."
+var SkillTypeEncore = SkillType{
+	Name: enum.SkillTypeEncore,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeTricolorSymphony = " Every 9 seconds: there is a 40..60% chance
+// that with all three types of idols on the team, to boost the score/combo
+// bonus/health recovery of currently active skills for 4..6 seconds.
+var SkillTypeTricolorSymphony = SkillType{
+	Name: enum.SkillTypeTricolorSymphony,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeAlternate = " Every 6 seconds: there is a 35..52.5% chance
+// to reduce combo bonus by 20%, but also apply the highest score bonus
+// gained so far with a boost of 50% for 3..4.5 seconds.
+var SkillTypeAlternate = SkillType{
+	Name: enum.SkillTypeAlternate,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
 		return 0
 	},
 }

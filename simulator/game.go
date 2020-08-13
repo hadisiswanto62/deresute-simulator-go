@@ -136,9 +136,11 @@ func (g *Game) rollSkill(state *GameState) {
 		if helper.RollSafe(prob, state.randomGenerator) {
 			cost := ocard.Card.Skill.ActivationCost
 			if cost > 0 {
-				if state.currentHp > 1 {
-					state.currentHp -= cost
+				hpAfter := state.currentHp - cost
+				if hpAfter < 1 {
+					hpAfter = 1
 				}
+				state.currentHp = hpAfter
 			}
 			state.logf("%6d: %d. %v activated.", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
 			state.activeSkills = append(state.activeSkills, &activeSkill{ocard: ocard, cardIndex: i, timestamp: state.timestamp})

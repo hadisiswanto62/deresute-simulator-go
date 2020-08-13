@@ -5,11 +5,30 @@ type SkillType string
 
 // All rarities
 const (
-	SkillTypeBase          SkillType = "Base Skill"
-	SkillTypeScoreBonus    SkillType = "Score Bonus"
-	SkillTypeComboBonus    SkillType = "Combo Bonus"
-	SkillTypeConcentration SkillType = "Concentration"
-	SkillTypeHealer        SkillType = "Healer"
+	SkillTypeBase             SkillType = "Base Skill"
+	SkillTypeScoreBonus       SkillType = "Score Bonus"
+	SkillTypeComboBonus       SkillType = "Combo Bonus"
+	SkillTypeConcentration    SkillType = "Concentration"
+	SkillTypeHealer           SkillType = "Healer"
+	SkillTypeAllRound         SkillType = "All-Round"
+	SkillTypeLifeSparkle      SkillType = "Life Sparkle"
+	SkillTypeTricolorSynergy  SkillType = "Tricolor Synergy"
+	SkillTypeCoordinate       SkillType = "Coordinate"
+	SkillTypeOverload         SkillType = "Overload"
+	SkillTypeCuteFocus        SkillType = "Cute Focus"
+	SkillTypeCoolFocus        SkillType = "Cool Focus"
+	SkillTypePassionFocus     SkillType = "Passion Focus"
+	SkillTypeTuning           SkillType = "Tuning"
+	SkillTypeDanceMotif       SkillType = "Dance Motif"
+	SkillTypeVisualMotif      SkillType = "Visual Motif"
+	SkillTypeVocalMotif       SkillType = "Vocal Motif"
+	SkillTypePerfectLock      SkillType = "Perfect Lock"
+	SkillTypeComboGuard       SkillType = "Combo Guard"
+	SkillTypeEncore           SkillType = "Encore"
+	SkillTypeAlternate        SkillType = "Alternate"
+	SkillTypeSkillBoost       SkillType = "Skill Boost"
+	SkillTypeTricolorSymphony SkillType = "Tricolor Symphony"
+	SkillTypeLifeGuard        SkillType = "Life Guard"
 )
 
 /*

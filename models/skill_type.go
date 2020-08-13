@@ -16,18 +16,43 @@ type SkillType struct {
 	TapHeal    func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int
 }
 
+var skillMap = map[string]*SkillType{
+	string(enum.SkillTypeScoreBonus):       &SkillTypeScoreBonus,
+	string(enum.SkillTypeComboBonus):       &SkillTypeComboBonus,
+	string(enum.SkillTypeConcentration):    &SkillTypeConcentration,
+	string(enum.SkillTypeHealer):           &SkillTypeHealer,
+	string(enum.SkillTypeAllRound):         &SkillTypeAllRound,
+	string(enum.SkillTypeCoordinate):       &SkillTypeCoordinate,
+	string(enum.SkillTypeOverload):         &SkillTypeOverload,
+	string(enum.SkillTypeTricolorSynergy):  &SkillTypeTricolorSynergy,
+	string(enum.SkillTypeTricolorSymphony): &SkillTypeTricolorSymphony,
+	string(enum.SkillTypeTuning):           &SkillTypeTuning,
+	string(enum.SkillTypePerfectLock):      &SkillTypePerfectLock,
+	string(enum.SkillTypeComboGuard):       &SkillTypeComboGuard,
+	string(enum.SkillTypeLifeSparkle):      &SkillTypeLifeSparkle,
+	string(enum.SkillTypeLifeGuard):        &SkillTypeLifeGuard,
+	string(enum.SkillTypeSkillBoost):       &SkillTypeSkillBoost,
+	string(enum.SkillTypeCuteFocus):        &SkillTypeCuteFocus,
+	string(enum.SkillTypeCoolFocus):        &SkillTypeCoolFocus,
+	string(enum.SkillTypePassionFocus):     &SkillTypePassionFocus,
+	string(enum.SkillTypeEncore):           &SkillTypeEncore,
+	string(enum.SkillTypeAlternate):        &SkillTypeAlternate,
+}
+
 // GetSkillType returns pointer to skill type with the requested name
 func GetSkillType(name string) (*SkillType, error) {
-	switch name {
-	case string(enum.SkillTypeScoreBonus), "Perfect Score Bonus":
-		return &SkillTypeScoreBonus, nil
-	case string(enum.SkillTypeComboBonus):
-		return &SkillTypeComboBonus, nil
-	case string(enum.SkillTypeConcentration):
-		return &SkillTypeConcentration, nil
-	case string(enum.SkillTypeHealer):
-		return &SkillTypeHealer, nil
+	skill, ok := skillMap[name]
+	if ok {
+		return skill, nil
 	}
+	// special case
+	if name == "Perfect Score Bonus" {
+		return &SkillTypeScoreBonus, nil
+	}
+	if (name == "Lesser Perfect Lock") || (name == "Greater Perfect Lock") || (name == "Extreme Perfect Lock") {
+		return &SkillTypePerfectLock, nil
+	}
+
 	if config.DebugMode {
 		return &SkillTypeBase, nil
 	}

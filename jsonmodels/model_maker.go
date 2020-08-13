@@ -3,6 +3,8 @@ package jsonmodels
 import (
 	"fmt"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
+
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
 )
 
@@ -19,12 +21,17 @@ func makeSkill(tmp TmpSkill) (*models.Skill, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not make skill: %v", err)
 	}
+	activationCost := 0
+	if skillType.Name == enum.SkillTypeOverload {
+		activationCost = tmp.SkillTriggerValue
+	}
 	skill := models.Skill{
-		ID:           tmp.ID,
-		ProcChance:   tmp.ProcChance,
-		EffectLength: tmp.EffectLength,
-		SkillType:    skillType,
-		Timer:        tmp.Condition,
+		ID:             tmp.ID,
+		ProcChance:     tmp.ProcChance,
+		EffectLength:   tmp.EffectLength,
+		SkillType:      skillType,
+		Timer:          tmp.Condition,
+		ActivationCost: activationCost,
 	}
 	// TODO: Add ActivationCost for Overload when Overload is implemented
 	return &skill, nil
