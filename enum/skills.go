@@ -29,6 +29,9 @@ const (
 	SkillTypeSkillBoost       SkillType = "Skill Boost"
 	SkillTypeTricolorSymphony SkillType = "Tricolor Symphony"
 	SkillTypeLifeGuard        SkillType = "Life Guard"
+	SkillTypeCuteEnsemble     SkillType = "Cute Ensemble"
+	SkillTypeCoolEnsemble     SkillType = "Cool Ensemble"
+	SkillTypePassionEnsemble  SkillType = "Passion Ensemble"
 )
 
 /*

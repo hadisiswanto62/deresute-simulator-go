@@ -157,6 +157,9 @@ func (g Game) scoreAndComboBonus(state GameState, judgement enum.TapJudgement, n
 		if activeSkill.ocard.Skill.SkillType.IsActive(state.teamAttributes) {
 			tmpScoreBonus := activeSkill.ocard.Skill.SkillType.ScoreBonus(
 				activeSkill.ocard.Card.Rarity.Rarity,
+				g.config.BaseVisual,
+				g.config.BaseDance,
+				g.config.BaseVocal,
 				judgement,
 				noteType,
 			)

@@ -16,8 +16,11 @@ type GameConfig struct {
 	guest    *usermodel.OwnedCard
 	song     *models.Song
 
-	Appeal int
-	Hp     int
+	BaseVisual int
+	BaseVocal  int
+	BaseDance  int
+	Appeal     int
+	Hp         int
 }
 
 // SetGuest set guest and recalculate Appeal
@@ -41,6 +44,18 @@ func NewGameConfig(
 		supports: supports,
 		guest:    guest,
 		song:     song,
+	}
+	for _, ocard := range team.Ocards {
+		for statType, statValue := range ocard.Stats() {
+			switch statType {
+			case enum.StatVisual:
+				gc.BaseVisual += statValue
+			case enum.StatVocal:
+				gc.BaseVocal += statValue
+			case enum.StatDance:
+				gc.BaseDance += statValue
+			}
+		}
 	}
 	gc.recalculate()
 	return &gc

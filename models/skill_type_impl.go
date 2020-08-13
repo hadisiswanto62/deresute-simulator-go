@@ -11,7 +11,7 @@ var SkillTypeBase = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -30,7 +30,7 @@ var SkillTypeScoreBonus = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		if rarity == enum.RaritySSR {
 			if judgement == enum.TapJudgementPerfect || judgement == enum.TapJudgementGreat {
 				return 0.17
@@ -70,7 +70,7 @@ var SkillTypeComboBonus = SkillType{
 		}
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -88,7 +88,7 @@ var SkillTypeConcentration = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		if judgement == enum.TapJudgementPerfect {
 			switch rarity {
 			case enum.RaritySSR:
@@ -114,7 +114,7 @@ var SkillTypeHealer = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -150,7 +150,7 @@ var SkillTypeAllRound = SkillType{
 		}
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -179,7 +179,7 @@ var SkillTypeCoordinate = SkillType{
 		}
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		rarityMap := map[enum.Rarity]float64{
 			enum.RaritySSR: 0.1,
 			enum.RaritySR:  0.08,
@@ -207,7 +207,7 @@ var SkillTypeOverload = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		rarityMap := map[enum.Rarity]float64{
 			enum.RaritySSR: 0.18,
 			enum.RaritySR:  0.16,
@@ -237,7 +237,7 @@ var SkillTypeTricolorSynergy = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.15
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		if judgement == enum.TapJudgementPerfect {
 			return 0.16
 		}
@@ -262,7 +262,7 @@ var SkillTypeTuning = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.12
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -280,7 +280,7 @@ var SkillTypePerfectLock = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -298,7 +298,7 @@ var SkillTypeComboGuard = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -354,7 +354,7 @@ var SkillTypeLifeSparkle = SkillType{
 		}
 		return float64(chosenBonus) / 100.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -372,7 +372,7 @@ var SkillTypeLifeGuard = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -390,7 +390,7 @@ var SkillTypeSkillBoost = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -421,7 +421,7 @@ var SkillTypeCuteFocus = SkillType{
 		}
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		rarityMap := map[enum.Rarity]float64{
 			enum.RaritySSR: 0.16,
 			enum.RaritySR:  0.14,
@@ -459,7 +459,7 @@ var SkillTypeCoolFocus = SkillType{
 		}
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		rarityMap := map[enum.Rarity]float64{
 			enum.RaritySSR: 0.16,
 			enum.RaritySR:  0.14,
@@ -497,7 +497,7 @@ var SkillTypePassionFocus = SkillType{
 		}
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		rarityMap := map[enum.Rarity]float64{
 			enum.RaritySSR: 0.16,
 			enum.RaritySR:  0.14,
@@ -522,7 +522,7 @@ var SkillTypeEncore = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -541,7 +541,7 @@ var SkillTypeTricolorSymphony = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
@@ -560,7 +560,190 @@ var SkillTypeAlternate = SkillType{
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
-	ScoreBonus: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeVisualMotif = " Every 7 seconds: there is a 40..60% chance that
+// Perfect notes will receive a score bonus determined by the team's Visual appeal for 3..4.5 seconds."
+// Note: use BASE appeal of 5 members
+var SkillTypeVisualMotif = SkillType{
+	Name: enum.SkillTypeVisualMotif,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		bonusTable := map[int]int{
+			10: 1, 3000: 2, 6000: 3, 9000: 4, 12000: 5,
+			15000: 6, 17000: 7, 19000: 8, 21000: 9, 22000: 10,
+			23000: 11, 24000: 12, 26000: 13, 27000: 15, 29000: 16,
+			32000: 17, 36000: 18, 40000: 19, 42000: 20, 43000: 21,
+			45000: 23, 47000: 25, 49000: 26, 52000: 27,
+		}
+		if judgement == enum.TapJudgementPerfect {
+			nearest, chosenBonus := 99999999, 0
+			// algorithm:
+			// iterate over every key, if key is lower than the team's appeal, check if it is the closest
+			// then return the value of closest key
+			for appeal, bonus := range bonusTable {
+				appealDiff := baseVisual - appeal
+				if appealDiff < 0 {
+					continue
+				}
+				if appealDiff < nearest {
+					nearest = appealDiff
+					chosenBonus = bonus
+				}
+			}
+			return float64(chosenBonus) / 100.0
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeVocalMotif = " Every 7 seconds: there is a 40..60% chance that
+// Perfect notes will receive a score bonus determined by the team's Vocal appeal for 3..4.5 seconds."
+// Note: use BASE appeal of 5 members
+var SkillTypeVocalMotif = SkillType{
+	Name: enum.SkillTypeVocalMotif,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		bonusTable := map[int]int{
+			10: 1, 3000: 2, 6000: 3, 9000: 4, 12000: 5,
+			15000: 6, 17000: 7, 19000: 8, 21000: 9, 22000: 10,
+			23000: 11, 24000: 12, 26000: 13, 27000: 15, 29000: 16,
+			32000: 17, 36000: 18, 40000: 19, 42000: 20, 43000: 21,
+			45000: 23, 47000: 25, 49000: 26, 52000: 27,
+		}
+		if judgement == enum.TapJudgementPerfect {
+			nearest, chosenBonus := 99999999, 0
+			// algorithm:
+			// iterate over every key, if key is lower than the team's appeal, check if it is the closest
+			// then return the value of closest key
+			for appeal, bonus := range bonusTable {
+				appealDiff := baseVocal - appeal
+				if appealDiff < 0 {
+					continue
+				}
+				if appealDiff < nearest {
+					nearest = appealDiff
+					chosenBonus = bonus
+				}
+			}
+			return float64(chosenBonus) / 100.0
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeDanceMotif = " Every 7 seconds: there is a 40..60% chance that
+// Perfect notes will receive a score bonus determined by the team's Vocal appeal for 3..4.5 seconds."
+// Note: use BASE appeal of 5 members
+var SkillTypeDanceMotif = SkillType{
+	Name: enum.SkillTypeDanceMotif,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		bonusTable := map[int]int{
+			10: 1, 3000: 2, 6000: 3, 9000: 4, 12000: 5,
+			15000: 6, 17000: 7, 19000: 8, 21000: 9, 22000: 10,
+			23000: 11, 24000: 12, 26000: 13, 27000: 15, 29000: 16,
+			32000: 17, 36000: 18, 40000: 19, 42000: 20, 43000: 21,
+			45000: 23, 47000: 25, 49000: 26, 52000: 27,
+		}
+		if judgement == enum.TapJudgementPerfect {
+			nearest, chosenBonus := 99999999, 0
+			// algorithm:
+			// iterate over every key, if key is lower than the team's appeal, check if it is the closest
+			// then return the value of closest key
+			for appeal, bonus := range bonusTable {
+				appealDiff := baseDance - appeal
+				if appealDiff < 0 {
+					continue
+				}
+				if appealDiff < nearest {
+					nearest = appealDiff
+					chosenBonus = bonus
+				}
+			}
+			return float64(chosenBonus) / 100.0
+		}
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeCuteEnsemble = "  Every 7 seconds: there is a 40..60% chance to
+// boost the score/combo bonus of Cute idols' active skills for 3..4.5 seconds.""
+var SkillTypeCuteEnsemble = SkillType{
+	Name: enum.SkillTypeCuteEnsemble,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeCoolEnsemble = "  Every 7 seconds: there is a 40..60% chance to
+// boost the score/combo bonus of Cool idols' active skills for 3..4.5 seconds.""
+var SkillTypeCoolEnsemble = SkillType{
+	Name: enum.SkillTypeCoolEnsemble,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypePassionEnsemble = "  Every 7 seconds: there is a 40..60% chance to
+// boost the score/combo bonus of Cute idols' active skills for 3..4.5 seconds.""
+var SkillTypePassionEnsemble = SkillType{
+	Name: enum.SkillTypePassionEnsemble,
+	IsActive: func(attr [6]enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {

@@ -12,7 +12,7 @@ type SkillType struct {
 	Name       enum.SkillType
 	IsActive   func(attr [6]enum.Attribute) bool
 	ComboBonus func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64
-	ScoreBonus func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) float64
+	ScoreBonus func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64
 	TapHeal    func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int
 }
 
@@ -37,6 +37,12 @@ var skillMap = map[string]*SkillType{
 	string(enum.SkillTypePassionFocus):     &SkillTypePassionFocus,
 	string(enum.SkillTypeEncore):           &SkillTypeEncore,
 	string(enum.SkillTypeAlternate):        &SkillTypeAlternate,
+	string(enum.SkillTypeVisualMotif):      &SkillTypeVisualMotif,
+	string(enum.SkillTypeDanceMotif):       &SkillTypeDanceMotif,
+	string(enum.SkillTypeVocalMotif):       &SkillTypeVocalMotif,
+	string(enum.SkillTypeCuteEnsemble):     &SkillTypeCuteEnsemble,
+	string(enum.SkillTypeCoolEnsemble):     &SkillTypeCoolEnsemble,
+	string(enum.SkillTypePassionEnsemble):  &SkillTypePassionEnsemble,
 }
 
 // GetSkillType returns pointer to skill type with the requested name
