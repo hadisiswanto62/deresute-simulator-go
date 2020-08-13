@@ -5,7 +5,8 @@ import "fmt"
 // Card is a card
 type Card struct {
 	ID        int
-	SeriesID  int   `json:"series_id"`
+	SeriesID  int `json:"series_id"`
+	Title     string
 	Idol      *Idol `json:"chara"`
 	Rarity    *Rarity
 	LeadSkill *LeadSkill
@@ -26,7 +27,7 @@ type Card struct {
 }
 
 func (c Card) String() string {
-	return fmt.Sprintf("%d (%s) %s; %s; %s",
-		c.ID, c.Idol, c.Rarity.Rarity, c.LeadSkill.Name, c.Skill.SkillType.Name,
+	return fmt.Sprintf("%d %s (%s) %s; %s; %s",
+		c.ID, c.Title, c.Idol, c.Rarity.Rarity, c.LeadSkill.Name, c.Skill.SkillType.Name,
 	)
 }

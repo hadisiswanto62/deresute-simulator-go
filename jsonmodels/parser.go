@@ -196,6 +196,7 @@ func (p JSONDataParser) Parse() ([]*models.Card, error) {
 		card := models.Card{
 			ID:          tmpCard.ID,
 			SeriesID:    tmpCard.SeriesID,
+			Title:       tmpCard.Title,
 			Idol:        chosenIdol,
 			Rarity:      chosenRarity,
 			LeadSkill:   leadSkill,
