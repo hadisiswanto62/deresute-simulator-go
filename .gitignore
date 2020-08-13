@@ -2,3 +2,5 @@
 resources/*
 data/*
 log/*
+userdata/*
+.vscode/*
