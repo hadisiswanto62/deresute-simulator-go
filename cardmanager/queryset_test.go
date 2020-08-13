@@ -36,6 +36,18 @@ func TestRarity(t *testing.T) {
 	}
 }
 
+func BenchmarkNameLike(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		cm.Filter().NameLike("kaede").First()
+	}
+}
+
+func BenchmarkName(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		cm.Filter().Name("Takagaki Kaede").First()
+	}
+}
+
 func TestLeadSkill(t *testing.T) {
 	assert := assert.New(t)
 	testcases := [1]enum.LeadSkill{

@@ -1,6 +1,8 @@
 package cardmanager
 
 import (
+	"strings"
+
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
 )
@@ -76,6 +78,34 @@ func (q *QuerySet) SkillType(skillType enum.SkillType) *QuerySet {
 	result := []*models.Card{}
 	for i := range q.cards {
 		if q.cards[i].Skill.SkillType.Name == skillType {
+			result = append(result, q.cards[i])
+		}
+	}
+	q.cards = result
+	return q
+}
+
+// Name filters current cards by the idol's Name
+func (q *QuerySet) Name(name string) *QuerySet {
+	result := []*models.Card{}
+	for i := range q.cards {
+		if q.cards[i].Idol.Name == name {
+			result = append(result, q.cards[i])
+		}
+	}
+	q.cards = result
+	return q
+}
+
+// NameLike filters current cards by the idol's Name (substring allowed, case insensitive).
+// It is very slow so use QuerySet.Name() if possible.
+func (q *QuerySet) NameLike(name string) *QuerySet {
+	result := []*models.Card{}
+	for i := range q.cards {
+		if strings.Contains(
+			strings.ToLower(q.cards[i].Idol.Name),
+			strings.ToLower(name),
+		) {
 			result = append(result, q.cards[i])
 		}
 	}
