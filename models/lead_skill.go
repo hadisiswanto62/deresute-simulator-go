@@ -16,16 +16,89 @@ type LeadSkill struct {
 	HpBonus        func(rarity enum.Rarity, cardAttr enum.Attribute) float64
 }
 
+var leadSkillMap = map[string]*LeadSkill{
+	string(enum.LeadSkillCuteMakeup):    &LeadSkillCuteMakeup,
+	string(enum.LeadSkillPassionMakeup): &LeadSkillPassionMakeup,
+	string(enum.LeadSkillCoolMakeup):    &LeadSkillCoolMakeup,
+
+	string(enum.LeadSkillCuteStep):    &LeadSkillCuteStep,
+	string(enum.LeadSkillPassionStep): &LeadSkillPassionStep,
+	string(enum.LeadSkillCoolStep):    &LeadSkillCoolStep,
+
+	string(enum.LeadSkillCuteVoice):    &LeadSkillCuteVoice,
+	string(enum.LeadSkillPassionVoice): &LeadSkillPassionVoice,
+	string(enum.LeadSkillCoolVoice):    &LeadSkillCoolVoice,
+
+	string(enum.LeadSkillCuteAbility):    &LeadSkillCuteAbility,
+	string(enum.LeadSkillPassionAbility): &LeadSkillPassionAbility,
+	string(enum.LeadSkillCoolAbility):    &LeadSkillCoolAbility,
+
+	string(enum.LeadSkillCuteCheer):    &LeadSkillCuteCheer,
+	string(enum.LeadSkillPassionCheer): &LeadSkillPassionCheer,
+	string(enum.LeadSkillCoolCheer):    &LeadSkillCoolCheer,
+
+	string(enum.LeadSkillCutePrincess):    &LeadSkillCutePrincess,
+	string(enum.LeadSkillPassionPrincess): &LeadSkillPassionPrincess,
+	string(enum.LeadSkillCoolPrincess):    &LeadSkillCoolPrincess,
+
+	string(enum.LeadSkillCuteUnison):    &LeadSkillCuteUnison,
+	string(enum.LeadSkillPassionUnison): &LeadSkillPassionUnison,
+	string(enum.LeadSkillCoolUnison):    &LeadSkillCoolUnison,
+
+	string(enum.LeadSkillCuteBrilliance):    &LeadSkillCuteBrilliance,
+	string(enum.LeadSkillPassionBrilliance): &LeadSkillPassionBrilliance,
+	string(enum.LeadSkillCoolBrilliance):    &LeadSkillCoolBrilliance,
+
+	string(enum.LeadSkillCuteEnergy):    &LeadSkillCuteEnergy,
+	string(enum.LeadSkillPassionEnergy): &LeadSkillPassionEnergy,
+	string(enum.LeadSkillCoolEnergy):    &LeadSkillCoolEnergy,
+
+	string(enum.LeadSkillTricolorMakeup):  &LeadSkillTricolorMakeup,
+	string(enum.LeadSkillTricolorStep):    &LeadSkillTricolorStep,
+	string(enum.LeadSkillTricolorVoice):   &LeadSkillTricolorVoice,
+	string(enum.LeadSkillTricolorAbility): &LeadSkillTricolorAbility,
+
+	string(enum.LeadSkillShinyMakeup): &LeadSkillShinyMakeup,
+	string(enum.LeadSkillShinyStep):   &LeadSkillShinyStep,
+	string(enum.LeadSkillShinyVoice):  &LeadSkillShinyVoice,
+
+	string(enum.LeadSkillCuteCrossCool):    &LeadSkillCuteCrossCool,
+	string(enum.LeadSkillCuteCrossPassion): &LeadSkillCuteCrossPassion,
+
+	string(enum.LeadSkillCoolCrossCute):    &LeadSkillCoolCrossCute,
+	string(enum.LeadSkillCoolCrossPassion): &LeadSkillCoolCrossPassion,
+
+	string(enum.LeadSkillPassionCrossCool): &LeadSkillPassionCrossCool,
+	string(enum.LeadSkillPassionCrossCute): &LeadSkillPassionCrossCute,
+
+	string(enum.LeadSkillResonantMakeup): &LeadSkillResonantMakeup,
+	string(enum.LeadSkillResonantStep):   &LeadSkillResonantStep,
+	string(enum.LeadSkillResonantVoice):  &LeadSkillResonantVoice,
+}
+
 // GetLeadSkill returns pointer to lead skill with the requested name
 func GetLeadSkill(name string) (*LeadSkill, error) {
-	switch name {
-	case string(enum.LeadSkillCuteMakeup):
-		return &LeadSkillCuteMakeup, nil
-	case string(enum.LeadSkillPassionVoice):
-		return &LeadSkillPassionVoice, nil
+	skill, ok := leadSkillMap[name]
+	if ok {
+		return skill, nil
+	}
+
+	var irrelevants = [4]string{
+		"フォーチュンプレゼント",
+		"シンデレラチャーム",
+		"シンデレラエール",
+		"クリスマスプレゼント",
+	}
+	for _, lskillName := range irrelevants {
+		if name == lskillName {
+			return &LeadSkillIrrelevant, nil
+		}
 	}
 
 	if config.DebugMode {
+		if name != "" {
+			fmt.Println(name)
+		}
 		return &LeadSkillBase, nil
 	}
 	err := fmt.Errorf("invalid skill name: %s", name)

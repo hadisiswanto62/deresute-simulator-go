@@ -536,7 +536,11 @@ var SkillTypeEncore = SkillType{
 var SkillTypeTricolorSymphony = SkillType{
 	Name: enum.SkillTypeTricolorSymphony,
 	IsActive: func(attr [6]enum.Attribute) bool {
-		return true
+		attrMap := make(map[enum.Attribute]bool)
+		for _, attribute := range attr {
+			attrMap[attribute] = true
+		}
+		return len(attrMap) == 3
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 		return 0.0
