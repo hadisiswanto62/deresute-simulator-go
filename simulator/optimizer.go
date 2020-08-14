@@ -3,7 +3,6 @@ package simulator
 import (
 	"fmt"
 	"sort"
-	"sync"
 	"time"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
@@ -36,10 +35,8 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *mo
 	i := 0
 	expectedNumberOfResults := (album.MaxTeamID() + 1) * len(guests)
 	fmt.Printf("Running %d samples:", expectedNumberOfResults)
+	actualNumberofResults := 0
 
-	wg := sync.WaitGroup{}
-	waitGroupInitiateJob := sync.WaitGroup{}
-	waitGroupInitiateJob.Add(1)
 	for album.Next() {
 		i++
 		team := album.GetTeam()
@@ -51,20 +48,13 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *mo
 			return fmt.Errorf("could not find optimal: %v", err)
 		}
 		for _, guest := range guests {
+			actualNumberofResults++
 			gameConfig := NewGameConfig(team, supports, guest, song)
-			wg.Add(1)
 			go func(gameConfig *GameConfig) {
-				defer wg.Done()
 				resultChannel <- Simulate(gameConfig, 100)
 			}(gameConfig)
 		}
 	}
-	waitGroupInitiateJob.Done()
-	go func() {
-		waitGroupInitiateJob.Wait()
-		wg.Wait()
-		close(resultChannel)
-	}()
 
 	maxAvg := 0.0
 	i = 0
@@ -77,6 +67,9 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *mo
 			maxAvgSummary = summary
 		}
 		i++
+		if i == actualNumberofResults {
+			close(resultChannel)
+		}
 	}
 	fmt.Printf("%d summaries received\n", len(summaries))
 	fmt.Printf("Game config with highest average score:")
