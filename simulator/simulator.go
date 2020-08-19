@@ -60,7 +60,6 @@ func (ss SimulationSummary) Report() {
 // Simulate simulates the game `times` times and return the summary in SimulationSummary
 func Simulate(gc *GameConfig, times int) SimulationSummary {
 	game := NewGame(gc, false)
-	// var results []int
 	resultChannel := make(chan int)
 	for i := 0; i < times; i++ {
 		go func(game *Game, i int) {

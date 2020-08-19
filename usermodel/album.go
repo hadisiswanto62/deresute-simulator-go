@@ -15,12 +15,38 @@ type Album struct {
 	combinationGenerator *combin.CombinationGenerator
 	currentIndices       []int
 	currentLeaderIndex   int
+	sortedAll            []*OwnedCard
+	sortedCool           []*OwnedCard
+	sortedCute           []*OwnedCard
+	sortedPassion        []*OwnedCard
 }
 
 // NewAlbum creates Album object from owned cards
 func NewAlbum(ocards []*OwnedCard) *Album {
+	sort.SliceStable(ocards, func(i, j int) bool {
+		return ocards[i].Appeal > ocards[j].Appeal
+	})
 	gen := combin.NewCombinationGenerator(len(ocards), 5)
-	album := Album{Ocards: ocards, combinationGenerator: gen, currentLeaderIndex: -1}
+	sortedCute := []*OwnedCard{}
+	sortedCool := []*OwnedCard{}
+	sortedPassion := []*OwnedCard{}
+	sortedAll := []*OwnedCard{}
+	for _, ocard := range ocards {
+		sortedAll = append(sortedAll, ocard)
+		switch ocard.Card.Idol.Attribute {
+		case enum.AttrCute:
+			sortedCute = append(sortedCute, ocard)
+		case enum.AttrCool:
+			sortedCool = append(sortedCool, ocard)
+		case enum.AttrPassion:
+			sortedPassion = append(sortedPassion, ocard)
+		}
+	}
+	album := Album{
+		Ocards: ocards, combinationGenerator: gen, currentLeaderIndex: -1,
+		sortedCute: sortedCute, sortedCool: sortedCool, sortedPassion: sortedPassion,
+		sortedAll: sortedAll,
+	}
 	return &album
 }
 
@@ -64,6 +90,50 @@ func (a Album) MaxTeamID() int {
 }
 
 func (a Album) FindSupportsFor(team *Team, attr enum.Attribute) ([10]*OwnedCard, error) {
+	var ret [10]*OwnedCard
+	nextIndex := 0
+	var usedSlice []*OwnedCard
+	switch attr {
+	case enum.AttrAll:
+		usedSlice = a.sortedAll
+	case enum.AttrCute:
+		usedSlice = a.sortedCute
+	case enum.AttrCool:
+		usedSlice = a.sortedCool
+	case enum.AttrPassion:
+		usedSlice = a.sortedPassion
+	}
+	for _, ocard := range usedSlice {
+		isInTeam := false
+		for _, teamOcard := range team.Ocards {
+			if ocard == teamOcard {
+				isInTeam = true
+				break
+			}
+		}
+		if isInTeam {
+			continue
+		}
+		for i := 0; i < ocard.StarRank; i++ {
+			ret[nextIndex] = ocard
+			nextIndex++
+			if nextIndex == 10 {
+				break
+			}
+		}
+		if nextIndex == 10 {
+			break
+		}
+	}
+	if nextIndex == 10 {
+		return ret, nil
+	} else {
+		err := fmt.Errorf("can only find %d supports", nextIndex)
+		return [10]*OwnedCard{}, err
+	}
+}
+
+func (a Album) FindSupportsFor2(team *Team, attr enum.Attribute) ([10]*OwnedCard, error) {
 	ocards := a.Ocards
 	sort.SliceStable(ocards, func(i, j int) bool {
 		return ocards[i].Appeal > ocards[j].Appeal

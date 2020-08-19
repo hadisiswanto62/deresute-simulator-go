@@ -44,6 +44,7 @@ type GameState struct {
 	Log                  []string
 	randomGenerator      *rand.Rand
 	verbose              bool
+	skillAlwaysActive    bool
 }
 
 // PrintLog prints the log for the gamestate
@@ -143,20 +144,22 @@ func (g *Game) rollSkill(state *GameState) {
 			)
 		}
 		prob := float64(ocard.SkillProcChance) / 10000.0 * probMultiplier
-		if helper.RollSafe(prob, state.randomGenerator) {
-			cost := ocard.Card.Skill.ActivationCost
-			if cost > 0 {
-				hpAfter := state.currentHp - cost
-				if hpAfter < 1 {
-					hpAfter = 1
-				}
-				state.currentHp = hpAfter
+
+		if !state.skillAlwaysActive {
+			if !helper.RollSafe(prob, state.randomGenerator) {
+				continue
 			}
-			state.logf("%6d: %d. %v activated.", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
-			state.activeSkills = append(state.activeSkills, &activeSkill{ocard: ocard, cardIndex: i, timestamp: state.timestamp})
-		} else {
-			state.logf("%6d: Tried to activate (%d. %s) but roll failed", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
 		}
+		cost := ocard.Card.Skill.ActivationCost
+		if cost > 0 {
+			hpAfter := state.currentHp - cost
+			if hpAfter < 1 {
+				hpAfter = 1
+			}
+			state.currentHp = hpAfter
+		}
+		state.logf("%6d: %d. %v activated.", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
+		state.activeSkills = append(state.activeSkills, &activeSkill{ocard: ocard, cardIndex: i, timestamp: state.timestamp})
 	}
 }
 
@@ -207,6 +210,7 @@ func (g Game) Play(seed int64) GameState {
 		teamAttributes:       teamAttributes,
 		randomGenerator:      rand.New(rand.NewSource(seed)),
 		verbose:              g.verbose,
+		skillAlwaysActive:    helper.GetSkillAlwaysActive(),
 	}
 	state.logf("Playing with appeal %d:", g.config.Appeal)
 	for state.timestamp < g.config.song.DurationMs {

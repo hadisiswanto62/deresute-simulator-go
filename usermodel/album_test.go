@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func sampleAlbum(n int) *Album {
+func sampleOcards(n int) []*OwnedCard {
 	var ocards []*OwnedCard
 	for i := 0; i < n; i++ {
 		randAppeal := helper.RandInt(1000, 10000)
@@ -28,12 +28,35 @@ func sampleAlbum(n int) *Album {
 			StarRank: starRank,
 		})
 	}
-	return NewAlbum(ocards)
+	return ocards
 }
+
+func sampleAlbum(ocards []*OwnedCard, n int) *Album {
+	if ocards == nil {
+		ocards = sampleOcards(n)
+	}
+	album := NewAlbum(ocards)
+	return album // NewAlbum(ocards)
+}
+
+func benchmarkMakeAlbum(n int, b *testing.B) {
+	ocards := sampleOcards(n)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		NewAlbum(ocards)
+	}
+}
+
+func BenchmarkMakeAlbum16(b *testing.B) { benchmarkMakeAlbum(16, b) }
+func BenchmarkMakeAlbum30(b *testing.B) { benchmarkMakeAlbum(30, b) }
+
+func BenchmarkMakeAlbum100(b *testing.B) { benchmarkMakeAlbum(100, b) }
+
+func BenchmarkMakeAlbum200(b *testing.B) { benchmarkMakeAlbum(200, b) }
 
 func TestFindSupportsMultipleStarRank(t *testing.T) {
 	n := 300
-	album := sampleAlbum(n)
+	album := sampleAlbum(nil, n)
 	album.Next()
 	team := album.GetTeam()
 	supports, err := album.FindSupportsFor(team, enum.AttrPassion)
@@ -51,7 +74,7 @@ func TestFindSupportsMultipleStarRank(t *testing.T) {
 
 func TestFindSupportsNotPlaying(t *testing.T) {
 	assertion := assert.New(t)
-	album := sampleAlbum(5)
+	album := sampleAlbum(nil, 5)
 	ocards := album.Ocards
 	ocards = append(ocards, &OwnedCard{
 		Card: &models.Card{
@@ -76,7 +99,7 @@ func TestFindSupports(t *testing.T) {
 	assertion := assert.New(t)
 	threshold := 9000 * 10
 	n := 300
-	album := sampleAlbum(n)
+	album := sampleAlbum(nil, n)
 	album.Next()
 	team := album.GetTeam()
 	supports, err := album.FindSupportsFor(team, enum.AttrAll)
@@ -125,14 +148,14 @@ func TestFindSupports(t *testing.T) {
 
 func TestMaxTeamID(t *testing.T) {
 	n := 20
-	album := sampleAlbum(n)
+	album := sampleAlbum(nil, n)
 	assert.Equal(t, album.MaxTeamID(), 77519, "Wrong max team id!")
 }
 
 func TestMakeTeam(t *testing.T) {
 	assertion := assert.New(t)
 	n := 7
-	album := sampleAlbum(n)
+	album := sampleAlbum(nil, n)
 	i := 0
 	for album.Next() {
 		team := album.GetTeam()
@@ -141,3 +164,18 @@ func TestMakeTeam(t *testing.T) {
 	}
 	assertion.Equal(album.MaxTeamID()+1, i, "Not enough team generated?")
 }
+
+func benchmarkFindSupports(n int, b *testing.B) {
+	album := sampleAlbum(nil, n)
+	album.Next()
+	team := album.GetTeam()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		album.FindSupportsFor(team, enum.AttrAll)
+	}
+}
+func BenchmarkFindSupports16(b *testing.B)  { benchmarkFindSupports(16, b) }
+func BenchmarkFindSupports39(b *testing.B)  { benchmarkFindSupports(39, b) }
+func BenchmarkFindSupports100(b *testing.B) { benchmarkFindSupports(100, b) }
+func BenchmarkFindSupports200(b *testing.B) { benchmarkFindSupports(200, b) }
+func BenchmarkFindSupports300(b *testing.B) { benchmarkFindSupports(300, b) }
