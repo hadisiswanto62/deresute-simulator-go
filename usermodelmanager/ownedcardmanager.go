@@ -21,7 +21,20 @@ func FindById(ocards []*usermodel.OwnedCard, id int) *usermodel.OwnedCard {
 	return nil
 }
 
-func ParseOwnedCard(dp dataParser, path string) ([]*usermodel.OwnedCard, error) {
+type CustomOwnedCardParameters struct {
+	SkillLevel int
+	StarRank   int
+	PotVisual  int
+	PotDance   int
+	PotVocal   int
+	PotHp      int
+	PotSkill   int
+}
+
+func ParseOwnedCard(dp dataParser, path string, params *CustomOwnedCardParameters) ([]*usermodel.OwnedCard, error) {
+	if params == nil {
+		params = &CustomOwnedCardParameters{}
+	}
 	cm, _ := cardmanager.Default()
 
 	var ocards []*usermodel.OwnedCard
@@ -31,6 +44,10 @@ func ParseOwnedCard(dp dataParser, path string) ([]*usermodel.OwnedCard, error) 
 	}
 	for _, ocd := range ocds {
 		card := cm.Filter().ID(ocd.CardID).First()
+		if params.SkillLevel != 0 {
+			ocd.SkillLevel = params.SkillLevel
+		}
+		// TODO: add for the rest of the params
 		request := usermodel.OwnedCardRequest{
 			Card:       card,
 			SkillLevel: ocd.SkillLevel,

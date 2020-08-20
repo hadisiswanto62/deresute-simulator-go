@@ -17,7 +17,7 @@ func TestParseOcard(t *testing.T) {
 	assertion := assert.New(t)
 	// dp := jsonmodels.JSONDataParser{}
 	dp := csvmodels.CSVDataParser{}
-	ocards, err := ParseOwnedCard(dp, "")
+	ocards, err := ParseOwnedCard(dp, "", nil)
 	assertion.Nilf(err, "Test failed: %v", err)
 	for _, ocard := range ocards {
 		fmt.Println(ocard)

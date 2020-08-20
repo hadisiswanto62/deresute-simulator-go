@@ -187,6 +187,8 @@ func (oc OwnedCard) Stats() map[enum.Stat]int {
 }
 
 // NewCustomOwnedCard creates a new OwnedCard object with max level and specified skillLevel and starRank
+//
+// Deprecated: use NewOwnedCard2 instead
 func NewCustomOwnedCard(card *models.Card, skillLevel, starRank,
 	potVisual, potDance, potVocal, potHp, potSkill int) *OwnedCard {
 	oc := OwnedCard{
@@ -206,6 +208,8 @@ func NewCustomOwnedCard(card *models.Card, skillLevel, starRank,
 }
 
 // NewOwnedCard creates a new OwnedCard object with max level and skillLevel&starRank=1
+//
+// Deprecated: use NewOwnedCard2 instead
 func NewOwnedCard(card *models.Card) *OwnedCard {
 	return NewCustomOwnedCard(
 		card, 1, 1, 0, 0, 0, 0, 0,

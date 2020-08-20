@@ -126,16 +126,16 @@ func TestBothLeadSkillsActive(t *testing.T) {
 
 func TestTriColorCorrectStat(t *testing.T) {
 	dp := csvmodels.CSVDataParser{}
-	ocards, err := usermodelmanager.ParseOwnedCard(dp, "userdata/cards.csv")
+	ocards, err := usermodelmanager.ParseOwnedCard(dp, "userdata/cards.csv", nil)
 	if err != nil {
 		panic(err)
 	}
-	guests, err := usermodelmanager.ParseOwnedCard(dp, "userdata/guest.csv")
+	guests, err := usermodelmanager.ParseOwnedCard(dp, "userdata/guest.csv", nil)
 	if err != nil {
 		panic(err)
 	}
-	cardIDs := [5]int{200332, 300280, 300236, 100730, 300148}
-	leaderIndex := 1
+	cardIDs := [5]int{200332, 300830, 300236, 100730, 300148}
+	leaderIndex := 2
 
 	cards := [5]*usermodel.OwnedCard{}
 	for i, id := range cardIDs {
@@ -146,9 +146,10 @@ func TestTriColorCorrectStat(t *testing.T) {
 			}
 		}
 	}
+	team := usermodel.Team{cards, leaderIndex}
+	song := &models.Song{Attribute: enum.AttrAll}
+	fmt.Println(isTeamOkDebug(&team, song))
 	for _, guest := range guests {
-		team := usermodel.Team{cards, leaderIndex}
-		song := &models.Song{Attribute: enum.AttrAll}
 		fmt.Println(guest.LeadSkill.Name, isGameConfigOkDebug(&team, song, guest))
 	}
 }
