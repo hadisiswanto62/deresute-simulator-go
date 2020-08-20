@@ -1,6 +1,8 @@
 package models
 
-import "github.com/hadisiswanto62/deresute-simulator-go/enum"
+import (
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
+)
 
 // SkillTypeBase is a base skill (for unimplemented skills)
 var SkillTypeBase = SkillType{
@@ -396,6 +398,12 @@ var SkillTypeSkillBoost = SkillType{
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
 		return 0
 	},
+	ScoreComboBonusBonus: func() float64 {
+		return 0.2
+	},
+	TapHealBonus: func() float64 {
+		return 0.2
+	},
 }
 
 // SkillTypeCuteFocus = " Every 11 seconds: there is a 40..60% chance
@@ -405,6 +413,9 @@ var SkillTypeCuteFocus = SkillType{
 	Name: enum.SkillTypeCuteFocus,
 	IsActive: func(attr [6]enum.Attribute) bool {
 		for _, attribute := range attr {
+			if attribute == "" {
+				continue
+			}
 			if attribute != enum.AttrCute {
 				return false
 			}
@@ -443,6 +454,9 @@ var SkillTypeCoolFocus = SkillType{
 	Name: enum.SkillTypeCoolFocus,
 	IsActive: func(attr [6]enum.Attribute) bool {
 		for _, attribute := range attr {
+			if attribute == "" {
+				continue
+			}
 			if attribute != enum.AttrCool {
 				return false
 			}
@@ -481,6 +495,9 @@ var SkillTypePassionFocus = SkillType{
 	Name: enum.SkillTypePassionFocus,
 	IsActive: func(attr [6]enum.Attribute) bool {
 		for _, attribute := range attr {
+			if attribute == "" {
+				continue
+			}
 			if attribute != enum.AttrPassion {
 				return false
 			}
@@ -538,6 +555,9 @@ var SkillTypeTricolorSymphony = SkillType{
 	IsActive: func(attr [6]enum.Attribute) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attr {
+			if attribute == "" {
+				continue
+			}
 			attrMap[attribute] = true
 		}
 		return len(attrMap) == 3
@@ -550,6 +570,12 @@ var SkillTypeTricolorSymphony = SkillType{
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
 		return 0
+	},
+	ScoreComboBonusBonus: func() float64 {
+		return 0.5
+	},
+	TapHealBonus: func() float64 {
+		return 0.2
 	},
 }
 

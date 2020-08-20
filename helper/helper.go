@@ -98,8 +98,8 @@ var unimplementedSkills = []enum.SkillType{
 	enum.SkillTypeBase,
 	enum.SkillTypeCoolEnsemble, enum.SkillTypeCuteEnsemble, enum.SkillTypePassionEnsemble,
 	enum.SkillTypeEncore,
-	enum.SkillTypeSkillBoost,
-	enum.SkillTypeTricolorSymphony,
+	// enum.SkillTypeSkillBoost,
+	// enum.SkillTypeTricolorSymphony,
 }
 
 func IsLeadSkillImplemented(ls enum.LeadSkill) bool {
