@@ -248,7 +248,7 @@ var teamLogics = []teamLogic{
 var ocardLogics = []ocardLogic{
 	cardIsSSR,
 	skillIsImplemented,
-	skillIsNotConcentration,
+	// skillIsNotConcentration,
 	unicolorOnColoredSong,
 }
 
@@ -266,4 +266,20 @@ func isTeamOk(team *usermodel.Team, song *models.Song) bool {
 		}
 	}
 	return true
+}
+
+func isTeamOkDebug(team *usermodel.Team, song *models.Song) string {
+	for _, logic := range teamLogics {
+		if !logic.IsSatisfied(team, song) {
+			return logic.Name
+		}
+	}
+	for _, ocard := range team.Ocards {
+		for _, logic := range ocardLogics {
+			if !logic.IsSatisfied(ocard, song) {
+				return logic.Name
+			}
+		}
+	}
+	return ""
 }

@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	tickRate  = 30
-	greatProb = 0.0
+	tickRate               = 30
+	greatProb              = 0.0
+	concentrationGreatProb = 0.06
 )
 
 type activeSkill struct {
@@ -45,6 +46,7 @@ type GameState struct {
 	randomGenerator      *rand.Rand
 	verbose              bool
 	skillAlwaysActive    bool
+	concentrationOn      bool
 }
 
 // PrintLog prints the log for the gamestate
@@ -80,11 +82,15 @@ type Game struct {
 
 func (g *Game) rollSkill(state *GameState) {
 	// TODO: remove expired skills and roll skill here
-	// remove expired
+	// remove expired (also check concentration)
+	state.concentrationOn = false
 	var newActiveSkills []*activeSkill
 	for _, skill := range state.activeSkills {
 		if skill.isActiveOn(state.timestamp) {
 			newActiveSkills = append(newActiveSkills, skill)
+			if skill.ocard.Skill.SkillType.Name == enum.SkillTypeConcentration {
+				state.concentrationOn = true
+			}
 		} else {
 			state.logf("%6d: Skill (%s) is deactivated", state.timestamp, skill)
 		}
@@ -166,6 +172,8 @@ func (g *Game) rollSkill(state *GameState) {
 func (g Game) scoreAndComboBonus(state GameState, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 	maxScoreBonus := 0.0
 	maxComboBonus := 0.0
+
+	maxBonusBonus := 0.0
 	for _, activeSkill := range state.activeSkills {
 		if activeSkill.ocard.Skill.SkillType.IsActive(state.teamAttributes) {
 			tmpScoreBonus := activeSkill.ocard.Skill.SkillType.ScoreBonus(
@@ -182,10 +190,17 @@ func (g Game) scoreAndComboBonus(state GameState, judgement enum.TapJudgement, n
 				judgement,
 				noteType,
 			)
+			bonusBonus := 0.0
+			if activeSkill.ocard.Skill.SkillType.ScoreComboBonusBonus != nil {
+				bonusBonus = activeSkill.ocard.Skill.SkillType.ScoreComboBonusBonus()
+			}
 			maxScoreBonus = math.Max(maxScoreBonus, tmpScoreBonus)
 			maxComboBonus = math.Max(maxComboBonus, tmpComboBonus)
+			maxBonusBonus = math.Max(maxBonusBonus, bonusBonus)
 		}
 	}
+	maxScoreBonus = math.Ceil(maxScoreBonus*(1+maxBonusBonus)*100.0) / 100.0
+	maxComboBonus = math.Ceil(maxComboBonus*(1+maxBonusBonus)*100.0) / 100.0
 	return (1 + maxScoreBonus) * (1 + maxComboBonus)
 }
 
@@ -211,6 +226,7 @@ func (g Game) Play(seed int64) GameState {
 		randomGenerator:      rand.New(rand.NewSource(seed)),
 		verbose:              g.verbose,
 		skillAlwaysActive:    helper.GetSkillAlwaysActive(),
+		concentrationOn:      false,
 	}
 	state.logf("Playing with appeal %d:", g.config.Appeal)
 	for state.timestamp < g.config.song.DurationMs {
@@ -222,9 +238,18 @@ func (g Game) Play(seed int64) GameState {
 
 			// Play note here
 			judgement := enum.TapJudgementPerfect
-			if helper.RollSafe(greatProb, state.randomGenerator) {
+
+			var prob float64
+			if state.concentrationOn {
+				prob = concentrationGreatProb
+			} else {
+				prob = greatProb
+			}
+
+			if helper.RollSafe(prob, state.randomGenerator) {
 				judgement = enum.TapJudgementGreat
 			}
+
 			noteType := g.config.song.Notes[i].NoteType
 			scoreComboBonus := g.scoreAndComboBonus(state, judgement, noteType)
 			noteScoreMultiplier := g.songDifficultyMultiplier *
@@ -235,15 +260,23 @@ func (g Game) Play(seed int64) GameState {
 
 			// TODO: Tap heal here
 			tapHeal := 0
+			tapHealBonus := 0.0
 			for _, activeSkill := range state.activeSkills {
 				heal := activeSkill.ocard.Skill.SkillType.TapHeal(
 					activeSkill.ocard.Card.Rarity.Rarity,
 					judgement, noteType,
 				)
+				tmp := 0.0
+				if activeSkill.ocard.Skill.SkillType.TapHealBonus != nil {
+					tmp = activeSkill.ocard.Skill.SkillType.TapHealBonus()
+				}
+				tapHealBonus = math.Max(tapHealBonus, tmp)
 				if heal > tapHeal {
 					tapHeal = heal
 				}
 			}
+			tapHeal = int(math.Ceil(float64(tapHeal) * (1.0 + tapHealBonus)))
+
 			state.currentHp += tapHeal
 			if state.currentHp > g.maxHp {
 				state.currentHp = g.maxHp
@@ -251,8 +284,8 @@ func (g Game) Play(seed int64) GameState {
 
 			score := int(math.Ceil(noteScoreMultiplier * float64(g.config.Appeal)))
 			state.Score += score
-			state.logf("%6d: Note %d tapped for %d/%d. Hp is %d (scoreComboBonus = %f)",
-				state.timestamp, i, score, state.Score, state.currentHp, scoreComboBonus,
+			state.logf("%6d: Note %d tapped for %d/%d. (from combo = %.2f, scoreComboBonus = %.2f)",
+				state.timestamp, i, score, state.Score, g.comboBonusMap[i], scoreComboBonus,
 			)
 
 			state.currentNoteIndex = i
