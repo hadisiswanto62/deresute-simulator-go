@@ -18,12 +18,10 @@ func doJob(gameConfig *GameConfig, channel chan SimulationSummary) {
 	channel <- Simulate(gameConfig, 1)
 }
 
-var beneran = true
-var filename = "log/summary_beneran_10.txt"
-var times = 10
-
-func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *models.Song) error {
+func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
+	song *models.Song, beneran bool, times int, filename string) error {
 	defer helper.MeasureTime(time.Now(), "FindOptimal")
+
 	start := time.Now()
 	resultChannel := make(chan SimulationSummary)
 	i := 0
@@ -77,6 +75,9 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *mo
 
 		}
 		// if len(guestCount) == 0 {
+		// 	if team.Leader().Card.ID == 300830 {
+		// 		continue
+		// 	}
 		// 	fmt.Println("No guest: ")
 		// 	fmt.Println(team)
 		// 	da, vo, vi := 0, 0, 0
@@ -88,11 +89,14 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *mo
 		// 	}
 		// 	fmt.Println(da, vo, vi)
 		// 	fmt.Println(team.Leader().LeadSkill.Name)
+		// 	for _, guest := range guests {
+		// 		fmt.Println(guest.LeadSkill.Name, isGameConfigOkDebug(team, song, guest))
+		// 	}
 		// 	fmt.Println()
 		// }
-		// if i%100000 == 0 {
-		// 	fmt.Println(i)
-		// }
+		if i%100000 == 0 {
+			fmt.Println(i)
+		}
 	}
 	log.Printf("Finding supports %d times\n", i)
 	helper.MeasureTime(start, "Queueing all jobs")
@@ -100,6 +104,10 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *mo
 	if !beneran {
 		return nil
 	}
+	logPath := fmt.Sprintf("log/%s", filename)
+	readableLogPath := fmt.Sprintf("log/readable/%s", filename)
+	os.Remove(logPath)
+	os.Remove(readableLogPath)
 	start = time.Now()
 
 	maxAvg := 0.0
@@ -127,6 +135,7 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *mo
 		return summaries[i].Average > summaries[j].Average
 	})
 	buffer := []string{}
+	readableBuffer := []string{}
 	bufferMaxLength := 10000
 	for _, summary := range summaries {
 		ids := []string{}
@@ -134,19 +143,31 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard, song *mo
 			ids = append(ids, strconv.Itoa(ocard.Card.ID))
 		}
 		id := strings.Join(ids, ",")
-		str := fmt.Sprintf("%s %d %d %d %f",
+		str := fmt.Sprintf("%s %d %d %d %.0f",
 			id, summary.GameConfig.team.LeaderIndex, summary.GameConfig.guest.Card.ID, summary.Appeal, summary.Average)
 		buffer = append(buffer, str)
+		str = ""
+		for _, ocard := range summary.GameConfig.team.Ocards {
+			str = fmt.Sprintf("%s %s %s | ", str, ocard.Card.Idol.Name, ocard.Card.Skill.SkillType.Name)
+		}
+		str = fmt.Sprintf("%s %s %d %s %s %.0f", str, summary.GameConfig.team.Leader().LeadSkill.Name, summary.GameConfig.team.LeaderIndex,
+			summary.GameConfig.guest.Card.Idol.Attribute, summary.GameConfig.guest.Card.LeadSkill.Name, summary.Average)
+		readableBuffer = append(readableBuffer, str)
 		if len(buffer) > bufferMaxLength {
-			saveBuffer(&buffer)
+			saveBuffer(&buffer, fmt.Sprintf("log/%s", filename))
 			buffer = []string{}
 		}
+		if len(readableBuffer) > bufferMaxLength {
+			saveBuffer(&readableBuffer, fmt.Sprintf("log/readable/%s", filename))
+			readableBuffer = []string{}
+		}
 	}
-	saveBuffer(&buffer)
+	saveBuffer(&buffer, fmt.Sprintf("log/%s", filename))
+	saveBuffer(&readableBuffer, fmt.Sprintf("log/readable/%s", filename))
 	return nil
 }
 
-func saveBuffer(buffer *[]string) {
+func saveBuffer(buffer *[]string, filename string) {
 	if len(*buffer) == 0 {
 		return
 	}
