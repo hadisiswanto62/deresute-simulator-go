@@ -10,7 +10,7 @@ import (
 // LeadSkill represents a leader skill. (Do not create new instance. Use GetLeadSkill(name) instead)
 type LeadSkill struct {
 	Name           enum.LeadSkill
-	IsActive       func(attr [6]enum.Attribute) bool
+	IsActive       func(attr [6]enum.Attribute, skills [6]enum.SkillType) bool
 	StatBonus      func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64
 	SkillProbBonus func(rarity enum.Rarity, cardAttr enum.Attribute) float64
 	HpBonus        func(rarity enum.Rarity, cardAttr enum.Attribute) float64

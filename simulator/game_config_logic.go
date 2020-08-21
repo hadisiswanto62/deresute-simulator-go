@@ -70,12 +70,14 @@ var bothLeadSkillIsActive = gameConfigLogic{
 	Name: "bothLeadSkillIsActive",
 	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
 		attributes := [6]enum.Attribute{}
+		skills := [6]enum.SkillType{}
 		for i, ocard := range team.Ocards {
 			attributes[i] = ocard.Card.Idol.Attribute
+			skills[i] = ocard.Card.Skill.SkillType.Name
 		}
 		attributes[5] = guest.Card.Idol.Attribute
 		// IsViolated when any of lead skill is not active
-		return !(team.Leader().LeadSkill.IsActive(attributes) && guest.LeadSkill.IsActive(attributes))
+		return !(team.Leader().LeadSkill.IsActive(attributes, skills) && guest.LeadSkill.IsActive(attributes, skills))
 	},
 }
 
@@ -121,6 +123,33 @@ var guestTriColorCorrectStat = gameConfigLogic{
 	Name: "guestTriColorCorrectStat",
 	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
 		for lskill, stat := range tricolorStatMap {
+			if guest.LeadSkill.Name == lskill {
+				da, vo, vi := 0, 0, 0
+				for _, ocard := range team.Ocards {
+					da += ocard.Dance
+					vo += ocard.Vocal
+					vi += ocard.Visual
+				}
+
+				if stat == enum.StatDance && da >= vo && da >= vi {
+					return false
+				} else if stat == enum.StatVocal && vo >= da && vo >= vi {
+					return false
+				} else if stat == enum.StatVisual && vi >= da && vi >= vo {
+					return false
+				}
+				// IsViolated when the team's max stat does not match the guest's tricolor stat
+				return true
+			}
+		}
+		return false
+	},
+}
+
+var guestResonantCorrectStat = gameConfigLogic{
+	Name: "guestResonantCorrectStat",
+	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
+		for lskill, stat := range resonantMap {
 			if guest.LeadSkill.Name == lskill {
 				da, vo, vi := 0, 0, 0
 				for _, ocard := range team.Ocards {
@@ -194,6 +223,7 @@ var logics = []gameConfigLogic{
 	princessWhenShouldBeUnison,
 	guestTriColorCorrectStat,
 	guestPrincessUnisonCorrectStat,
+	guestResonantCorrectStat,
 }
 
 func isGameConfigOk(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {

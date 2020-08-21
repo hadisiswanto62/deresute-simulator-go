@@ -47,6 +47,7 @@ type GameState struct {
 	verbose              bool
 	skillAlwaysActive    bool
 	concentrationOn      bool
+	resonantOn           bool
 }
 
 // PrintLog prints the log for the gamestate
@@ -194,8 +195,13 @@ func (g Game) scoreAndComboBonus(state GameState, judgement enum.TapJudgement, n
 			if activeSkill.ocard.Skill.SkillType.ScoreComboBonusBonus != nil {
 				bonusBonus = activeSkill.ocard.Skill.SkillType.ScoreComboBonusBonus()
 			}
-			maxScoreBonus = math.Max(maxScoreBonus, tmpScoreBonus)
-			maxComboBonus = math.Max(maxComboBonus, tmpComboBonus)
+			if state.resonantOn {
+				maxScoreBonus += tmpScoreBonus
+				maxComboBonus += tmpComboBonus
+			} else {
+				maxScoreBonus = math.Max(maxScoreBonus, tmpScoreBonus)
+				maxComboBonus = math.Max(maxComboBonus, tmpComboBonus)
+			}
 			maxBonusBonus = math.Max(maxBonusBonus, bonusBonus)
 		}
 	}
@@ -216,10 +222,11 @@ func (g Game) Play(seed int64) GameState {
 	}
 
 	teamAttributes := g.config.getTeamAttributes()
+	teamSkills := g.config.getTeamSkills()
 	state := GameState{
 		timestamp:            0,
-		leadSkillActive:      g.config.team.Leader().LeadSkill.IsActive(teamAttributes),
-		guestLeadSkillActive: g.config.guest.LeadSkill.IsActive(teamAttributes),
+		leadSkillActive:      g.config.team.Leader().LeadSkill.IsActive(teamAttributes, teamSkills),
+		guestLeadSkillActive: g.config.guest.LeadSkill.IsActive(teamAttributes, teamSkills),
 		currentNoteIndex:     -1,
 		currentHp:            g.config.Hp,
 		teamAttributes:       teamAttributes,
@@ -227,6 +234,7 @@ func (g Game) Play(seed int64) GameState {
 		verbose:              g.verbose,
 		skillAlwaysActive:    helper.GetSkillAlwaysActive(),
 		concentrationOn:      false,
+		resonantOn:           g.config.resonantOn(),
 	}
 	state.logf("Playing with appeal %d:", g.config.Appeal)
 	for state.timestamp < g.config.song.DurationMs {

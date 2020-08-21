@@ -70,6 +70,15 @@ func (gc *GameConfig) getTeamAttributes() [6]enum.Attribute {
 	return ret
 }
 
+func (gc *GameConfig) getTeamSkills() [6]enum.SkillType {
+	var ret [6]enum.SkillType
+	ocards := append(gc.team.Ocards[:], gc.guest)
+	for i, ocard := range ocards {
+		ret[i] = ocard.Card.Skill.SkillType.Name
+	}
+	return ret
+}
+
 // from: https://hpt.moe/deresute/Appeal_Score_Calculations
 func (gc *GameConfig) recalculate() {
 	appeal := 0
@@ -79,12 +88,24 @@ func (gc *GameConfig) recalculate() {
 	ocards := append(gc.team.Ocards[:], gc.guest)
 	leader := gc.team.Leader()
 	teamAttributes := gc.getTeamAttributes()
+	skills := gc.getTeamSkills()
 
-	leadSkillActive := leader.Card.LeadSkill.IsActive(teamAttributes)
-	guestLeadSkillActive := gc.guest.Card.LeadSkill.IsActive(teamAttributes)
+	leadSkillActive := leader.Card.LeadSkill.IsActive(teamAttributes, skills)
+	guestLeadSkillActive := gc.guest.Card.LeadSkill.IsActive(teamAttributes, skills)
+
+	isResonant := gc.resonantOn()
+	var resonantStat enum.Stat
+	if isResonant {
+		resonantStat = gc.resonantStat()
+	}
 	for _, ocard := range ocards {
 		for statType, statValue := range ocard.Stats() {
 			multiplier := 1.0
+			if isResonant {
+				if statType != resonantStat {
+					multiplier = 0.0
+				}
+			}
 			if leadSkillActive {
 				multiplier += leader.Card.LeadSkill.StatBonus(
 					leader.Card.Rarity.Rarity,
@@ -126,4 +147,39 @@ func (gc *GameConfig) recalculate() {
 	gc.Appeal = appeal
 	gc.Hp = hp
 
+}
+
+var resonantMap = map[enum.LeadSkill]enum.Stat{
+	enum.LeadSkillResonantMakeup: enum.StatVisual,
+	enum.LeadSkillResonantStep:   enum.StatDance,
+	enum.LeadSkillResonantVoice:  enum.StatVocal,
+}
+
+func (gc *GameConfig) resonantStat() enum.Stat {
+	for lskill, stat := range resonantMap {
+		if gc.team.Leader().LeadSkill.Name == lskill {
+			return stat
+		}
+	}
+	panic("is not resonant leader")
+}
+
+func (gc *GameConfig) resonantOn() bool {
+	found := false
+	for lskill := range resonantMap {
+		if gc.team.Leader().LeadSkill.Name == lskill {
+			found = true
+		}
+	}
+	if found == false {
+		return false
+	}
+	ocards := append(gc.team.Ocards[:], gc.guest)
+	attrs := [6]enum.Attribute{}
+	skills := [6]enum.SkillType{}
+	for i, ocard := range ocards {
+		attrs[i] = ocard.Card.Idol.Attribute
+		skills[i] = ocard.Card.Skill.SkillType.Name
+	}
+	return gc.team.Leader().LeadSkill.IsActive(attrs, skills)
 }
