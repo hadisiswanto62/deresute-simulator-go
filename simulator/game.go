@@ -282,7 +282,7 @@ func (g Game) Play(seed int64) GameState {
 				state.currentHp = g.maxHp
 			}
 
-			score := int(math.Ceil(noteScoreMultiplier * float64(g.config.Appeal)))
+			score := int(math.Round(noteScoreMultiplier * float64(g.config.Appeal)))
 			state.Score += score
 			state.logf("%6d: Note %d tapped for %d/%d. (from combo = %.2f, scoreComboBonus = %.2f)",
 				state.timestamp, i, score, state.Score, g.comboBonusMap[i], scoreComboBonus,
