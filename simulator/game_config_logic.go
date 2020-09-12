@@ -2,6 +2,7 @@ package simulator
 
 import (
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
+	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
@@ -35,22 +36,28 @@ var tricolorStatMap = map[enum.LeadSkill]enum.Stat{
 	enum.LeadSkillTricolorVoice:  enum.StatVocal,
 }
 
-var statUpLeadSkillMap = map[enum.Stat][3]enum.LeadSkill{
-	enum.StatDance: [3]enum.LeadSkill{
+var statUpLeadSkillMap = map[enum.Stat][]enum.LeadSkill{
+	enum.StatDance: []enum.LeadSkill{
 		enum.LeadSkillCuteStep,
 		enum.LeadSkillCoolStep,
 		enum.LeadSkillPassionStep,
 	},
-	enum.StatVocal: [3]enum.LeadSkill{
+	enum.StatVocal: []enum.LeadSkill{
 		enum.LeadSkillCuteVoice,
 		enum.LeadSkillCoolVoice,
 		enum.LeadSkillPassionVoice,
 	},
-	enum.StatVisual: [3]enum.LeadSkill{
+	enum.StatVisual: []enum.LeadSkill{
 		enum.LeadSkillCuteMakeup,
 		enum.LeadSkillCoolMakeup,
 		enum.LeadSkillPassionMakeup,
 	},
+}
+
+var resoLeadSkillMap = map[enum.Stat]enum.LeadSkill{
+	enum.StatDance:  enum.LeadSkillResonantStep,
+	enum.StatVocal:  enum.LeadSkillResonantVoice,
+	enum.StatVisual: enum.LeadSkillResonantMakeup,
 }
 
 var unisonInCorrectSongType = gameConfigLogic{
@@ -193,7 +200,10 @@ var guestPrincessUnisonCorrectStat = gameConfigLogic{
 			return false
 		}
 		for stat, lskillList := range statUpLeadSkillMap {
-			for _, lskill := range lskillList {
+			lskills := lskillList
+			resoLeadSkill, _ := resoLeadSkillMap[stat]
+			lskills = append(lskills, resoLeadSkill)
+			for _, lskill := range lskills {
 				if team.Leader().LeadSkill.Name == lskill {
 					da, vo, vi := guest.Dance, guest.Vocal, guest.Visual
 					if stat == enum.StatDance && da >= vo && da >= vi {
@@ -216,6 +226,24 @@ var guestPrincessUnisonCorrectStat = gameConfigLogic{
 	},
 }
 
+var doNotUseReso = gameConfigLogic{
+	Name: "doNotUseReso",
+	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
+		lskills := []*models.LeadSkill{
+			team.Leader().LeadSkill,
+			guest.LeadSkill,
+		}
+		for _, resoLSkill := range resoLeadSkillMap {
+			for _, lskill := range lskills {
+				if lskill.Name == resoLSkill {
+					return true
+				}
+			}
+		}
+		return false
+	},
+}
+
 var logics = []gameConfigLogic{
 	unisonInCorrectSongType,
 	bothLeadSkillIsActive,
@@ -224,10 +252,17 @@ var logics = []gameConfigLogic{
 	guestTriColorCorrectStat,
 	guestPrincessUnisonCorrectStat,
 	guestResonantCorrectStat,
+
+	// for info only
+	// doNotUseReso,
 }
 
 func isGameConfigOk(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
-	for _, logic := range logics {
+	logicsUpdated := logics
+	if !helper.Features.UseReso() {
+		logicsUpdated = append(logicsUpdated, doNotUseReso)
+	}
+	for _, logic := range logicsUpdated {
 		if logic.IsViolated(team, song, guest) {
 			if logic.Name != "guestPrincessUnisonCorrectStat" {
 				return false
@@ -244,5 +279,5 @@ func isGameConfigOkDebug(team *usermodel.Team, song *models.Song, guest *usermod
 			return logic.Name
 		}
 	}
-	return ""
+	return "passed!"
 }

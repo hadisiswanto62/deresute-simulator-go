@@ -47,10 +47,18 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 			if !isGameConfigOk(team, song, guest) {
 				continue
 			}
-			actualNumberofResults++
 			guestCount = append(guestCount, guest)
+			// if team.Leader().LeadSkill.Name == enum.LeadSkillResonantStep {
+			// 	fmt.Println("test")
+			// }
+			gameConfig := NewGameConfig(team, supports, guest, song)
+			if helper.Features.LimitAppeals() {
+				if gameConfig.Appeal < 310000 {
+					continue
+				}
+			}
+			actualNumberofResults++
 			if beneran {
-				gameConfig := NewGameConfig(team, supports, guest, song)
 				go func(gameConfig *GameConfig, channel chan SimulationSummary) {
 					channel <- Simulate(gameConfig, times)
 					// resultChannel <- SimulationSummary{Average: 100}

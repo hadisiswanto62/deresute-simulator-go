@@ -243,12 +243,14 @@ var teamLogics = []teamLogic{
 	noDuoColor,
 	motifWithHighCorrectStat,
 	// tricolorOnMinimum2Color,
+
+	// for info only:
+	// skillIsNotConcentration,
 }
 
 var ocardLogics = []ocardLogic{
 	cardIsSSR,
 	skillIsImplemented,
-	// skillIsNotConcentration,
 	unicolorOnColoredSong,
 }
 
@@ -260,11 +262,11 @@ func isTeamOk(team *usermodel.Team, song *models.Song) bool {
 	}
 
 	ocardLogic := ocardLogics
-	if helper.Features.UseConcentration() {
+	if !helper.Features.UseConcentration() {
 		ocardLogic = append(ocardLogic, skillIsNotConcentration)
 	}
 	for _, ocard := range team.Ocards {
-		for _, logic := range ocardLogics {
+		for _, logic := range ocardLogic {
 			if !logic.IsSatisfied(ocard, song) {
 				return false
 			}
@@ -286,5 +288,5 @@ func isTeamOkDebug(team *usermodel.Team, song *models.Song) string {
 			}
 		}
 	}
-	return ""
+	return "team looks ok"
 }

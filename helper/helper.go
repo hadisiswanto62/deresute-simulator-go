@@ -98,7 +98,7 @@ var nLifePotentialBonusLookup = [11]int{0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13}
 
 var unimplementedLeadSkills = []enum.LeadSkill{
 	enum.LeadSkillBase,
-	enum.LeadSkillResonantMakeup, enum.LeadSkillResonantStep, enum.LeadSkillResonantVoice,
+	// enum.LeadSkillResonantMakeup, enum.LeadSkillResonantStep, enum.LeadSkillResonantVoice,
 }
 
 var unimplementedSkills = []enum.SkillType{

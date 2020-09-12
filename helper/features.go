@@ -3,6 +3,8 @@ package helper
 var flags = map[string]bool{
 	"use-concentration": true,
 	"do-simulate":       false,
+	"use-reso":          true,
+	"limit-appeals":     true,
 }
 
 type feature struct{}
@@ -18,6 +20,14 @@ func (f feature) UseConcentration() bool {
 
 func (f feature) ReallySimulate() bool {
 	return checkFlag("do-simulate")
+}
+
+func (f feature) UseReso() bool {
+	return checkFlag("use-reso")
+}
+
+func (f feature) LimitAppeals() bool {
+	return checkFlag("limit-appeals")
 }
 
 var Features feature
