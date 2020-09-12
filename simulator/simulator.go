@@ -2,8 +2,7 @@ package simulator
 
 import (
 	"fmt"
-	"math"
-	"time"
+	"os"
 
 	"github.com/aybabtme/uniplot/histogram"
 )
@@ -42,6 +41,7 @@ func (ss SimulationSummary) Report() {
 	fmt.Printf("Appeal: %d\n", ss.GameConfig.Appeal)
 	fmt.Printf("Played %d times:\n", ss.SimCount)
 	hist := histogram.Hist(10, data)
+	histogram.Fprint(os.Stdout, hist, histogram.Linear(5))
 	maxCount, max, min := 0, 0.0, 0.0
 	for _, bucket := range hist.Buckets {
 		if bucket.Count > maxCount {
@@ -59,17 +59,18 @@ func (ss SimulationSummary) Report() {
 
 // Simulate simulates the game `times` times and return the summary in SimulationSummary
 func Simulate(gc *GameConfig, times int) SimulationSummary {
+	// defer helper.MeasureTime(time.Now(), "Simulate")
 	game := NewGame(gc, false)
-	resultChannel := make(chan int)
+	resultChannel := make(chan int, times)
 	for i := 0; i < times; i++ {
 		go func(game *Game, i int) {
-			randSeed := (time.Now().UnixNano() * int64(i+1)) % math.MaxInt64
-			state := game.Play(randSeed)
+			// randSeed := (time.Now().UnixNano() * int64(i+1)) % math.MaxInt64
+			state := game.Play(1)
 			resultChannel <- state.Score
 		}(game, i)
 	}
 	i := 0
-	result := SimulationSummary{GameConfig: gc, Min: 999999999}
+	result := SimulationSummary{GameConfig: gc, Min: 999999999, Results: make([]int, 0, times)}
 	sum := 0
 	for score := range resultChannel {
 		result.Results = append(result.Results, score)

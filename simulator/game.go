@@ -14,7 +14,7 @@ import (
 const (
 	tickRate               = 30
 	greatProb              = 0.0
-	concentrationGreatProb = 0.06
+	concentrationGreatProb = 0.1
 )
 
 type activeSkill struct {
@@ -82,8 +82,6 @@ type Game struct {
 }
 
 func (g *Game) rollSkill(state *GameState) {
-	// TODO: remove expired skills and roll skill here
-	// remove expired (also check concentration)
 	state.concentrationOn = false
 	var newActiveSkills []*activeSkill
 	for _, skill := range state.activeSkills {
@@ -92,15 +90,15 @@ func (g *Game) rollSkill(state *GameState) {
 			if skill.ocard.Skill.SkillType.Name == enum.SkillTypeConcentration {
 				state.concentrationOn = true
 			}
-		} else {
-			state.logf("%6d: Skill (%s) is deactivated", state.timestamp, skill)
+			// } else {
+			// state.logf("%6d: Skill (%s) is deactivated", state.timestamp, skill)
 		}
 	}
 	state.activeSkills = newActiveSkills
 	// roll skill
 	// skill can't active in the first loop
 	if state.timestamp < tickRate*2 {
-		state.logf("%6d: Tried to activate skills but it is on first loop", state.timestamp)
+		// state.logf("%6d: Tried to activate skills but it is on first loop", state.timestamp)
 		return
 	}
 	for i, ocard := range g.config.team.Ocards {
@@ -111,26 +109,30 @@ func (g *Game) rollSkill(state *GameState) {
 		}
 		// skill can't active within 3 seconds before last note
 		if state.timestamp > g.config.song.Notes[g.config.song.NotesCount()-1].TimestampMs-3000 {
-			state.logf("%6d: Tried to activate (%d. %s) but it is 3 seconds before last note", state.timestamp,
-				i, ocard.Card.Skill.SkillType.Name)
+			// state.logf("%6d: Tried to activate (%d. %s) but it is 3 seconds before last note", state.timestamp,
+			// 	i, ocard.Card.Skill.SkillType.Name)
 			continue
 		}
 		// if inactive skill --> skip
 		if !ocard.Card.Skill.SkillType.IsActive(state.teamAttributes) {
-			state.logf("%6d: Tried to activate (%d. %s) but it is inactive", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
+			// state.logf("%6d: Tried to activate (%d. %s) but it is inactive", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
 			continue
 		}
 		// if card is currently active --> skip
 		active := false
 		for _, activeSkill := range state.activeSkills {
-			if ocard == activeSkill.ocard {
+			// if ocard == activeSkill.ocard {
+			// 	active = true
+			// 	break
+			// }
+			if i == activeSkill.cardIndex {
 				active = true
 				break
 			}
 		}
 		if active {
-			state.logf("%6d: Tried to activate (%d. %s) but it is currently active", state.timestamp,
-				i, ocard.Card.Skill.SkillType.Name)
+			// state.logf("%6d: Tried to activate (%d. %s) but it is currently active", state.timestamp,
+			// 	i, ocard.Card.Skill.SkillType.Name)
 			continue
 		}
 
@@ -153,7 +155,7 @@ func (g *Game) rollSkill(state *GameState) {
 		prob := float64(ocard.SkillProcChance) / 10000.0 * probMultiplier
 
 		if !state.skillAlwaysActive {
-			if !helper.RollSafe(prob, state.randomGenerator) {
+			if !helper.RollFast(prob) {
 				continue
 			}
 		}
@@ -165,7 +167,7 @@ func (g *Game) rollSkill(state *GameState) {
 			}
 			state.currentHp = hpAfter
 		}
-		state.logf("%6d: %d. %v activated.", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
+		// state.logf("%6d: %d. %v activated.", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
 		state.activeSkills = append(state.activeSkills, &activeSkill{ocard: ocard, cardIndex: i, timestamp: state.timestamp})
 	}
 }
@@ -230,13 +232,13 @@ func (g Game) Play(seed int64) GameState {
 		currentNoteIndex:     -1,
 		currentHp:            g.config.Hp,
 		teamAttributes:       teamAttributes,
-		randomGenerator:      rand.New(rand.NewSource(seed)),
+		randomGenerator:      nil, // rand.New(rand.NewSource(seed)),
 		verbose:              g.verbose,
 		skillAlwaysActive:    helper.GetSkillAlwaysActive(),
 		concentrationOn:      false,
 		resonantOn:           g.config.resonantOn(),
 	}
-	state.logf("Playing with appeal %d:", g.config.Appeal)
+	// state.logf("Playing with appeal %d:", g.config.Appeal)
 	for state.timestamp < g.config.song.DurationMs {
 		g.rollSkill(&state)
 		for i := state.currentNoteIndex + 1; i < g.config.song.NotesCount(); i++ {
@@ -254,7 +256,7 @@ func (g Game) Play(seed int64) GameState {
 				prob = greatProb
 			}
 
-			if helper.RollSafe(prob, state.randomGenerator) {
+			if helper.RollFast(prob) {
 				judgement = enum.TapJudgementGreat
 			}
 
@@ -292,9 +294,9 @@ func (g Game) Play(seed int64) GameState {
 
 			score := int(math.Round(noteScoreMultiplier * float64(g.config.Appeal)))
 			state.Score += score
-			state.logf("%6d: Note %d tapped for %d/%d. (from combo = %.2f, scoreComboBonus = %.2f)",
-				state.timestamp, i, score, state.Score, g.comboBonusMap[i], scoreComboBonus,
-			)
+			// state.logf("%6d: Note %d tapped for %d/%d. (from combo = %.2f, scoreComboBonus = %.2f)",
+			// 	state.timestamp, i, score, state.Score, g.comboBonusMap[i], scoreComboBonus,
+			// )
 
 			state.currentNoteIndex = i
 		}

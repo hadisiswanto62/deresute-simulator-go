@@ -5,6 +5,7 @@ import (
 	"math/rand"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/config"
+	"github.com/valyala/fastrand"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 )
@@ -71,6 +72,13 @@ func Roll(prob float64) bool {
 func RollSafe(prob float64, generator *rand.Rand) bool {
 	roll := generator.Float64()
 	return roll < prob
+	// roll := fastrand.Uint32n(100000)
+	// return float64(roll)/100000.0 < prob
+}
+
+func RollFast(prob float64) bool {
+	roll := fastrand.Uint32n(10000)
+	return float64(roll)/10000.0 < prob
 }
 
 // SkillProbPotentialBonusLookup is lookup table of skill probability bonus from potential
@@ -90,7 +98,7 @@ var nLifePotentialBonusLookup = [11]int{0, 1, 2, 3, 4, 5, 6, 7, 9, 11, 13}
 
 var unimplementedLeadSkills = []enum.LeadSkill{
 	enum.LeadSkillBase,
-	// enum.LeadSkillResonantMakeup, enum.LeadSkillResonantStep, enum.LeadSkillResonantVoice,
+	enum.LeadSkillResonantMakeup, enum.LeadSkillResonantStep, enum.LeadSkillResonantVoice,
 }
 
 var unimplementedSkills = []enum.SkillType{
@@ -98,8 +106,6 @@ var unimplementedSkills = []enum.SkillType{
 	enum.SkillTypeBase,
 	enum.SkillTypeCoolEnsemble, enum.SkillTypeCuteEnsemble, enum.SkillTypePassionEnsemble,
 	enum.SkillTypeEncore,
-	// enum.SkillTypeSkillBoost,
-	// enum.SkillTypeTricolorSymphony,
 }
 
 func IsLeadSkillImplemented(ls enum.LeadSkill) bool {
