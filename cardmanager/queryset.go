@@ -51,7 +51,7 @@ func (q *QuerySet) Rarity(rarity enum.Rarity) *QuerySet {
 
 // IsEvolved filters current cards by evolved status
 func (q *QuerySet) IsEvolved(evolveStatus bool) *QuerySet {
-	result := []*models.Card{}
+	result := make([]*models.Card, 0, len(q.cards)/2)
 	for i := range q.cards {
 		if q.cards[i].Rarity.IsEvolved == evolveStatus {
 			result = append(result, q.cards[i])

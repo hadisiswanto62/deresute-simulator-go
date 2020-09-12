@@ -258,6 +258,11 @@ func isTeamOk(team *usermodel.Team, song *models.Song) bool {
 			return false
 		}
 	}
+
+	ocardLogic := ocardLogics
+	if helper.Features.UseConcentration() {
+		ocardLogic = append(ocardLogic, skillIsNotConcentration)
+	}
 	for _, ocard := range team.Ocards {
 		for _, logic := range ocardLogics {
 			if !logic.IsSatisfied(ocard, song) {

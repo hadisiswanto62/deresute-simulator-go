@@ -19,9 +19,10 @@ func doJob(gameConfig *GameConfig, channel chan SimulationSummary) {
 }
 
 func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
-	song *models.Song, beneran bool, times int, filename string) error {
+	song *models.Song, times int, filename string) error {
 	defer helper.MeasureTime(time.Now(), "FindOptimal")
 
+	beneran := helper.Features.ReallySimulate()
 	start := time.Now()
 	resultChannel := make(chan SimulationSummary)
 	i := 0
@@ -48,23 +49,6 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 			}
 			actualNumberofResults++
 			guestCount = append(guestCount, guest)
-			// if len(guestCount) > 1 {
-			// 	fmt.Println("No guest: ")
-			// 	fmt.Println(team)
-			// 	da, vo, vi := 0, 0, 0
-			// 	for _, ocard := range team.Ocards {
-			// 		fmt.Println(ocard.Card.Idol.Attribute, ocard.Skill.SkillType.Name, ocard.LeadSkill.Name)
-			// 		da += ocard.Dance
-			// 		vo += ocard.Vocal
-			// 		vi += ocard.Visual
-			// 	}
-			// 	fmt.Println(da, vo, vi)
-			// 	fmt.Println(team.Leader().LeadSkill.Name)
-			// 	for _, g := range guestCount {
-			// 		fmt.Println("Guest = ", g.LeadSkill.Name)
-			// 	}
-			// 	fmt.Println()
-			// }
 			if beneran {
 				gameConfig := NewGameConfig(team, supports, guest, song)
 				go func(gameConfig *GameConfig, channel chan SimulationSummary) {
@@ -72,28 +56,7 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 					// resultChannel <- SimulationSummary{Average: 100}
 				}(gameConfig, resultChannel)
 			}
-
 		}
-		// if len(guestCount) == 0 {
-		// 	if team.Leader().Card.ID == 300830 {
-		// 		continue
-		// 	}
-		// 	fmt.Println("No guest: ")
-		// 	fmt.Println(team)
-		// 	da, vo, vi := 0, 0, 0
-		// 	for _, ocard := range team.Ocards {
-		// 		fmt.Println(ocard.Card.Idol.Attribute, ocard.Skill.SkillType.Name, ocard.LeadSkill.Name)
-		// 		da += ocard.Dance
-		// 		vo += ocard.Vocal
-		// 		vi += ocard.Visual
-		// 	}
-		// 	fmt.Println(da, vo, vi)
-		// 	fmt.Println(team.Leader().LeadSkill.Name)
-		// 	for _, guest := range guests {
-		// 		fmt.Println(guest.LeadSkill.Name, isGameConfigOkDebug(team, song, guest))
-		// 	}
-		// 	fmt.Println()
-		// }
 		if i%100000 == 0 {
 			fmt.Println(i)
 		}

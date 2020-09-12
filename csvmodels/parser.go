@@ -29,7 +29,8 @@ func (p CSVDataParser) ParseOwnedCardRawData(path string) ([]*usermodel.OwnedCar
 	if err := gocsv.UnmarshalFile(file, &tmps); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal %s: %v", ownedCardPath, err)
 	}
-	var ret []*usermodel.OwnedCardRawData
+	// var ret []*usermodel.OwnedCardRawData
+	ret := make([]*usermodel.OwnedCardRawData, 0, len(tmps))
 	for _, tocd := range tmps {
 		ocd := &usermodel.OwnedCardRawData{
 			CardID:     tocd.CardID,

@@ -83,11 +83,12 @@ func GetLeadSkill(name string) (*LeadSkill, error) {
 		return skill, nil
 	}
 
-	var irrelevants = [4]string{
+	var irrelevants = [5]string{
 		"フォーチュンプレゼント",
 		"シンデレラチャーム",
 		"シンデレラエール",
 		"クリスマスプレゼント",
+		"ワールドレベル",
 	}
 	for _, lskillName := range irrelevants {
 		if name == lskillName {
