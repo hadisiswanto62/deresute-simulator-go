@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/csvmodels"
-	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
@@ -44,20 +44,13 @@ func makeFilename(config BaseOptimizeConfig,
 	customOwnParams *usermodelmanager.CustomOwnedCardParameters) string {
 	filenameParts := []string{}
 	filenameParts = append(filenameParts, string(config.getSong().Attribute))
-	filenameParts = append(filenameParts, strconv.Itoa(config.SimulateTimes))
-	if customOwnParams.SkillLevel == 0 {
-		filenameParts = append(filenameParts, "current")
-	} else {
-		filenameParts = append(filenameParts, strconv.Itoa(customOwnParams.SkillLevel))
-	}
-	if customOwnParams.PotSkill != 0 {
-		filenameParts = append(filenameParts, strconv.Itoa(customOwnParams.PotSkill))
-	}
-
-	if helper.IsSkillImplemented(enum.SkillTypeConcentration) {
+	filenameParts = append(filenameParts, fmt.Sprintf("do=%dx", config.SimulateTimes))
+	filenameParts = append(filenameParts, fmt.Sprintf("skLv=%d", customOwnParams.SkillLevel))
+	filenameParts = append(filenameParts, fmt.Sprintf("potSk=%d", customOwnParams.PotSkill))
+	if helper.Features.UseConcentration() {
 		filenameParts = append(filenameParts, "conc")
 	}
-	filenameParts = append(filenameParts, "guestSampah")
+	filenameParts = append(filenameParts, strconv.Itoa(int(time.Now().Unix())))
 	filename := fmt.Sprintf("%s.txt", strings.Join(filenameParts, "_"))
 	return filename
 }
