@@ -37,6 +37,7 @@ func Optimize(config BaseOptimizeConfig,
 	if err != nil {
 		return err
 	}
+	fmt.Printf("Results saved to %s\n", filename)
 	return nil
 }
 
