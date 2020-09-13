@@ -51,7 +51,7 @@ func (c BaseOptimizeConfig) getSongAttr() enum.Attribute {
 	return c.SongAttr
 }
 
-func toGameConfig(config BaseGameConfig, customCardParams *usermodelmanager.CustomOwnedCardParameters,
+func ToGameConfig(config BaseGameConfig, customCardParams *usermodelmanager.CustomOwnedCardParameters,
 	useDefaultCards bool) (*simulator.GameConfig, error) {
 	var err error
 	config.Song, err = makeSong(config)
