@@ -10,6 +10,27 @@ import (
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
 
+const (
+	tickRate               = 30
+	greatProb              = 0.0
+	concentrationGreatProb = 0.1
+)
+
+type activeSkill struct {
+	ocard     *usermodel.OwnedCard
+	cardIndex int
+	timestamp int
+}
+
+func (as activeSkill) isActiveOn(timestamp int) bool {
+	endTimestamp := as.ocard.SkillEffectLength*10 + as.timestamp
+	return timestamp <= endTimestamp
+}
+
+func (as activeSkill) String() string {
+	return fmt.Sprintf("%d. %s", as.cardIndex, as.ocard.Card.Skill.SkillType.Name)
+}
+
 type Game2 struct {
 	Config Playable
 
@@ -296,4 +317,61 @@ func (g Game2) getTapHeal(state *GameState2, judgement enum.TapJudgement, noteTy
 		heal = state.maxHp - state.currentHp
 	}
 	return heal
+}
+
+func getJudgementScoreMultiplier(judgement enum.TapJudgement) float64 {
+	switch judgement {
+	case enum.TapJudgementPerfect:
+		return 1.0
+	case enum.TapJudgementGreat:
+		return 0.7
+	case enum.TapJudgementNice:
+		return 0.4
+	case enum.TapJudgementBad:
+		return 0.1
+	case enum.TapJudgementMiss:
+		return 0
+	}
+	return 0
+}
+
+func getComboBonusMap(notesCount int) map[int]float64 {
+	comboMap := make(map[int]float64)
+	for i := 0; i < notesCount; i++ {
+		progress := float64(i+2) / float64(notesCount) * 100.0
+		if progress >= 90.0 {
+			comboMap[i] = 2.0
+		} else if progress >= 80.0 {
+			comboMap[i] = 1.7
+		} else if progress >= 70.0 {
+			comboMap[i] = 1.5
+		} else if progress >= 50.0 {
+			comboMap[i] = 1.4
+		} else if progress >= 25.0 {
+			comboMap[i] = 1.3
+		} else if progress >= 10.0 {
+			comboMap[i] = 1.2
+		} else if progress >= 5.0 {
+			comboMap[i] = 1.1
+		} else {
+			comboMap[i] = 1.0
+		}
+	}
+	return comboMap
+}
+
+func getSongDifficultyMultiplier(songLevel int) float64 {
+	if songLevel <= 9 {
+		return 1 + (0.025 * float64((songLevel - 5)))
+	} else if songLevel <= 14 {
+		return 1.2 + (0.025 * float64((songLevel - 10)))
+	} else if songLevel <= 19 {
+		return 1.4 + (0.025 * float64((songLevel - 15)))
+	} else if songLevel <= 28 {
+		return 1.6 + (0.05 * float64((songLevel - 20)))
+	} else if songLevel <= 30 {
+		return 2 + (0.1 * float64((songLevel - 28)))
+	} else {
+		return 1
+	}
 }
