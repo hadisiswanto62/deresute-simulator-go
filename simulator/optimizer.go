@@ -48,7 +48,7 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 			// 	fmt.Println("test")
 			// }
 			// gameConfig := NewGameConfig(team, supports, guest, song)
-			gameConfig := NewGameConfig2(team.Ocards[:], team.LeaderIndex, supports[:], guest, song)
+			gameConfig := NewGameConfig(team.Ocards[:], team.LeaderIndex, supports[:], guest, song)
 			if helper.Features.LimitAppeals() {
 				if gameConfig.getAppeal() < 310000 {
 					continue
@@ -56,7 +56,7 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 			}
 			actualNumberofResults++
 			if beneran {
-				go func(gameConfig *GameConfig2, channel chan SimulationSummary) {
+				go func(gameConfig *GameConfig, channel chan SimulationSummary) {
 					channel <- Simulate(gameConfig, times)
 					// resultChannel <- SimulationSummary{Average: 100}
 				}(gameConfig, resultChannel)

@@ -9,7 +9,7 @@ import (
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
 
-type GameConfig2 struct {
+type GameConfig struct {
 	ocards      []*usermodel.OwnedCard
 	leaderIndex int
 	supports    []*usermodel.OwnedCard
@@ -27,54 +27,54 @@ type GameConfig2 struct {
 	resonantOn              bool
 }
 
-func (gc GameConfig2) getSkillActivableCards() []*usermodel.OwnedCard {
+func (gc GameConfig) getSkillActivableCards() []*usermodel.OwnedCard {
 	return gc.ocards
 }
-func (gc GameConfig2) getLeadSkillActivableCards() []*usermodel.OwnedCard {
+func (gc GameConfig) getLeadSkillActivableCards() []*usermodel.OwnedCard {
 	return []*usermodel.OwnedCard{
 		gc.ocards[gc.leaderIndex],
 		gc.guest,
 	}
 }
-func (gc GameConfig2) getSong() *models.Song {
+func (gc GameConfig) getSong() *models.Song {
 	return gc.song
 }
-func (gc GameConfig2) getBaseVisual() int {
+func (gc GameConfig) getBaseVisual() int {
 	return gc.baseVisual
 }
-func (gc GameConfig2) getBaseVocal() int {
+func (gc GameConfig) getBaseVocal() int {
 	return gc.baseVocal
 }
-func (gc GameConfig2) getBaseDance() int {
+func (gc GameConfig) getBaseDance() int {
 	return gc.baseDance
 }
-func (gc GameConfig2) getAppeal() int {
+func (gc GameConfig) getAppeal() int {
 	return gc.appeal
 }
-func (gc GameConfig2) getHp() int {
+func (gc GameConfig) getHp() int {
 	return gc.hp
 }
-func (gc GameConfig2) getTeamAttributesv2() []enum.Attribute {
+func (gc GameConfig) getTeamAttributesv2() []enum.Attribute {
 	return gc.teamAttributes
 }
-func (gc GameConfig2) getTeamSkillsv2() []enum.SkillType {
+func (gc GameConfig) getTeamSkillsv2() []enum.SkillType {
 	return gc.teamSkills
 }
-func (gc GameConfig2) isResonantActive() bool {
+func (gc GameConfig) isResonantActive() bool {
 	return gc.resonantOn
 }
-func (gc GameConfig2) getCards() []*usermodel.OwnedCard {
+func (gc GameConfig) getCards() []*usermodel.OwnedCard {
 	return gc.ocards
 }
-func (gc GameConfig2) getLeaderIndex() int {
+func (gc GameConfig) getLeaderIndex() int {
 	return gc.leaderIndex
 }
-func (gc GameConfig2) getGuest() *usermodel.OwnedCard {
+func (gc GameConfig) getGuest() *usermodel.OwnedCard {
 	return gc.guest
 }
 
 // recalculate appeal, hp, teamAttributes, teamSkills, resonantOn
-func (gc *GameConfig2) recalculate() {
+func (gc *GameConfig) recalculate() {
 	appeal := 0
 	hp := 0
 
@@ -157,10 +157,10 @@ func (gc *GameConfig2) recalculate() {
 	gc.hp = hp
 }
 
-func NewGameConfig2(
+func NewGameConfig(
 	ocards []*usermodel.OwnedCard, leaderIndex int, supports []*usermodel.OwnedCard,
-	guest *usermodel.OwnedCard, song *models.Song) *GameConfig2 {
-	gc := GameConfig2{
+	guest *usermodel.OwnedCard, song *models.Song) *GameConfig {
+	gc := GameConfig{
 		ocards:      ocards,
 		leaderIndex: leaderIndex,
 		supports:    supports,

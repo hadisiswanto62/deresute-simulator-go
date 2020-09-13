@@ -112,7 +112,7 @@ func ToGameConfig(config BaseGameConfig, customCardParams *usermodelmanager.Cust
 	if err != nil {
 		panic(err)
 	}
-	return simulator.NewGameConfig(&team, supports, guest, config.Song), nil
+	return simulator.NewGameConfig(ocards[:], config.LeaderIndex, supports[:], guest, config.Song), nil
 }
 
 type makeSongable interface {

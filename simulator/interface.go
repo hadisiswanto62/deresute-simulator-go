@@ -6,7 +6,7 @@ import (
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
 
-// Interface for game configs that can be played.
+// Playable is an interface for game configs that can be played.
 // for implementers: make sure all O(1)
 type Playable interface {
 	getSkillActivableCards() []*usermodel.OwnedCard
@@ -29,4 +29,3 @@ type Playable interface {
 }
 
 var _ Playable = GameConfig{}
-var _ Playable = GameConfig2{}

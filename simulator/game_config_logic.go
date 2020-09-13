@@ -156,7 +156,7 @@ var guestTriColorCorrectStat = gameConfigLogic{
 var guestResonantCorrectStat = gameConfigLogic{
 	Name: "guestResonantCorrectStat",
 	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
-		for lskill, stat := range resonantMap {
+		for stat, lskill := range enum.ResonantMap {
 			if guest.LeadSkill.Name == lskill {
 				da, vo, vi := 0, 0, 0
 				for _, ocard := range team.Ocards {
