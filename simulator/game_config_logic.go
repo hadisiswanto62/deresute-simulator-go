@@ -76,15 +76,15 @@ var unisonInCorrectSongType = gameConfigLogic{
 var bothLeadSkillIsActive = gameConfigLogic{
 	Name: "bothLeadSkillIsActive",
 	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
-		attributes := [6]enum.Attribute{}
-		skills := [6]enum.SkillType{}
-		for i, ocard := range team.Ocards {
-			attributes[i] = ocard.Card.Idol.Attribute
-			skills[i] = ocard.Card.Skill.SkillType.Name
+		attributes := []enum.Attribute{}
+		skills := []enum.SkillType{}
+		for _, ocard := range team.Ocards {
+			attributes = append(attributes, ocard.Card.Idol.Attribute)
+			skills = append(skills, ocard.Card.Skill.SkillType.Name)
 		}
-		attributes[5] = guest.Card.Idol.Attribute
+		attributes = append(attributes, guest.Card.Idol.Attribute)
 		// IsViolated when any of lead skill is not active
-		return !(team.Leader().LeadSkill.IsActive(attributes[:], skills[:]) && guest.LeadSkill.IsActive(attributes[:], skills[:]))
+		return !(team.Leader().LeadSkill.IsActive(attributes, skills) && guest.LeadSkill.IsActive(attributes, skills))
 	},
 }
 
