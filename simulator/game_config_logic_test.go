@@ -146,7 +146,7 @@ func TestTriColorCorrectStat(t *testing.T) {
 			}
 		}
 	}
-	team := usermodel.Team{cards, leaderIndex}
+	team := usermodel.Team{Ocards: cards, LeaderIndex: leaderIndex}
 	song := &models.Song{Attribute: enum.AttrAll}
 	fmt.Println(isTeamOkDebug(&team, song))
 	for _, guest := range guests {

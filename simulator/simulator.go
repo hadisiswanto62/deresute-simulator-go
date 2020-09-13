@@ -13,11 +13,11 @@ type SimulationSummary struct {
 // Simulate simulates the game `times` times and return the summary in SimulationSummary
 func Simulate(gc Playable, times int) SimulationSummary {
 	// defer helper.MeasureTime(time.Now(), "Simulate")
-	game := NewGame2(gc)
-	// game := NewGame2(gc)
+	game := NewGame(gc)
+	// game := NewGame(gc)
 	resultChannel := make(chan int, times)
 	for i := 0; i < times; i++ {
-		go func(game *Game2, i int) {
+		go func(game *Game, i int) {
 			// randSeed := (time.Now().UnixNano() * int64(i+1)) % math.MaxInt64
 			state := game.Play()
 			resultChannel <- state.Score

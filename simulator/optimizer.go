@@ -14,6 +14,8 @@ import (
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
 
+// FindOptimal log the results of all (good) combinations of cards+guest given
+// the album and list of guest (for current song) to the specified path.
 func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 	song *models.Song, times int, filename string) error {
 	defer helper.MeasureTime(time.Now(), "FindOptimal")

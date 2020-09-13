@@ -9,6 +9,8 @@ import (
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
 
+// GameConfig is a config for normal game (with cards, supports, guest, and song).
+// USE NewGameConfig() FOR CREATING
 type GameConfig struct {
 	ocards      []*usermodel.OwnedCard
 	leaderIndex int
@@ -157,6 +159,7 @@ func (gc *GameConfig) recalculate() {
 	gc.hp = hp
 }
 
+// NewGameConfig creates, initializes, and returns GameConfig
 func NewGameConfig(
 	ocards []*usermodel.OwnedCard, leaderIndex int, supports []*usermodel.OwnedCard,
 	guest *usermodel.OwnedCard, song *models.Song) *GameConfig {

@@ -16,8 +16,8 @@ func Play(config BaseGameConfig, customCardParams *usermodelmanager.CustomOwnedC
 	}
 
 	defer helper.MeasureTime(time.Now(), "Play")
-	game2 := simulator.NewGame2(gc)
-	game2.Play()
+	game := simulator.NewGame(gc)
+	game.Play()
 	// result := simulator.Simulate(gc, 1000)
 	// fmt.Printf("%f %d\n", result.Average, result.Appeal)
 }

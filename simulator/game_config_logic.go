@@ -186,7 +186,7 @@ var guestPrincessUnisonCorrectStat = gameConfigLogic{
 		guestIsPrincessOrUnison := false
 		maps := []map[enum.LeadSkill]enum.Attribute{unisonTypeMap, princessTypeMap}
 		for _, item := range maps {
-			for lskill, _ := range item {
+			for lskill := range item {
 				if guest.LeadSkill.Name == lskill {
 					guestIsPrincessOrUnison = true
 					break

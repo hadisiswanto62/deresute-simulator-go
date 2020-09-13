@@ -31,23 +31,26 @@ func (as activeSkill) String() string {
 	return fmt.Sprintf("%d. %s", as.cardIndex, as.ocard.Card.Skill.SkillType.Name)
 }
 
-type Game2 struct {
+// Game is a game. USE NewGame TO CREATE.
+type Game struct {
 	Config Playable
 
 	songDifficultyMultiplier float64
 	comboBonusMap            map[int]float64
 }
 
-func NewGame2(c Playable) *Game2 {
-	game2 := Game2{
+// NewGame creates, initializes, and returns Game
+func NewGame(c Playable) *Game {
+	game := Game{
 		Config: c,
 	}
-	game2.songDifficultyMultiplier = getSongDifficultyMultiplier(c.getSong().Level)
-	game2.comboBonusMap = getComboBonusMap(c.getSong().NotesCount())
-	return &game2
+	game.songDifficultyMultiplier = getSongDifficultyMultiplier(c.getSong().Level)
+	game.comboBonusMap = getComboBonusMap(c.getSong().NotesCount())
+	return &game
 }
 
-type GameState2 struct {
+// GameState represents internal state of the game. also includes Score
+type GameState struct {
 	timestamp        int
 	Score            int
 	currentNoteIndex int
@@ -71,7 +74,7 @@ type GameState2 struct {
 	baseTapScore            float64
 }
 
-func (s GameState2) printState() {
+func (s GameState) printState() {
 	// 123000 Note #1: 12345 (hp=10). activeSkillsIndex = [] conc=bool
 	activeSkillsIndex := []int{}
 	for _, skill := range s.activeSkills {
@@ -83,7 +86,7 @@ func (s GameState2) printState() {
 	)
 }
 
-func (g Game2) rollSkill(state *GameState2) {
+func (g Game) rollSkill(state *GameState) {
 	state.activeSkills = expireOldSkills(state.activeSkills, state.timestamp)
 
 	// skill can't activate in the first loop
@@ -138,7 +141,8 @@ func (g Game2) rollSkill(state *GameState2) {
 	state.concentrationOn = isSkillActive(state.activeSkills, enum.SkillTypeConcentration)
 }
 
-func (g Game2) Play() *GameState2 {
+// Play plays the game and return the state
+func (g Game) Play() *GameState {
 	state := initConfig(g.Config)
 	for state.timestamp < state.song.DurationMs {
 		g.rollSkill(state)
@@ -169,7 +173,7 @@ func (g Game2) Play() *GameState2 {
 	return state
 }
 
-func initConfig(c Playable) *GameState2 {
+func initConfig(c Playable) *GameState {
 	teamAttributes := c.getTeamAttributesv2()
 	teamSkills := c.getTeamSkillsv2()
 
@@ -200,7 +204,7 @@ func initConfig(c Playable) *GameState2 {
 		skillsActive = append(skillsActive, active)
 	}
 
-	state := GameState2{
+	state := GameState{
 		timestamp:        0,
 		currentNoteIndex: -1,
 		currentHp:        c.getHp(),
@@ -241,7 +245,7 @@ func isSkillActive(skills []*activeSkill, skillType enum.SkillType) bool {
 	return false
 }
 
-func getTapJudgement(state *GameState2) enum.TapJudgement {
+func getTapJudgement(state *GameState) enum.TapJudgement {
 	judgement := enum.TapJudgementPerfect
 	var prob float64
 	if state.concentrationOn {
@@ -256,7 +260,7 @@ func getTapJudgement(state *GameState2) enum.TapJudgement {
 	return judgement
 }
 
-func (g Game2) getScoreAndComboBonus(state *GameState2, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+func (g Game) getScoreAndComboBonus(state *GameState, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
 	maxScoreBonus := 0.0
 	maxComboBonus := 0.0
 	maxBonusBonus := 0.0
@@ -294,7 +298,7 @@ func (g Game2) getScoreAndComboBonus(state *GameState2, judgement enum.TapJudgem
 	return (1 + maxScoreBonus) * (1 + maxComboBonus)
 }
 
-func (g Game2) getTapHeal(state *GameState2, judgement enum.TapJudgement, noteType enum.NoteType) int {
+func (g Game) getTapHeal(state *GameState, judgement enum.TapJudgement, noteType enum.NoteType) int {
 	maxHeal := 0
 	maxHealBonus := 0.0
 	for _, activeSkill := range state.activeSkills {
