@@ -7,7 +7,7 @@ import (
 // SkillTypeBase is a base skill (for unimplemented skills)
 var SkillTypeBase = SkillType{
 	Name: enum.SkillTypeBase,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return false
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -26,7 +26,7 @@ var SkillTypeBase = SkillType{
 // Also covers PerfectScoreBonus
 var SkillTypeScoreBonus = SkillType{
 	Name: enum.SkillTypeScoreBonus,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -58,7 +58,7 @@ var SkillTypeScoreBonus = SkillType{
 // that you will gain an extra n% combo bonus for o..p seconds. "
 var SkillTypeComboBonus = SkillType{
 	Name: enum.SkillTypeComboBonus,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -84,7 +84,7 @@ var SkillTypeComboBonus = SkillType{
 // that Perfect notes will receive a n% score bonus, but become harder to hit for o..p seconds."
 var SkillTypeConcentration = SkillType{
 	Name: enum.SkillTypeConcentration,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -110,7 +110,7 @@ var SkillTypeConcentration = SkillType{
 // that Perfect notes will restore n health for o..p seconds."
 var SkillTypeHealer = SkillType{
 	Name: enum.SkillTypeHealer,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -140,7 +140,7 @@ var SkillTypeHealer = SkillType{
 // will restore 1 health for 4..6 seconds.
 var SkillTypeAllRound = SkillType{
 	Name: enum.SkillTypeAllRound,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -168,7 +168,7 @@ var SkillTypeAllRound = SkillType{
 // gain an extra 15% combo bonus for 4..6 seconds. "
 var SkillTypeCoordinate = SkillType{
 	Name: enum.SkillTypeCoordinate,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -203,7 +203,7 @@ var SkillTypeCoordinate = SkillType{
 // 18% score bonus, and Nice/Bad notes will not break combo for 5..7.5 seconds. "
 var SkillTypeOverload = SkillType{
 	Name: enum.SkillTypeOverload,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -229,7 +229,7 @@ var SkillTypeOverload = SkillType{
 // combo bonus, and Perfect notes will receive a 16% score bonus plus restore 1 HP, for 5..7.5 seconds.
 var SkillTypeTricolorSynergy = SkillType{
 	Name: enum.SkillTypeTricolorSynergy,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attr {
 			attrMap[attribute] = true
@@ -258,7 +258,7 @@ var SkillTypeTricolorSynergy = SkillType{
 // will become Perfect notes for 6..9 seconds."
 var SkillTypeTuning = SkillType{
 	Name: enum.SkillTypeTuning,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -276,7 +276,7 @@ var SkillTypeTuning = SkillType{
 // that Bad/Nice/Great notes will become Perfect notes for 3..4.5 seconds. "
 var SkillTypePerfectLock = SkillType{
 	Name: enum.SkillTypePerfectLock,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -294,7 +294,7 @@ var SkillTypePerfectLock = SkillType{
 // that Nice notes will not break combo for 5..7.5 seconds."
 var SkillTypeComboGuard = SkillType{
 	Name: enum.SkillTypeComboGuard,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -312,7 +312,7 @@ var SkillTypeComboGuard = SkillType{
 // that you will gain an extra combo bonus based on your current health for 4..6 seconds. "
 var SkillTypeLifeSparkle = SkillType{
 	Name: enum.SkillTypeLifeSparkle,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -368,7 +368,7 @@ var SkillTypeLifeSparkle = SkillType{
 // that you will not lose health for 6..9 seconds."
 var SkillTypeLifeGuard = SkillType{
 	Name: enum.SkillTypeLifeGuard,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -386,7 +386,7 @@ var SkillTypeLifeGuard = SkillType{
 // to boost the effects of currently active skills for 5..7.5 seconds. "
 var SkillTypeSkillBoost = SkillType{
 	Name: enum.SkillTypeSkillBoost,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -411,7 +411,7 @@ var SkillTypeSkillBoost = SkillType{
 // 14% score bonus, and you will gain an extra 11% combo bonus for 5..7.5 seconds. "
 var SkillTypeCuteFocus = SkillType{
 	Name: enum.SkillTypeCuteFocus,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		for _, attribute := range attr {
 			if attribute == "" {
 				continue
@@ -452,7 +452,7 @@ var SkillTypeCuteFocus = SkillType{
 // 14% score bonus, and you will gain an extra 11% combo bonus for 5..7.5 seconds. "
 var SkillTypeCoolFocus = SkillType{
 	Name: enum.SkillTypeCoolFocus,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		for _, attribute := range attr {
 			if attribute == "" {
 				continue
@@ -493,7 +493,7 @@ var SkillTypeCoolFocus = SkillType{
 // 14% score bonus, and you will gain an extra 11% combo bonus for 5..7.5 seconds. "
 var SkillTypePassionFocus = SkillType{
 	Name: enum.SkillTypePassionFocus,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		for _, attribute := range attr {
 			if attribute == "" {
 				continue
@@ -533,7 +533,7 @@ var SkillTypePassionFocus = SkillType{
 // to activate the previous skill again for 3..4.5 seconds."
 var SkillTypeEncore = SkillType{
 	Name: enum.SkillTypeEncore,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -552,7 +552,7 @@ var SkillTypeEncore = SkillType{
 // bonus/health recovery of currently active skills for 4..6 seconds.
 var SkillTypeTricolorSymphony = SkillType{
 	Name: enum.SkillTypeTricolorSymphony,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attr {
 			if attribute == "" {
@@ -584,7 +584,7 @@ var SkillTypeTricolorSymphony = SkillType{
 // gained so far with a boost of 50% for 3..4.5 seconds.
 var SkillTypeAlternate = SkillType{
 	Name: enum.SkillTypeAlternate,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -603,7 +603,7 @@ var SkillTypeAlternate = SkillType{
 // Note: use BASE appeal of 5 members
 var SkillTypeVisualMotif = SkillType{
 	Name: enum.SkillTypeVisualMotif,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -646,7 +646,7 @@ var SkillTypeVisualMotif = SkillType{
 // Note: use BASE appeal of 5 members
 var SkillTypeVocalMotif = SkillType{
 	Name: enum.SkillTypeVocalMotif,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -689,7 +689,7 @@ var SkillTypeVocalMotif = SkillType{
 // Note: use BASE appeal of 5 members
 var SkillTypeDanceMotif = SkillType{
 	Name: enum.SkillTypeDanceMotif,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -731,7 +731,7 @@ var SkillTypeDanceMotif = SkillType{
 // boost the score/combo bonus of Cute idols' active skills for 3..4.5 seconds.""
 var SkillTypeCuteEnsemble = SkillType{
 	Name: enum.SkillTypeCuteEnsemble,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -749,7 +749,7 @@ var SkillTypeCuteEnsemble = SkillType{
 // boost the score/combo bonus of Cool idols' active skills for 3..4.5 seconds.""
 var SkillTypeCoolEnsemble = SkillType{
 	Name: enum.SkillTypeCoolEnsemble,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
@@ -767,7 +767,7 @@ var SkillTypeCoolEnsemble = SkillType{
 // boost the score/combo bonus of Cute idols' active skills for 3..4.5 seconds.""
 var SkillTypePassionEnsemble = SkillType{
 	Name: enum.SkillTypePassionEnsemble,
-	IsActive: func(attr [6]enum.Attribute) bool {
+	IsActive: func(attr []enum.Attribute) bool {
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {

@@ -114,7 +114,7 @@ func (g *Game) rollSkill(state *GameState) {
 			continue
 		}
 		// if inactive skill --> skip
-		if !ocard.Card.Skill.SkillType.IsActive(state.teamAttributes) {
+		if !ocard.Card.Skill.SkillType.IsActive(state.teamAttributes[:]) {
 			// state.logf("%6d: Tried to activate (%d. %s) but it is inactive", state.timestamp, i, ocard.Card.Skill.SkillType.Name)
 			continue
 		}
@@ -178,7 +178,7 @@ func (g Game) scoreAndComboBonus(state GameState, judgement enum.TapJudgement, n
 
 	maxBonusBonus := 0.0
 	for _, activeSkill := range state.activeSkills {
-		if activeSkill.ocard.Skill.SkillType.IsActive(state.teamAttributes) {
+		if activeSkill.ocard.Skill.SkillType.IsActive(state.teamAttributes[:]) {
 			tmpScoreBonus := activeSkill.ocard.Skill.SkillType.ScoreBonus(
 				activeSkill.ocard.Card.Rarity.Rarity,
 				g.config.BaseVisual,
@@ -227,8 +227,8 @@ func (g Game) Play(seed int64) GameState {
 	teamSkills := g.config.getTeamSkills()
 	state := GameState{
 		timestamp:            0,
-		leadSkillActive:      g.config.team.Leader().LeadSkill.IsActive(teamAttributes, teamSkills),
-		guestLeadSkillActive: g.config.guest.LeadSkill.IsActive(teamAttributes, teamSkills),
+		leadSkillActive:      g.config.team.Leader().LeadSkill.IsActive(teamAttributes[:], teamSkills[:]),
+		guestLeadSkillActive: g.config.guest.LeadSkill.IsActive(teamAttributes[:], teamSkills[:]),
 		currentNoteIndex:     -1,
 		currentHp:            g.config.Hp,
 		teamAttributes:       teamAttributes,

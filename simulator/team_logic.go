@@ -25,7 +25,7 @@ var skillsAreActive = teamLogic{
 			attributes[i] = ocard.Card.Idol.Attribute
 		}
 		for _, ocard := range team.Ocards {
-			if !ocard.Card.Skill.SkillType.IsActive(attributes) {
+			if !ocard.Card.Skill.SkillType.IsActive(attributes[:]) {
 				return false
 			}
 		}

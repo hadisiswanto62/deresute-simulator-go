@@ -84,7 +84,7 @@ var bothLeadSkillIsActive = gameConfigLogic{
 		}
 		attributes[5] = guest.Card.Idol.Attribute
 		// IsViolated when any of lead skill is not active
-		return !(team.Leader().LeadSkill.IsActive(attributes, skills) && guest.LeadSkill.IsActive(attributes, skills))
+		return !(team.Leader().LeadSkill.IsActive(attributes[:], skills[:]) && guest.LeadSkill.IsActive(attributes[:], skills[:]))
 	},
 }
 

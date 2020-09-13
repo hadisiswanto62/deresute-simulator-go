@@ -56,3 +56,9 @@ const (
 	LeadSkillResonantVoice  LeadSkill = "レゾナンス・ボイス"
 	LeadSkillResonantMakeup LeadSkill = "レゾナンス・メイク"
 )
+
+var ResonantMap = map[Stat]LeadSkill{
+	StatDance:  LeadSkillResonantStep,
+	StatVisual: LeadSkillResonantMakeup,
+	StatVocal:  LeadSkillResonantVoice,
+}

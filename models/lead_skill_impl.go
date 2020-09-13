@@ -1,6 +1,8 @@
 package models
 
-import "github.com/hadisiswanto62/deresute-simulator-go/enum"
+import (
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
+)
 
 func attrStatUp(cardStat enum.Stat, cardAttr enum.Attribute, rarity enum.Rarity,
 	requiredStat enum.Stat, requiredAttr enum.Attribute) float64 {
@@ -21,7 +23,7 @@ func attrStatUp(cardStat enum.Stat, cardAttr enum.Attribute, rarity enum.Rarity,
 // LeadSkillBase is a base lead skill (for unimplemented lead skills)
 var LeadSkillBase = LeadSkill{
 	Name: enum.LeadSkillBase,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return false
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -38,7 +40,7 @@ var LeadSkillBase = LeadSkill{
 // LeadSkillIrrelevant is for irrelevant lead skills
 var LeadSkillIrrelevant = LeadSkill{
 	Name: enum.LeadSkillIrrelevant,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return false
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -55,7 +57,7 @@ var LeadSkillIrrelevant = LeadSkill{
 // LeadSkillCuteMakeup = "Raises the Visual appeal of all Cute members by x%"
 var LeadSkillCuteMakeup = LeadSkill{
 	Name: enum.LeadSkillCuteMakeup,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -72,7 +74,7 @@ var LeadSkillCuteMakeup = LeadSkill{
 // LeadSkillCuteStep = "Raises the Dance appeal of all Cute members by x%"
 var LeadSkillCuteStep = LeadSkill{
 	Name: enum.LeadSkillCuteStep,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -89,7 +91,7 @@ var LeadSkillCuteStep = LeadSkill{
 // LeadSkillCuteVoice = "Raises the Vocal appeal of all Cute members by x%"
 var LeadSkillCuteVoice = LeadSkill{
 	Name: enum.LeadSkillCuteVoice,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -106,7 +108,7 @@ var LeadSkillCuteVoice = LeadSkill{
 // LeadSkillPassionMakeup = "Raises the Visual appeal of all Passion members by x%"
 var LeadSkillPassionMakeup = LeadSkill{
 	Name: enum.LeadSkillPassionMakeup,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -123,7 +125,7 @@ var LeadSkillPassionMakeup = LeadSkill{
 // LeadSkillPassionStep = "Raises the Dance appeal of all Passion members by x%"
 var LeadSkillPassionStep = LeadSkill{
 	Name: enum.LeadSkillPassionStep,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -140,7 +142,7 @@ var LeadSkillPassionStep = LeadSkill{
 // LeadSkillPassionVoice = "Raises the Vocal appeal of all Passion members by x%"
 var LeadSkillPassionVoice = LeadSkill{
 	Name: enum.LeadSkillPassionVoice,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -157,7 +159,7 @@ var LeadSkillPassionVoice = LeadSkill{
 // LeadSkillCoolMakeup = "Raises the Visual appeal of all Cool members by x%"
 var LeadSkillCoolMakeup = LeadSkill{
 	Name: enum.LeadSkillCoolMakeup,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -174,7 +176,7 @@ var LeadSkillCoolMakeup = LeadSkill{
 // LeadSkillCoolStep = "Raises the Dance appeal of all Cool members by x%"
 var LeadSkillCoolStep = LeadSkill{
 	Name: enum.LeadSkillCoolStep,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -191,7 +193,7 @@ var LeadSkillCoolStep = LeadSkill{
 // LeadSkillCoolVoice = "Raises the Vocal appeal of all Cool members by x%"
 var LeadSkillCoolVoice = LeadSkill{
 	Name: enum.LeadSkillCoolVoice,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -208,7 +210,7 @@ var LeadSkillCoolVoice = LeadSkill{
 // LeadSkillCoolAbility = "Raises the skill probability of all <Attr> members by x%"
 var LeadSkillCoolAbility = LeadSkill{
 	Name: enum.LeadSkillCoolAbility,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -235,7 +237,7 @@ var LeadSkillCoolAbility = LeadSkill{
 // LeadSkillCuteAbility = "Raises the skill probability of all <Attr> members by x%"
 var LeadSkillCuteAbility = LeadSkill{
 	Name: enum.LeadSkillCuteAbility,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -262,7 +264,7 @@ var LeadSkillCuteAbility = LeadSkill{
 // LeadSkillPassionAbility = "Raises the skill probability of all <Attr> members by x%"
 var LeadSkillPassionAbility = LeadSkill{
 	Name: enum.LeadSkillPassionAbility,
-	IsActive: func([6]enum.Attribute, [6]enum.SkillType) bool {
+	IsActive: func([]enum.Attribute, []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -290,7 +292,7 @@ var LeadSkillPassionAbility = LeadSkill{
 // Raises the life of all Cute members by 40%."
 var LeadSkillCuteCheer = LeadSkill{
 	Name: enum.LeadSkillCuteCheer,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		for _, attr := range attrs {
 			if attr != enum.AttrCute {
 				return false
@@ -313,7 +315,7 @@ var LeadSkillCuteCheer = LeadSkill{
 // Raises the life of all Cool members by 40%."
 var LeadSkillCoolCheer = LeadSkill{
 	Name: enum.LeadSkillCoolCheer,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		for _, attr := range attrs {
 			if attr != enum.AttrCool {
 				return false
@@ -336,7 +338,7 @@ var LeadSkillCoolCheer = LeadSkill{
 // Raises the life of all Passion members by 40%."
 var LeadSkillPassionCheer = LeadSkill{
 	Name: enum.LeadSkillPassionCheer,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		for _, attr := range attrs {
 			if attr != enum.AttrPassion {
 				return false
@@ -359,7 +361,7 @@ var LeadSkillPassionCheer = LeadSkill{
 // Raises all appeals of all Cute members by 50%.
 var LeadSkillCutePrincess = LeadSkill{
 	Name: enum.LeadSkillCutePrincess,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		for _, attr := range attrs {
 			if attr != enum.AttrCute {
 				return false
@@ -389,7 +391,7 @@ var LeadSkillCutePrincess = LeadSkill{
 // Raises all appeals of all Cool members by 50%.
 var LeadSkillCoolPrincess = LeadSkill{
 	Name: enum.LeadSkillCoolPrincess,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		for _, attr := range attrs {
 			if attr != enum.AttrCool {
 				return false
@@ -419,7 +421,7 @@ var LeadSkillCoolPrincess = LeadSkill{
 // Raises all appeals of all Passion members by 50%.
 var LeadSkillPassionPrincess = LeadSkill{
 	Name: enum.LeadSkillPassionPrincess,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		for _, attr := range attrs {
 			if attr != enum.AttrPassion {
 				return false
@@ -448,7 +450,7 @@ var LeadSkillPassionPrincess = LeadSkill{
 // LeadSkillCuteUnison = "Raises all appeals of all Cute members by 30% (55% when playing a Cute-type song)."
 var LeadSkillCuteUnison = LeadSkill{
 	Name: enum.LeadSkillCuteUnison,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -471,7 +473,7 @@ var LeadSkillCuteUnison = LeadSkill{
 // LeadSkillCoolUnison = "Raises all appeals of all Cool members by 30% (55% when playing a Cool-type song)."
 var LeadSkillCoolUnison = LeadSkill{
 	Name: enum.LeadSkillCoolUnison,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -494,7 +496,7 @@ var LeadSkillCoolUnison = LeadSkill{
 // LeadSkillPassionUnison = "Raises all appeals of all Passion members by 30% (55% when playing a Passion-type song)."
 var LeadSkillPassionUnison = LeadSkill{
 	Name: enum.LeadSkillPassionUnison,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -517,7 +519,7 @@ var LeadSkillPassionUnison = LeadSkill{
 // LeadSkillCuteBrilliance = " Raises all appeals of all Cute members by 40%."
 var LeadSkillCuteBrilliance = LeadSkill{
 	Name: enum.LeadSkillCuteBrilliance,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -544,7 +546,7 @@ var LeadSkillCuteBrilliance = LeadSkill{
 // LeadSkillCoolBrilliance = " Raises all appeals of all Cool members by 40%."
 var LeadSkillCoolBrilliance = LeadSkill{
 	Name: enum.LeadSkillCoolBrilliance,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -571,7 +573,7 @@ var LeadSkillCoolBrilliance = LeadSkill{
 // LeadSkillPassionBrilliance = " Raises all appeals of all Passion members by 40%."
 var LeadSkillPassionBrilliance = LeadSkill{
 	Name: enum.LeadSkillPassionBrilliance,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -598,7 +600,7 @@ var LeadSkillPassionBrilliance = LeadSkill{
 // LeadSkillCuteEnergy = "  Raises the life of all Cute members by 30%. "
 var LeadSkillCuteEnergy = LeadSkill{
 	Name: enum.LeadSkillCuteEnergy,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -625,7 +627,7 @@ var LeadSkillCuteEnergy = LeadSkill{
 // LeadSkillCoolEnergy = "  Raises the life of all Cool members by 30%. "
 var LeadSkillCoolEnergy = LeadSkill{
 	Name: enum.LeadSkillCoolEnergy,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -652,7 +654,7 @@ var LeadSkillCoolEnergy = LeadSkill{
 // LeadSkillPassionEnergy = "  Raises the life of all Passion members by 30%. "
 var LeadSkillPassionEnergy = LeadSkill{
 	Name: enum.LeadSkillPassionEnergy,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -680,7 +682,7 @@ var LeadSkillPassionEnergy = LeadSkill{
 // Raises the Vocal appeal of all members by 100%. "
 var LeadSkillTricolorVoice = LeadSkill{
 	Name: enum.LeadSkillTricolorVoice,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			if attribute == "" {
@@ -714,7 +716,7 @@ var LeadSkillTricolorVoice = LeadSkill{
 // Raises the Dance appeal of all members by 100%. "
 var LeadSkillTricolorStep = LeadSkill{
 	Name: enum.LeadSkillTricolorStep,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			if attribute == "" {
@@ -748,7 +750,7 @@ var LeadSkillTricolorStep = LeadSkill{
 // Raises the Visual appeal of all members by 100%. "
 var LeadSkillTricolorMakeup = LeadSkill{
 	Name: enum.LeadSkillTricolorMakeup,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			if attribute == "" {
@@ -782,7 +784,7 @@ var LeadSkillTricolorMakeup = LeadSkill{
 // Raises the skill probability of all members by 50%.
 var LeadSkillTricolorAbility = LeadSkill{
 	Name: enum.LeadSkillTricolorAbility,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			if attribute == "" {
@@ -813,7 +815,7 @@ var LeadSkillTricolorAbility = LeadSkill{
 // LeadSkillShinyVoice : " Raises the Vocal appeal of all members by 80%. "
 var LeadSkillShinyVoice = LeadSkill{
 	Name: enum.LeadSkillShinyVoice,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -839,7 +841,7 @@ var LeadSkillShinyVoice = LeadSkill{
 // LeadSkillShinyMakeup : " Raises the Visual appeal of all members by 80%. "
 var LeadSkillShinyMakeup = LeadSkill{
 	Name: enum.LeadSkillShinyMakeup,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -865,7 +867,7 @@ var LeadSkillShinyMakeup = LeadSkill{
 // LeadSkillShinyStep : " Raises the Dance appeal of all members by 80%. "
 var LeadSkillShinyStep = LeadSkill{
 	Name: enum.LeadSkillShinyStep,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		return true
 	},
 	StatBonus: func(rarity enum.Rarity, cardAttr enum.Attribute, stat enum.Stat, songAttr enum.Attribute) float64 {
@@ -892,7 +894,7 @@ var LeadSkillShinyStep = LeadSkill{
 // Raises all appeals of all members by 30%, and of all members by 10%. "
 var LeadSkillCuteCrossCool = LeadSkill{
 	Name: enum.LeadSkillCuteCrossCool,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			attrMap[attribute] = true
@@ -923,7 +925,7 @@ var LeadSkillCuteCrossCool = LeadSkill{
 // Raises all appeals of all members by 30%, and of all members by 10%. "
 var LeadSkillCuteCrossPassion = LeadSkill{
 	Name: enum.LeadSkillCuteCrossPassion,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			attrMap[attribute] = true
@@ -954,7 +956,7 @@ var LeadSkillCuteCrossPassion = LeadSkill{
 // Raises all appeals of all members by 20%, and the skill probability of all members by 25%.
 var LeadSkillCoolCrossCute = LeadSkill{
 	Name: enum.LeadSkillCoolCrossCute,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			attrMap[attribute] = true
@@ -992,7 +994,7 @@ var LeadSkillCoolCrossCute = LeadSkill{
 // Raises all appeals of all members by 20%, and the skill probability of all members by 25%.
 var LeadSkillCoolCrossPassion = LeadSkill{
 	Name: enum.LeadSkillCoolCrossPassion,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			attrMap[attribute] = true
@@ -1030,7 +1032,7 @@ var LeadSkillCoolCrossPassion = LeadSkill{
 // Raises all appeals of all members by 30%, and the life of all members by 25%. "
 var LeadSkillPassionCrossCool = LeadSkill{
 	Name: enum.LeadSkillPassionCrossCool,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			attrMap[attribute] = true
@@ -1068,7 +1070,7 @@ var LeadSkillPassionCrossCool = LeadSkill{
 // Raises all appeals of all members by 30%, and the life of all members by 25%. "
 var LeadSkillPassionCrossCute = LeadSkill{
 	Name: enum.LeadSkillPassionCrossCute,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		attrMap := make(map[enum.Attribute]bool)
 		for _, attribute := range attrs {
 			attrMap[attribute] = true
@@ -1106,7 +1108,7 @@ var LeadSkillPassionCrossCute = LeadSkill{
 // Allows active skill effects to stack, but only the Visual appeal of the team applies during the live. "
 var LeadSkillResonantMakeup = LeadSkill{
 	Name: enum.LeadSkillResonantMakeup,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		skillMap := make(map[enum.SkillType]bool)
 		for _, skill := range skills {
 			if skill == "" {
@@ -1131,7 +1133,7 @@ var LeadSkillResonantMakeup = LeadSkill{
 // Allows active skill effects to stack, but only the Vocal appeal of the team applies during the live. "
 var LeadSkillResonantVoice = LeadSkill{
 	Name: enum.LeadSkillResonantVoice,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		skillMap := make(map[enum.SkillType]bool)
 		for _, skill := range skills {
 			if skill == "" {
@@ -1156,7 +1158,7 @@ var LeadSkillResonantVoice = LeadSkill{
 // Allows active skill effects to stack, but only the Dance appeal of the team applies during the live. "
 var LeadSkillResonantStep = LeadSkill{
 	Name: enum.LeadSkillResonantStep,
-	IsActive: func(attrs [6]enum.Attribute, skills [6]enum.SkillType) bool {
+	IsActive: func(attrs []enum.Attribute, skills []enum.SkillType) bool {
 		skillMap := make(map[enum.SkillType]bool)
 		for _, skill := range skills {
 			if skill == "" {

@@ -90,8 +90,8 @@ func (gc *GameConfig) recalculate() {
 	teamAttributes := gc.getTeamAttributes()
 	skills := gc.getTeamSkills()
 
-	leadSkillActive := leader.Card.LeadSkill.IsActive(teamAttributes, skills)
-	guestLeadSkillActive := gc.guest.Card.LeadSkill.IsActive(teamAttributes, skills)
+	leadSkillActive := leader.Card.LeadSkill.IsActive(teamAttributes[:], skills[:])
+	guestLeadSkillActive := gc.guest.Card.LeadSkill.IsActive(teamAttributes[:], skills[:])
 
 	isResonant := gc.resonantOn()
 	var resonantStat enum.Stat
@@ -181,5 +181,66 @@ func (gc *GameConfig) resonantOn() bool {
 		attrs[i] = ocard.Card.Idol.Attribute
 		skills[i] = ocard.Card.Skill.SkillType.Name
 	}
-	return gc.team.Leader().LeadSkill.IsActive(attrs, skills)
+	return gc.team.Leader().LeadSkill.IsActive(attrs[:], skills[:])
+}
+
+func (gc GameConfig) getSkillActivableCards() []*usermodel.OwnedCard {
+	return gc.team.Ocards[:]
+}
+
+func (gc GameConfig) getLeadSkillActivableCards() []*usermodel.OwnedCard {
+	return []*usermodel.OwnedCard{
+		gc.team.Leader(),
+		gc.guest,
+	}
+}
+
+func (gc GameConfig) getSong() *models.Song {
+	return gc.song
+}
+
+func (gc GameConfig) getBaseVisual() int {
+	return gc.BaseVisual
+}
+func (gc GameConfig) getBaseVocal() int {
+	return gc.BaseVocal
+}
+func (gc GameConfig) getBaseDance() int {
+	return gc.BaseDance
+}
+
+func (gc GameConfig) getAppeal() int {
+	return gc.Appeal
+}
+func (gc GameConfig) getHp() int {
+	return gc.Hp
+}
+
+func (gc GameConfig) getTeamAttributesv2() []enum.Attribute {
+	attributesArr := gc.getTeamAttributes()
+	return attributesArr[:]
+}
+
+func (gc GameConfig) getTeamSkillsv2() []enum.SkillType {
+	ret := make([]enum.SkillType, 0, 5)
+	for _, ocard := range gc.getSkillActivableCards() {
+		ret = append(ret, ocard.Card.Skill.SkillType.Name)
+	}
+	return ret
+}
+
+func (gc GameConfig) isResonantActive() bool {
+	return gc.resonantOn()
+}
+
+func (gc GameConfig) getCards() []*usermodel.OwnedCard {
+	return gc.team.Ocards[:]
+}
+
+func (gc GameConfig) getLeaderIndex() int {
+	return gc.team.LeaderIndex
+}
+
+func (gc GameConfig) getGuest() *usermodel.OwnedCard {
+	return gc.guest
 }
