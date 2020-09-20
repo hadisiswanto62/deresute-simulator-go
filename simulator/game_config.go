@@ -29,6 +29,14 @@ type GameConfig struct {
 	resonantOn              bool
 }
 
+func (gc GameConfig) GetOcards() []*usermodel.OwnedCard {
+	return gc.ocards
+}
+
+func (gc GameConfig) Recalculate() {
+	gc.recalculate()
+}
+
 func (gc GameConfig) getSkillActivableCards() []*usermodel.OwnedCard {
 	return gc.ocards
 }

@@ -16,6 +16,7 @@ type Note struct {
 type Song struct {
 	Name       string
 	Level      int
+	Difficulty enum.SongDifficulty
 	Attribute  enum.Attribute
 	DurationMs int
 	Notes      []Note

@@ -234,6 +234,28 @@ var motifWithHighCorrectStat = teamLogic{
 		return true
 	},
 }
+var useUnevolvedWithoutEvolved = teamLogic{
+	Name: "useUnevolvedWithoutEvolved",
+	IsSatisfied: func(team *usermodel.Team, song *models.Song) bool {
+		for _, ocard := range team.Ocards {
+			if ocard.Card.Rarity.IsEvolved {
+				continue
+			}
+			foundEvolved := false
+			for _, ocard2 := range team.Ocards {
+				if ocard2.Card.Rarity.IsEvolved {
+					if ocard2.Card.ID == ocard.Card.ID+1 {
+						foundEvolved = true
+					}
+				}
+			}
+			if !foundEvolved {
+				return false
+			}
+		}
+		return true
+	},
+}
 var teamLogics = []teamLogic{
 	leadSkillIsImplemented,
 	princessUnisonOnUnicolor,
@@ -242,6 +264,7 @@ var teamLogics = []teamLogic{
 	attrSpecificLeadSkillOnUnicolor,
 	noDuoColor,
 	motifWithHighCorrectStat,
+	useUnevolvedWithoutEvolved,
 	// tricolorOnMinimum2Color,
 
 	// for info only:

@@ -13,3 +13,12 @@ const (
 
 // AllRarities is all valid rarities
 var AllRarities = [4]Rarity{RaritySSR, RaritySR, RarityR, RarityN}
+
+func GetRarity(s string) Rarity {
+	for _, rarity := range AllRarities {
+		if string(rarity) == s {
+			return rarity
+		}
+	}
+	return RaritySSR
+}

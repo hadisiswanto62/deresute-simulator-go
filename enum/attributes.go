@@ -16,3 +16,17 @@ var AttrForIdol = [3]Attribute{AttrCute, AttrCool, AttrPassion}
 
 // AttrForSong is all valid attributes for songs
 var AttrForSong = [4]Attribute{AttrCute, AttrCool, AttrPassion, AttrAll}
+
+func GetAttribute(i int) Attribute {
+	switch i {
+	case 1:
+		return AttrCute
+	case 2:
+		return AttrCool
+	case 3:
+		return AttrPassion
+	case 4:
+		return AttrAll
+	}
+	return AttrAll
+}

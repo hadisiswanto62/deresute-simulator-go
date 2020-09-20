@@ -53,10 +53,12 @@ func (c BaseOptimizeConfig) getSongAttr() enum.Attribute {
 
 func ToGameConfig(config BaseGameConfig, customCardParams *usermodelmanager.CustomOwnedCardParameters,
 	useDefaultCards bool) (*simulator.GameConfig, error) {
-	var err error
-	config.Song, err = makeSong(config)
-	if err != nil {
-		return nil, fmt.Errorf("Cannot make song: %f", err)
+	if config.Song == nil {
+		var err error
+		config.Song, err = makeSong(config)
+		if err != nil {
+			return nil, fmt.Errorf("Cannot make song: %f", err)
+		}
 	}
 	if customCardParams == nil {
 		customCardParams = &usermodelmanager.CustomOwnedCardParameters{}

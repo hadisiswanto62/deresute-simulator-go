@@ -1,6 +1,10 @@
 package parser
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/hadisiswanto62/deresute-simulator-go/jsonmodels"
+)
 
 type dataInitializer interface {
 	InitData() error
@@ -12,3 +16,5 @@ func InitData(dp dataInitializer) error {
 	}
 	return nil
 }
+
+var _ dataInitializer = jsonmodels.JSONDataParser{}

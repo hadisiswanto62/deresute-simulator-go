@@ -46,10 +46,6 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 				continue
 			}
 			guestCount = append(guestCount, guest)
-			// if team.Leader().LeadSkill.Name == enum.LeadSkillResonantStep {
-			// 	fmt.Println("test")
-			// }
-			// gameConfig := NewGameConfig(team, supports, guest, song)
 			gameConfig := NewGameConfig(team.Ocards[:], team.LeaderIndex, supports[:], guest, song)
 			if helper.Features.LimitAppeals() {
 				if gameConfig.getAppeal() < 310000 {
@@ -60,12 +56,8 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 			if beneran {
 				go func(gameConfig *GameConfig, channel chan SimulationSummary) {
 					channel <- Simulate(gameConfig, times)
-					// resultChannel <- SimulationSummary{Average: 100}
 				}(gameConfig, resultChannel)
 			}
-		}
-		if i%100000 == 0 {
-			fmt.Println(i)
 		}
 	}
 	log.Printf("Finding supports %d times\n", i)

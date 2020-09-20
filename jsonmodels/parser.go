@@ -21,6 +21,7 @@ const (
 	idolPath      = "data/idol.json"
 	skillPath     = "data/skill.json"
 	ownedCardPath = "userdata/data.json"
+	songPath      = "data/song.json"
 )
 
 // JSONDataParser manages card data that is stored in JSON form
@@ -258,4 +259,27 @@ func (p JSONDataParser) ParseOwnedCardRawData(path string) ([]*usermodel.OwnedCa
 		ret = append(ret, ocd)
 	}
 	return ret, nil
+}
+
+func (p JSONDataParser) SaveSong(songs []*models.Song, path string) error {
+	if path == "" {
+		path = songPath
+	}
+	err := save(songs, path)
+	return err
+}
+
+func (p JSONDataParser) ParseSong(path string) ([]*models.Song, error) {
+	if path == "" {
+		path = songPath
+	}
+	text, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("can't parse song: %v", err)
+	}
+	song := []*models.Song{}
+	if err = json.Unmarshal(text, &song); err != nil {
+		return nil, fmt.Errorf("cannot unmarshal (%s): %v", rarityPath, err)
+	}
+	return song, nil
 }

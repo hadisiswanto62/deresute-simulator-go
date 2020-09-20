@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/csvmodels"
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
@@ -15,19 +16,31 @@ import (
 
 func Optimize(config BaseOptimizeConfig,
 	customOwnParams *usermodelmanager.CustomOwnedCardParameters) error {
+	defer helper.MeasureTime(time.Now(), "Optimize")
 	cardsPath := config.CardsPath
 	guestPath := config.GuestsPath
 	song := config.getSong()
 	simulateTimes := 100
 
 	dp := csvmodels.CSVDataParser{}
-	ocards, err := usermodelmanager.ParseOwnedCard(dp, cardsPath, customOwnParams)
+	baseOcards, err := usermodelmanager.ParseOwnedCard(dp, cardsPath, customOwnParams)
 	if err != nil {
 		panic(err)
 	}
 	guests, err := usermodelmanager.ParseOwnedCard(dp, guestPath, customOwnParams)
 	if err != nil {
 		panic(err)
+	}
+
+	ocards := []*usermodel.OwnedCard{}
+	if song.Attribute == enum.AttrAll {
+		ocards = baseOcards
+	} else {
+		for _, ocard := range baseOcards {
+			if ocard.Card.Idol.Attribute == song.Attribute {
+				ocards = append(ocards, ocard)
+			}
+		}
 	}
 
 	album := usermodel.NewAlbum(ocards)
