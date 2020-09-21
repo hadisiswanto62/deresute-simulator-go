@@ -50,7 +50,9 @@ func Optimize(config BaseOptimizeConfig,
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Results saved to %s\n", filename)
+	if helper.Features.ReallySimulate() {
+		fmt.Printf("Results saved to %s\n", filename)
+	}
 	return nil
 }
 
@@ -63,6 +65,9 @@ func makeFilename(config BaseOptimizeConfig,
 	filenameParts = append(filenameParts, fmt.Sprintf("potSk=%d", customOwnParams.PotSkill))
 	if helper.Features.UseConcentration() {
 		filenameParts = append(filenameParts, "conc")
+	}
+	if helper.Features.AlwaysGoodRolls() {
+		filenameParts = append(filenameParts, "skillOn")
 	}
 	filenameParts = append(filenameParts, strconv.Itoa(int(time.Now().Unix())))
 	filename := fmt.Sprintf("%s.txt", strings.Join(filenameParts, "_"))

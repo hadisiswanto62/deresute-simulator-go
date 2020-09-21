@@ -72,6 +72,8 @@ type GameState struct {
 	baseDance               int
 	maxHp                   int
 	baseTapScore            float64
+
+	alwaysGoodRolls bool
 }
 
 func (s GameState) printState() {
@@ -120,7 +122,9 @@ func (g Game) rollSkill(state *GameState) {
 		}
 		prob := float64(ocard.SkillProcChance) / 10000.0 * probMultiplier
 		if !helper.RollFast(prob) {
-			continue
+			if !state.alwaysGoodRolls {
+				continue
+			}
 		}
 
 		hpCost := ocard.Card.Skill.ActivationCost
@@ -142,8 +146,9 @@ func (g Game) rollSkill(state *GameState) {
 }
 
 // Play plays the game and return the state
-func (g Game) Play() *GameState {
+func (g Game) Play(alwaysGoodRolls bool) *GameState {
 	state := initConfig(g.Config)
+	state.alwaysGoodRolls = alwaysGoodRolls
 	for state.timestamp < state.song.DurationMs {
 		g.rollSkill(state)
 		for i := state.currentNoteIndex + 1; i < state.song.NotesCount(); i++ {
@@ -254,7 +259,7 @@ func getTapJudgement(state *GameState) enum.TapJudgement {
 		prob = greatProb
 	}
 
-	if helper.RollFast(prob) {
+	if helper.RollFast(prob) && !state.alwaysGoodRolls {
 		judgement = enum.TapJudgementGreat
 	}
 	return judgement

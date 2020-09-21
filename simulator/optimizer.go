@@ -49,7 +49,9 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 			gameConfig := NewGameConfig(team.Ocards[:], team.LeaderIndex, supports[:], guest, song)
 			if helper.Features.LimitAppeals() {
 				if gameConfig.getAppeal() < 310000 {
-					continue
+					if !gameConfig.isResonantActive() {
+						continue
+					}
 				}
 			}
 			actualNumberofResults++
@@ -99,7 +101,12 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 	buffer := []string{}
 	readableBuffer := []string{}
 	bufferMaxLength := 10000
+	sampahCount := 0
 	for _, summary := range summaries {
+		if summary.SimCount == -1 {
+			sampahCount++
+			continue
+		}
 		ids := []string{}
 		for _, ocard := range summary.GameConfig.getCards() {
 			ids = append(ids, strconv.Itoa(ocard.Card.ID))
@@ -128,6 +135,7 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 			readableBuffer = []string{}
 		}
 	}
+	log.Printf("Found %d sampahs\n", sampahCount)
 	saveBuffer(&buffer, fmt.Sprintf("log/%s", filename))
 	saveBuffer(&readableBuffer, fmt.Sprintf("log/readable/%s", filename))
 	return nil

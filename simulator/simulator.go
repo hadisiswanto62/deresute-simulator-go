@@ -1,5 +1,11 @@
 package simulator
 
+import (
+	"fmt"
+
+	"github.com/hadisiswanto62/deresute-simulator-go/helper"
+)
+
 // SimulationSummary is summary of the simulation
 type SimulationSummary struct {
 	GameConfig Playable
@@ -12,14 +18,31 @@ type SimulationSummary struct {
 
 // Simulate simulates the game `times` times and return the summary in SimulationSummary
 func Simulate(gc Playable, times int) SimulationSummary {
-	// defer helper.MeasureTime(time.Now(), "Simulate")
 	game := NewGame(gc)
+	fmt.Println(game.Config.getCards())
+	fmt.Println(game.Config.getLeaderIndex())
+	maxScore := game.Play(true).Score
+	if helper.Features.LimitScore() {
+		if !gc.isResonantActive() {
+			if maxScore < helper.Features.GetScoreLimitForAttr(gc.getSong().Attribute) {
+				return SimulationSummary{
+					GameConfig: gc,
+					Min:        maxScore,
+					Max:        maxScore,
+					Average:    float64(maxScore),
+					SimCount:   -1,
+					Results:    []int{maxScore},
+				}
+			}
+		}
+	}
 	// game := NewGame(gc)
 	resultChannel := make(chan int, times)
+	goodRolls := helper.Features.AlwaysGoodRolls()
 	for i := 0; i < times; i++ {
 		go func(game *Game, i int) {
 			// randSeed := (time.Now().UnixNano() * int64(i+1)) % math.MaxInt64
-			state := game.Play()
+			state := game.Play(goodRolls)
 			resultChannel <- state.Score
 		}(game, i)
 	}

@@ -1,10 +1,19 @@
 package helper
 
+import "github.com/hadisiswanto62/deresute-simulator-go/enum"
+
 var flags = map[string]bool{
+	// should be TRUE for any valid sims
 	"use-concentration": true,
-	"do-simulate":       false,
-	"use-reso":          true,
+	"do-simulate":       true,
 	"limit-appeals":     true,
+	"limit-score":       false, //true this only when optimizing
+
+	// should be FALSE for any valid sims
+	"always-good-rolls": false,
+
+	// false for now
+	"use-reso": false,
 }
 
 type feature struct{}
@@ -28,6 +37,29 @@ func (f feature) UseReso() bool {
 
 func (f feature) LimitAppeals() bool {
 	return checkFlag("limit-appeals")
+}
+
+func (f feature) LimitScore() bool {
+	return checkFlag("limit-score")
+}
+
+func (f feature) AlwaysGoodRolls() bool {
+	return checkFlag("always-good-rolls")
+}
+
+func (f feature) GetScoreLimitForAttr(attr enum.Attribute) int {
+	limit, ok := scoreLimit[attr]
+	if !ok {
+		limit = 1000000
+	}
+	return limit
+}
+
+var scoreLimit = map[enum.Attribute]int{
+	enum.AttrAll:     1250000,
+	enum.AttrCool:    1150000,
+	enum.AttrPassion: 1100000,
+	enum.AttrCute:    1000000,
 }
 
 var Features feature
