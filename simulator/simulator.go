@@ -1,8 +1,6 @@
 package simulator
 
 import (
-	"fmt"
-
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 )
 
@@ -19,8 +17,6 @@ type SimulationSummary struct {
 // Simulate simulates the game `times` times and return the summary in SimulationSummary
 func Simulate(gc Playable, times int) SimulationSummary {
 	game := NewGame(gc)
-	fmt.Println(game.Config.getCards())
-	fmt.Println(game.Config.getLeaderIndex())
 	maxScore := game.Play(true).Score
 	if helper.Features.LimitScore() {
 		if !gc.isResonantActive() {

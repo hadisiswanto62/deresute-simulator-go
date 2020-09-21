@@ -398,7 +398,7 @@ var SkillTypeSkillBoost = SkillType{
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
 		return 0
 	},
-	ScoreComboBonusBonus: func() float64 {
+	ScoreComboBonusBonus: func(attr enum.Attribute) float64 {
 		return 0.2
 	},
 	TapHealBonus: func() float64 {
@@ -571,7 +571,7 @@ var SkillTypeTricolorSymphony = SkillType{
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
 		return 0
 	},
-	ScoreComboBonusBonus: func() float64 {
+	ScoreComboBonusBonus: func(attr enum.Attribute) float64 {
 		return 0.5
 	},
 	TapHealBonus: func() float64 {
@@ -743,6 +743,13 @@ var SkillTypeCuteEnsemble = SkillType{
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
 		return 0
 	},
+	ScoreComboBonusBonus: func(attr enum.Attribute) float64 {
+		required := enum.AttrCute
+		if attr == required {
+			return 0.5
+		}
+		return 0.0
+	},
 }
 
 // SkillTypeCoolEnsemble = "  Every 7 seconds: there is a 40..60% chance to
@@ -761,6 +768,13 @@ var SkillTypeCoolEnsemble = SkillType{
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
 		return 0
 	},
+	ScoreComboBonusBonus: func(attr enum.Attribute) float64 {
+		required := enum.AttrCool
+		if attr == required {
+			return 0.5
+		}
+		return 0.0
+	},
 }
 
 // SkillTypePassionEnsemble = "  Every 7 seconds: there is a 40..60% chance to
@@ -778,5 +792,12 @@ var SkillTypePassionEnsemble = SkillType{
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
 		return 0
+	},
+	ScoreComboBonusBonus: func(attr enum.Attribute) float64 {
+		required := enum.AttrPassion
+		if attr == required {
+			return 0.5
+		}
+		return 0.0
 	},
 }

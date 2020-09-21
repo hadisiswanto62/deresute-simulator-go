@@ -287,16 +287,17 @@ func (g Game) getScoreAndComboBonus(state *GameState, judgement enum.TapJudgemen
 		)
 		bonusBonus := 0.0
 		if activeSkill.ocard.Skill.SkillType.ScoreComboBonusBonus != nil {
-			bonusBonus = activeSkill.ocard.Skill.SkillType.ScoreComboBonusBonus()
+			bonusBonus = activeSkill.ocard.Skill.SkillType.ScoreComboBonusBonus(activeSkill.ocard.Card.Idol.Attribute)
 		}
 		if state.resonantOn {
 			maxScoreBonus += scoreBonus
 			maxComboBonus += comboBonus
+			maxBonusBonus += bonusBonus
 		} else {
 			maxScoreBonus = math.Max(maxScoreBonus, scoreBonus)
 			maxComboBonus = math.Max(maxComboBonus, comboBonus)
+			maxBonusBonus = math.Max(maxBonusBonus, bonusBonus)
 		}
-		maxBonusBonus = math.Max(maxBonusBonus, bonusBonus)
 	}
 	maxScoreBonus = math.Ceil(maxScoreBonus*(1+maxBonusBonus)*100.0) / 100.0
 	maxComboBonus = math.Ceil(maxComboBonus*(1+maxBonusBonus)*100.0) / 100.0
