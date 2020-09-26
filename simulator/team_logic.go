@@ -17,23 +17,6 @@ type ocardLogic struct {
 	IsSatisfied func(ocard *usermodel.OwnedCard, song *models.Song) bool
 }
 
-var skillsAreActive = teamLogic{
-	Name: "skillsAreActive",
-	IsSatisfied: func(team *usermodel.Team, song *models.Song) bool {
-		attributes := [6]enum.Attribute{}
-		for i, ocard := range team.Ocards {
-			attributes[i] = ocard.Card.Idol.Attribute
-		}
-		for _, ocard := range team.Ocards {
-			if !ocard.Card.Skill.SkillType.IsActive(attributes[:]) {
-				return false
-			}
-		}
-		// IsSatisfied when all skills are implemented
-		return true
-	},
-}
-
 var leadSkillIsImplemented = teamLogic{
 	Name: "leadSkillIsImplemented",
 	IsSatisfied: func(team *usermodel.Team, song *models.Song) bool {
@@ -256,29 +239,61 @@ var useUnevolvedWithoutEvolved = teamLogic{
 		return true
 	},
 }
+var twoCardSameLeadSkillThenUseLowerID = teamLogic{
+	Name: "twoCardSameLeadSkillThenUseLowerID",
+	IsSatisfied: func(team *usermodel.Team, song *models.Song) bool {
+		// leadSkillMap maps lead skill to THE LOWEST ID of card with that lead skill in the team
+		leadSkillMap := make(map[enum.LeadSkill]int, 0)
+		for _, ocard := range team.Ocards {
+			lskill := ocard.LeadSkill.Name
+			_, ok := leadSkillMap[lskill]
+			if !ok {
+				leadSkillMap[lskill] = 9999999
+			}
+			if ocard.Card.ID < leadSkillMap[lskill] {
+				leadSkillMap[lskill] = ocard.Card.ID
+			}
+		}
+		activeLeadSkill := team.Leader().Card.LeadSkill.Name
+		leadID := team.Leader().Card.ID
+		for lskill, ID := range leadSkillMap {
+			if lskill == activeLeadSkill && ID != leadID {
+				return false
+			}
+		}
+		return true
+	},
+}
 var teamLogics = []teamLogic{
+	tricolorOnMinimum3Color, // kinda bad but this one need to be first (see: first few lines of isTeamOk)
 	leadSkillIsImplemented,
 	princessUnisonOnUnicolor,
-	tricolorOnMinimum3Color,
-	skillsAreActive,
 	attrSpecificLeadSkillOnUnicolor,
-	noDuoColor,
+	// noDuoColor,
 	motifWithHighCorrectStat,
 	useUnevolvedWithoutEvolved,
-	// tricolorOnMinimum2Color,
+	twoCardSameLeadSkillThenUseLowerID,
 
-	// for info only:
-	// skillIsNotConcentration,
+	// handled by feature toggle:
+	// tricolorOnMinimum2Color,
 }
 
 var ocardLogics = []ocardLogic{
 	cardIsSSR,
 	skillIsImplemented,
 	unicolorOnColoredSong,
+
+	// handled by feature toggle:
+	// skillIsNotConcentration,
 }
 
 func isTeamOk(team *usermodel.Team, song *models.Song) bool {
-	for _, logic := range teamLogics {
+	teamLogic := teamLogics
+	if helper.Features.AllowTwoColors() {
+		teamLogic = teamLogic[1:]
+		teamLogic = append(teamLogic, tricolorOnMinimum2Color)
+	}
+	for _, logic := range teamLogic {
 		if !logic.IsSatisfied(team, song) {
 			return false
 		}
@@ -299,17 +314,27 @@ func isTeamOk(team *usermodel.Team, song *models.Song) bool {
 }
 
 func isTeamOkDebug(team *usermodel.Team, song *models.Song) string {
-	for _, logic := range teamLogics {
+	teamLogic := teamLogics
+	if helper.Features.AllowTwoColors() {
+		teamLogic = teamLogic[1:]
+		teamLogic = append(teamLogic, tricolorOnMinimum2Color)
+	}
+	for _, logic := range teamLogic {
 		if !logic.IsSatisfied(team, song) {
 			return logic.Name
 		}
 	}
+
+	ocardLogic := ocardLogics
+	if !helper.Features.UseConcentration() {
+		ocardLogic = append(ocardLogic, skillIsNotConcentration)
+	}
 	for _, ocard := range team.Ocards {
-		for _, logic := range ocardLogics {
+		for _, logic := range ocardLogic {
 			if !logic.IsSatisfied(ocard, song) {
 				return logic.Name
 			}
 		}
 	}
-	return "team looks ok"
+	return "passed"
 }

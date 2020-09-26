@@ -3,6 +3,7 @@ package simulator
 import (
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
+	"github.com/hadisiswanto62/deresute-simulator-go/logger"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
@@ -83,6 +84,9 @@ var bothLeadSkillIsActive = gameConfigLogic{
 			skills = append(skills, ocard.Card.Skill.SkillType.Name)
 		}
 		attributes = append(attributes, guest.Card.Idol.Attribute)
+		skills = append(skills, guest.Card.Skill.SkillType.Name)
+		// fmt.Println(attributes, team.Leader().LeadSkill.IsActive(attributes, skills), guest.LeadSkill.IsActive(attributes, skills))
+		// fmt.Println(team.Leader().LeadSkill.Name, guest.LeadSkill.Name)
 		// IsViolated when any of lead skill is not active
 		return !(team.Leader().LeadSkill.IsActive(attributes, skills) && guest.LeadSkill.IsActive(attributes, skills))
 	},
@@ -244,6 +248,78 @@ var doNotUseReso = gameConfigLogic{
 	},
 }
 
+var tricolorCorrectColor = gameConfigLogic{
+	Name: "tricolorCorrectColor",
+	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
+		// if team is one color -> always false
+		guestIsTriColor := false
+		for lskill := range tricolorStatMap {
+			if guest.LeadSkill.Name == lskill {
+				guestIsTriColor = true
+			}
+		}
+		// Not violated if guest is not tricolor
+		if !guestIsTriColor {
+			return false
+		}
+		teamAttrs := map[enum.Attribute]bool{
+			enum.AttrCool:    false,
+			enum.AttrCute:    false,
+			enum.AttrPassion: false,
+		}
+		attrCount := 0
+		for _, ocard := range team.Ocards {
+			attr := ocard.Card.Idol.Attribute
+			res, _ := teamAttrs[attr]
+			if !res {
+				attrCount++
+			}
+			teamAttrs[ocard.Card.Idol.Attribute] = true
+		}
+
+		guestAttr := guest.Card.Idol.Attribute
+		// IsViolated when team is 2 color AND guest is tricolor AND guest is not the remaining color
+		if attrCount == 2 {
+			var leftover enum.Attribute
+			for attr, val := range teamAttrs {
+				if !val {
+					leftover = attr
+					break
+				}
+			}
+			violated := guestAttr != leftover
+			if violated {
+				logger.Logf("Violated: %s", team)
+				logger.Logf("%s %s", team.Leader().LeadSkill.Name, guest.LeadSkill.Name)
+			}
+			return violated
+		}
+		// IsViolated when team is already 3 color AND guest is tricolor AND guest attr is not CUTE (because attr should not matter)
+		if attrCount == 3 {
+			return guestAttr != enum.AttrCute
+		}
+		// Else not violated
+		return false
+	},
+}
+
+var skillsAreActive = gameConfigLogic{
+	Name: "skillsAreActive",
+	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
+		attributes := [6]enum.Attribute{}
+		for i, ocard := range team.Ocards {
+			attributes[i] = ocard.Card.Idol.Attribute
+		}
+		attributes[5] = guest.Card.Idol.Attribute
+		for _, ocard := range team.Ocards {
+			if !ocard.Card.Skill.SkillType.IsActive(attributes[:]) {
+				return true
+			}
+		}
+		return false
+	},
+}
+
 var logics = []gameConfigLogic{
 	unisonInCorrectSongType,
 	bothLeadSkillIsActive,
@@ -252,9 +328,12 @@ var logics = []gameConfigLogic{
 	guestTriColorCorrectStat,
 	guestPrincessUnisonCorrectStat,
 	guestResonantCorrectStat,
+	skillsAreActive,
 
-	// for info only
+	// handled by toggle
 	// doNotUseReso,
+	// tricolorCorrectColor
+
 }
 
 func isGameConfigOk(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
@@ -262,11 +341,11 @@ func isGameConfigOk(team *usermodel.Team, song *models.Song, guest *usermodel.Ow
 	if !helper.Features.UseReso() {
 		logicsUpdated = append(logicsUpdated, doNotUseReso)
 	}
+	if helper.Features.AllowTwoColors() {
+		logicsUpdated = append(logicsUpdated, tricolorCorrectColor)
+	}
 	for _, logic := range logicsUpdated {
 		if logic.IsViolated(team, song, guest) {
-			if logic.Name != "guestPrincessUnisonCorrectStat" {
-				return false
-			}
 			return false
 		}
 	}
@@ -274,7 +353,14 @@ func isGameConfigOk(team *usermodel.Team, song *models.Song, guest *usermodel.Ow
 }
 
 func isGameConfigOkDebug(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) string {
-	for _, logic := range logics {
+	logicsUpdated := logics
+	if !helper.Features.UseReso() {
+		logicsUpdated = append(logicsUpdated, doNotUseReso)
+	}
+	if helper.Features.AllowTwoColors() {
+		logicsUpdated = append(logicsUpdated, tricolorCorrectColor)
+	}
+	for _, logic := range logicsUpdated {
 		if logic.IsViolated(team, song, guest) {
 			return logic.Name
 		}
