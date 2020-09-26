@@ -183,23 +183,9 @@ func initConfig(c Playable) *GameState {
 	teamSkills := c.getTeamSkillsv2()
 
 	resonantOn := c.isResonantActive()
-	// resonants := []enum.LeadSkill{
-	// 	enum.LeadSkillResonantMakeup,
-	// 	enum.LeadSkillResonantStep,
-	// 	enum.LeadSkillResonantVoice,
-	// }
-	// resonantOn := false
 	leadSkillsActive := make([]bool, 0, 2)
 	for _, ocard := range c.getLeadSkillActivableCards() {
 		active := ocard.LeadSkill.IsActive(teamAttributes, teamSkills)
-		// if active {
-		// 	for _, lskill := range resonants {
-		// 		if ocard.LeadSkill.Name == lskill {
-		// 			resonantOn = true
-		// 			break
-		// 		}
-		// 	}
-		// }
 		leadSkillsActive = append(leadSkillsActive, active)
 	}
 

@@ -14,9 +14,14 @@ type SimulationSummary struct {
 	Results    []int
 }
 
+type GameLike interface {
+	Play(bool) *GameState
+}
+
 // Simulate simulates the game `times` times and return the summary in SimulationSummary
 func Simulate(gc Playable, times int) SimulationSummary {
 	game := NewGame(gc)
+	// game := NewGameFast(gc)
 	maxScore := game.Play(true).Score
 	if helper.Features.LimitScore() {
 		if !gc.isResonantActive() {
@@ -36,7 +41,7 @@ func Simulate(gc Playable, times int) SimulationSummary {
 	resultChannel := make(chan int, times)
 	goodRolls := helper.Features.AlwaysGoodRolls()
 	for i := 0; i < times; i++ {
-		go func(game *Game, i int) {
+		go func(game GameLike, i int) {
 			// randSeed := (time.Now().UnixNano() * int64(i+1)) % math.MaxInt64
 			state := game.Play(goodRolls)
 			resultChannel <- state.Score
