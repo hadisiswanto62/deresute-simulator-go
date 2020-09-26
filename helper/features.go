@@ -7,10 +7,11 @@ var flags = map[string]bool{
 	"use-concentration": true,
 	"do-simulate":       true,
 	"limit-appeals":     true,
-	"limit-score":       false, //true this only when optimizing
+	"limit-score":       true, //true this only when optimizing
+	"use-game-fast":     false,
 
 	// should be FALSE for any valid sims
-	"always-good-rolls": false,
+	"always-good-rolls": true,
 
 	// false for now
 	"use-reso": false,
@@ -53,6 +54,10 @@ func (f feature) GetScoreLimitForAttr(attr enum.Attribute) int {
 		limit = 1000000
 	}
 	return limit
+}
+
+func (f feature) UseFastGame() bool {
+	return checkFlag("use-game-fast")
 }
 
 var scoreLimit = map[enum.Attribute]int{

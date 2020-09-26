@@ -69,6 +69,9 @@ func makeFilename(config BaseOptimizeConfig,
 	if helper.Features.AlwaysGoodRolls() {
 		filenameParts = append(filenameParts, "skillOn")
 	}
+	if helper.Features.UseFastGame() {
+		filenameParts = append(filenameParts, "fast")
+	}
 	filenameParts = append(filenameParts, strconv.Itoa(int(time.Now().Unix())))
 	filename := fmt.Sprintf("%s.txt", strings.Join(filenameParts, "_"))
 	return filename

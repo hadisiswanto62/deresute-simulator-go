@@ -20,8 +20,12 @@ type GameLike interface {
 
 // Simulate simulates the game `times` times and return the summary in SimulationSummary
 func Simulate(gc Playable, times int) SimulationSummary {
-	game := NewGame(gc)
-	// game := NewGameFast(gc)
+	var game GameLike
+	if helper.Features.UseFastGame() {
+		game = NewGameFast(gc)
+	} else {
+		game = NewGame(gc)
+	}
 	maxScore := game.Play(true).Score
 	if helper.Features.LimitScore() {
 		if !gc.isResonantActive() {

@@ -48,7 +48,7 @@ func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
 		tapHeal := g.getTapHeal(activeSkillsIndex, state, judgement, noteType)
 		state.Score += score
 		state.currentHp += tapHeal
-		state.printState()
+		// state.printState()
 	}
 	return state
 }
