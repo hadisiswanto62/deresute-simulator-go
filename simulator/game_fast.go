@@ -34,7 +34,18 @@ func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
 		timestamp := note.TimestampMs
 		hpCost := g.getHpCost(timestamp, hpCosts)
 		state.currentHp -= hpCost
+		if state.currentHp <= 0 {
+			state.currentHp = 1
+		}
+
 		activeSkillsIndex := g.getActiveSkillsOn(timestamp, activeSkills)
+		state.concentrationOn = false
+		for _, ID := range activeSkillsIndex {
+			skill := state.skillActivableCards[ID].Card.Skill.SkillType.Name
+			if skill == enum.SkillTypeConcentration {
+				state.concentrationOn = true
+			}
+		}
 
 		// Play note
 		judgement := getTapJudgement(state)
@@ -136,6 +147,9 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 // assuming allSkillTimestamps is sorted by startTimestamp
 func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps []*activeSkillTimestamp) []int {
 	ret := []int{}
+	// for len(allSkillTimestamps) > 0 && allSkillTimestamps[0].endTimestamp < timestamp {
+	// 	allSkillTimestamps = allSkillTimestamps[1:]
+	// }
 	for _, activeSkill := range allSkillTimestamps {
 		if activeSkill.startTimestamp > timestamp {
 			break
