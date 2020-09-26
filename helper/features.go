@@ -8,13 +8,15 @@ var flags = map[string]bool{
 	"do-simulate":       true,
 	"limit-appeals":     true,
 	"limit-score":       true, //true this only when optimizing
-	"use-game-fast":     false,
+	"use-game-fast":     true,
 
 	// should be FALSE for any valid sims
-	"always-good-rolls": true,
+	"always-good-rolls": false,
 
 	// false for now
 	"use-reso": false,
+
+	"allow-two-colors": true,
 }
 
 type feature struct{}
@@ -22,6 +24,10 @@ type feature struct{}
 func checkFlag(flag string) bool {
 	val, _ := flags[flag]
 	return val == true
+}
+
+func (f feature) AllowTwoColors() bool {
+	return checkFlag("allow-two-colors")
 }
 
 func (f feature) UseConcentration() bool {
@@ -48,12 +54,13 @@ func (f feature) AlwaysGoodRolls() bool {
 	return checkFlag("always-good-rolls")
 }
 
-func (f feature) GetScoreLimitForAttr(attr enum.Attribute) int {
+func (f feature) GetScoreLimitForAttr(attr enum.Attribute, level int) int {
+	multiplier := getSongDifficultyMultiplier(level)
 	limit, ok := scoreLimit[attr]
 	if !ok {
-		limit = 1000000
+		limit = 500000
 	}
-	return limit
+	return int(float64(limit) * multiplier)
 }
 
 func (f feature) UseFastGame() bool {
@@ -61,10 +68,10 @@ func (f feature) UseFastGame() bool {
 }
 
 var scoreLimit = map[enum.Attribute]int{
-	enum.AttrAll:     1250000,
-	enum.AttrCool:    1150000,
-	enum.AttrPassion: 1100000,
-	enum.AttrCute:    1000000,
+	enum.AttrAll:     650000,
+	enum.AttrCool:    575000,
+	enum.AttrPassion: 550000,
+	enum.AttrCute:    500000,
 }
 
 var Features feature

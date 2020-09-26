@@ -104,7 +104,7 @@ var unimplementedLeadSkills = []enum.LeadSkill{
 var unimplementedSkills = []enum.SkillType{
 	enum.SkillTypeAlternate,
 	enum.SkillTypeBase,
-	enum.SkillTypeCoolEnsemble, enum.SkillTypeCuteEnsemble, enum.SkillTypePassionEnsemble,
+	// enum.SkillTypeCoolEnsemble, enum.SkillTypeCuteEnsemble, enum.SkillTypePassionEnsemble,
 	enum.SkillTypeEncore,
 	// acts also not implemented
 }
@@ -125,4 +125,20 @@ func IsSkillImplemented(s enum.SkillType) bool {
 		}
 	}
 	return true
+}
+
+func getSongDifficultyMultiplier(songLevel int) float64 {
+	if songLevel <= 9 {
+		return 1 + (0.025 * float64((songLevel - 5)))
+	} else if songLevel <= 14 {
+		return 1.2 + (0.025 * float64((songLevel - 10)))
+	} else if songLevel <= 19 {
+		return 1.4 + (0.025 * float64((songLevel - 15)))
+	} else if songLevel <= 28 {
+		return 1.6 + (0.05 * float64((songLevel - 20)))
+	} else if songLevel <= 30 {
+		return 2 + (0.1 * float64((songLevel - 28)))
+	} else {
+		return 1
+	}
 }

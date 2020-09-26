@@ -29,7 +29,8 @@ func Simulate(gc Playable, times int) SimulationSummary {
 	maxScore := game.Play(true).Score
 	if helper.Features.LimitScore() {
 		if !gc.isResonantActive() {
-			if maxScore < helper.Features.GetScoreLimitForAttr(gc.getSong().Attribute) {
+			threshold := helper.Features.GetScoreLimitForAttr(gc.getSong().Attribute, gc.getSong().Level)
+			if maxScore < threshold {
 				return SimulationSummary{
 					GameConfig: gc,
 					Min:        maxScore,
