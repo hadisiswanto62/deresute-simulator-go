@@ -12,7 +12,7 @@ func NewGameFast(c Playable) *GameFast {
 	game := GameFast{
 		Config: c,
 	}
-	game.songDifficultyMultiplier = getSongDifficultyMultiplier(c.getSong().Level)
+	game.songDifficultyMultiplier = helper.GetSongDifficultyMultiplier(c.getSong().Level)
 	game.comboBonusMap = getComboBonusMap(c.getSong().NotesCount())
 	return &game
 }
@@ -38,7 +38,7 @@ func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
 			state.currentHp = 1
 		}
 
-		activeSkillsIndex := g.getActiveSkillsOn(timestamp, activeSkills)
+		activeSkillsIndex := g.getActiveSkillsOn(timestamp, &activeSkills)
 		state.concentrationOn = false
 		for _, ID := range activeSkillsIndex {
 			skill := state.skillActivableCards[ID].Card.Skill.SkillType.Name
@@ -145,12 +145,12 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 }
 
 // assuming allSkillTimestamps is sorted by startTimestamp
-func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps []*activeSkillTimestamp) []int {
+func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps *[]*activeSkillTimestamp) []int {
 	ret := []int{}
-	// for len(allSkillTimestamps) > 0 && allSkillTimestamps[0].endTimestamp < timestamp {
-	// 	allSkillTimestamps = allSkillTimestamps[1:]
-	// }
-	for _, activeSkill := range allSkillTimestamps {
+	for len(*allSkillTimestamps) > 0 && (*allSkillTimestamps)[0].endTimestamp < timestamp {
+		*allSkillTimestamps = (*allSkillTimestamps)[1:]
+	}
+	for _, activeSkill := range *allSkillTimestamps {
 		if activeSkill.startTimestamp > timestamp {
 			break
 		}

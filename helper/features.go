@@ -55,7 +55,7 @@ func (f feature) AlwaysGoodRolls() bool {
 }
 
 func (f feature) GetScoreLimitForAttr(attr enum.Attribute, level int) int {
-	multiplier := getSongDifficultyMultiplier(level)
+	multiplier := GetSongDifficultyMultiplier(level)
 	limit, ok := scoreLimit[attr]
 	if !ok {
 		limit = 500000

@@ -44,7 +44,7 @@ func NewGame(c Playable) *Game {
 	game := Game{
 		Config: c,
 	}
-	game.songDifficultyMultiplier = getSongDifficultyMultiplier(c.getSong().Level)
+	game.songDifficultyMultiplier = helper.GetSongDifficultyMultiplier(c.getSong().Level)
 	game.comboBonusMap = getComboBonusMap(c.getSong().NotesCount())
 	return &game
 }
@@ -354,20 +354,4 @@ func getComboBonusMap(notesCount int) map[int]float64 {
 		}
 	}
 	return comboMap
-}
-
-func getSongDifficultyMultiplier(songLevel int) float64 {
-	if songLevel <= 9 {
-		return 1 + (0.025 * float64((songLevel - 5)))
-	} else if songLevel <= 14 {
-		return 1.2 + (0.025 * float64((songLevel - 10)))
-	} else if songLevel <= 19 {
-		return 1.4 + (0.025 * float64((songLevel - 15)))
-	} else if songLevel <= 28 {
-		return 1.6 + (0.05 * float64((songLevel - 20)))
-	} else if songLevel <= 30 {
-		return 2 + (0.1 * float64((songLevel - 28)))
-	} else {
-		return 1
-	}
 }

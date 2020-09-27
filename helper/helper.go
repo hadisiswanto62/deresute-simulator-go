@@ -127,18 +127,19 @@ func IsSkillImplemented(s enum.SkillType) bool {
 	return true
 }
 
-func getSongDifficultyMultiplier(songLevel int) float64 {
-	if songLevel <= 9 {
-		return 1 + (0.025 * float64((songLevel - 5)))
-	} else if songLevel <= 14 {
-		return 1.2 + (0.025 * float64((songLevel - 10)))
-	} else if songLevel <= 19 {
-		return 1.4 + (0.025 * float64((songLevel - 15)))
-	} else if songLevel <= 28 {
-		return 1.6 + (0.05 * float64((songLevel - 20)))
-	} else if songLevel <= 30 {
-		return 2 + (0.1 * float64((songLevel - 28)))
-	} else {
-		return 1
+var songDifficultyMultiplierMap = map[int]float64{
+	5: 1.0, 6: 1.025, 7: 1.05, 8: 1.075, 9: 1.1,
+	10: 1.2, 11: 1.225, 12: 1.25, 13: 1.275, 14: 1.3,
+	15: 1.4, 16: 1.425, 17: 1.45, 18: 1.475, 19: 1.5,
+	20: 1.6, 21: 1.65, 22: 1.7, 23: 1.75, 24: 1.8,
+	25: 1.85, 26: 1.9, 27: 1.95, 28: 2.0, 29: 2.1,
+	30: 2.2, 31: 2.3, 32: 2.4,
+}
+
+func GetSongDifficultyMultiplier(songLevel int) float64 {
+	ret, ok := songDifficultyMultiplierMap[songLevel]
+	if !ok {
+		ret = 0
 	}
+	return ret
 }
