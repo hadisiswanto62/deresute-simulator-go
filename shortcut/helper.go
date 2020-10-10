@@ -3,6 +3,8 @@ package shortcut
 import (
 	"fmt"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
+
 	"github.com/hadisiswanto62/deresute-simulator-go/cardmanager"
 	"github.com/hadisiswanto62/deresute-simulator-go/csvmodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
@@ -114,7 +116,8 @@ func ToGameConfig(config BaseGameConfig, customCardParams *usermodelmanager.Cust
 	if err != nil {
 		panic(err)
 	}
-	return simulator.NewGameConfig(ocards[:], config.LeaderIndex, supports[:], guest, config.Song), nil
+	return simulator.NewGameConfig(ocards[:], config.LeaderIndex, supports[:],
+		guest, config.Song, 0, statcalculator.NormalStatCalculator), nil
 }
 
 type makeSongable interface {

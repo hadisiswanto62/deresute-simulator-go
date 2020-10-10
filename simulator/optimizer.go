@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
+
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
@@ -46,7 +48,8 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 				continue
 			}
 			guestCount = append(guestCount, guest)
-			gameConfig := NewGameConfig(team.Ocards[:], team.LeaderIndex, supports[:], guest, song)
+			gameConfig := NewGameConfig(team.Ocards[:], team.LeaderIndex, supports[:],
+				guest, song, 0, statcalculator.NormalStatCalculator)
 			if helper.Features.LimitAppeals() {
 				if gameConfig.getAppeal() < 310000 {
 					if !gameConfig.isResonantActive() {
