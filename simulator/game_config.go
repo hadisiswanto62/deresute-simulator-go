@@ -1,10 +1,9 @@
 package simulator
 
 import (
-	"math"
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
-	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
@@ -27,14 +26,16 @@ type GameConfig struct {
 	teamAttributes          []enum.Attribute
 	teamSkills              []enum.SkillType
 	resonantOn              bool
+	statcalculator          statcalculator.IStatCalculator
+	bonusAppeal             int
 }
 
 func (gc GameConfig) GetOcards() []*usermodel.OwnedCard {
 	return gc.ocards
 }
 
-func (gc GameConfig) Recalculate() {
-	gc.recalculate()
+func (gc GameConfig) Appeal() int {
+	return gc.getAppeal()
 }
 
 func (gc GameConfig) getSkillActivableCards() []*usermodel.OwnedCard {
@@ -85,98 +86,34 @@ func (gc GameConfig) getGuest() *usermodel.OwnedCard {
 
 // recalculate appeal, hp, teamAttributes, teamSkills, resonantOn
 func (gc *GameConfig) recalculate() {
-	appeal := 0
-	hp := 0
-
-	// Stat Appeal (team/guest) = ceiling(Base * (1 + C + (G or B) + R + T))
-	ocards := append(gc.ocards, gc.guest)
-	leader := gc.ocards[gc.leaderIndex]
-
-	// teamAttributes and teamSkills
-	gc.teamAttributes = make([]enum.Attribute, 0, len(ocards))
-	gc.teamSkills = make([]enum.SkillType, 0, len(ocards))
-	for _, ocard := range ocards {
-		gc.teamAttributes = append(gc.teamAttributes, ocard.Card.Idol.Attribute)
-		gc.teamSkills = append(gc.teamSkills, ocard.Card.Skill.SkillType.Name)
+	stats, err := gc.statcalculator.Calculate(gc.bonusAppeal)
+	if err != nil {
+		panic(err)
 	}
-
-	// resonantOn
-	gc.resonantOn = false
-	var resonantStat enum.Stat
-	leadSkillsActive := map[*usermodel.OwnedCard]bool{
-		leader:   leader.Card.LeadSkill.IsActive(gc.teamAttributes, gc.teamSkills),
-		gc.guest: gc.guest.Card.LeadSkill.IsActive(gc.teamAttributes, gc.teamSkills),
-	}
-	for ocard, active := range leadSkillsActive {
-		if !active {
-			continue
-		}
-		leadSkill := ocard.Card.LeadSkill
-		for stat, reso := range enum.ResonantMap {
-			if leadSkill.Name == reso {
-				gc.resonantOn = true
-				resonantStat = stat
-				break
-			}
-		}
-	}
-
-	// appeal and hp
-	for _, ocard := range ocards {
-		for statType, statValue := range ocard.Stats() {
-			multiplier := 1.0
-			if gc.resonantOn && statType != resonantStat {
-				multiplier = 0.0
-			}
-			for leadOcard, active := range leadSkillsActive {
-				if !active {
-					continue
-				}
-				multiplier += leadOcard.Card.LeadSkill.StatBonus(
-					leadOcard.Card.Rarity.Rarity,
-					ocard.Card.Idol.Attribute,
-					statType,
-					gc.song.Attribute,
-				)
-			}
-			multiplier += helper.GetRoomItemBonus(ocard.Card.Idol.Attribute)
-			if (ocard.Card.Idol.Attribute == gc.song.Attribute) || (gc.song.Attribute == enum.AttrAll) {
-				multiplier += 0.3
-			}
-			appeal += int(math.Ceil(multiplier * float64(statValue)))
-		}
-		multiplier := 1.0
-		for leadOcard, active := range leadSkillsActive {
-			if !active {
-				continue
-			}
-			multiplier += leadOcard.Card.LeadSkill.HpBonus(leadOcard.Card.Rarity.Rarity, ocard.Card.Idol.Attribute)
-		}
-		hp += int(multiplier * float64(ocard.Hp))
-	}
-	for _, ocard := range gc.supports {
-		for _, statValue := range ocard.Stats() {
-			multiplier := 1.0
-			if (ocard.Card.Idol.Attribute == gc.song.Attribute) || (gc.song.Attribute == enum.AttrAll) {
-				multiplier += 0.3
-			}
-			appeal += int(math.Ceil(multiplier * float64(statValue) * 0.5))
-		}
-	}
-	gc.appeal = appeal
-	gc.hp = hp
+	gc.appeal = stats.Appeal
+	gc.hp = stats.Hp
+	gc.teamAttributes = stats.TeamAttributes
+	gc.teamSkills = stats.TeamSkills
+	gc.resonantOn = stats.IsResonantOn()
 }
 
 // NewGameConfig creates, initializes, and returns GameConfig
 func NewGameConfig(
 	ocards []*usermodel.OwnedCard, leaderIndex int, supports []*usermodel.OwnedCard,
-	guest *usermodel.OwnedCard, song *models.Song) *GameConfig {
+	guest *usermodel.OwnedCard, song *models.Song, bonusAppeal int, calcType statcalculator.StatCalculatorType) *GameConfig {
+	statCalc := statcalculator.CalculatorDispatcher(calcType)
+	statCalc.SetCards(ocards)
+	statCalc.SetLeaderIndex(leaderIndex)
+	statCalc.SetSupports(supports)
+	statCalc.SetGuest(guest)
+	statCalc.SetSong(song)
 	gc := GameConfig{
-		ocards:      ocards,
-		leaderIndex: leaderIndex,
-		supports:    supports,
-		guest:       guest,
-		song:        song,
+		ocards:         ocards,
+		leaderIndex:    leaderIndex,
+		supports:       supports,
+		guest:          guest,
+		song:           song,
+		statcalculator: statCalc,
 	}
 	for _, ocard := range gc.ocards {
 		for statType, statValue := range ocard.Stats() {
@@ -190,6 +127,7 @@ func NewGameConfig(
 			}
 		}
 	}
+	gc.bonusAppeal = bonusAppeal
 	gc.recalculate()
 	return &gc
 }
