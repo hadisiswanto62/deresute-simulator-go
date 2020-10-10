@@ -1,15 +1,62 @@
 package cardmanager
 
 import (
+	"regexp"
+	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
 )
 
-// QuerySet for filtering
+// QuerySet for filtering. Do not create new instance! TODO: make private
 type QuerySet struct {
 	cards []*models.Card
+	r     *regexp.Regexp
+}
+
+// SsrNameID filters by "kaede1", etc. (Make sure to not do any filtering before this)
+func (q *QuerySet) SsrNameID(nameID string) *QuerySet {
+	if q.r == nil {
+		exp := "(?P<name>[A-Za-z]+)(?P<number>[1-9]+)(?P<evolved>u*)"
+		r, err := regexp.Compile(exp)
+		if err != nil {
+			panic(err)
+		}
+		q.r = r
+	}
+	match := q.r.FindStringSubmatch(nameID)
+	result := make(map[string]string)
+	for i, group := range q.r.SubexpNames() {
+		if i != 0 {
+			result[group] = match[i]
+		}
+	}
+
+	name, _ := result["name"]
+	evolvedStr, _ := result["evolved"]
+	numberStr, _ := result["number"]
+
+	evolved := evolvedStr == ""
+	number, err := strconv.Atoi(numberStr)
+	if err != nil {
+		panic(err)
+	}
+	q.Rarity(enum.RaritySSR).NameLike(name).IsEvolved(evolved)
+
+	sort.SliceStable(q.cards, func(i, j int) bool {
+		return q.cards[i].ID < q.cards[j].ID
+	})
+
+	var ret *models.Card
+	for i, card := range q.cards {
+		if i+1 == number {
+			ret = card
+		}
+	}
+	q.cards = []*models.Card{ret}
+	return q
 }
 
 // Attribute filters current cards by attribute

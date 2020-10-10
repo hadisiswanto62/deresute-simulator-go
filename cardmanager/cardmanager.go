@@ -33,7 +33,7 @@ func Default() (*CardManager, error) {
 		if err != nil {
 			return nil, fmt.Errorf("cannot parse cards: %v", err)
 		}
-		instance = &CardManager{cards, &QuerySet{cards}}
+		instance = &CardManager{cards, &QuerySet{cards, nil}}
 	}
 	return instance, nil
 }

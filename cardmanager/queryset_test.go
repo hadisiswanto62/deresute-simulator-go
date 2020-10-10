@@ -48,6 +48,12 @@ func BenchmarkName(b *testing.B) {
 	}
 }
 
+func BenchmarkIsEvolved(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		cm.Filter().IsEvolved(true).First()
+	}
+}
+
 func TestLeadSkill(t *testing.T) {
 	assert := assert.New(t)
 	testcases := [1]enum.LeadSkill{
@@ -90,5 +96,29 @@ func TestID(t *testing.T) {
 	for _, id := range testcases {
 		card := cm.Filter().ID(id).First()
 		assert.Equal(card.ID, id, "Incorrect ID")
+	}
+}
+
+func TestSsrNameId(t *testing.T) {
+	assert := assert.New(t)
+	testcases := map[string]int{
+		"yoshino3":  300530,
+		"yoshino2":  300330,
+		"yoshino3u": 300529,
+		"yoshino2u": 300329,
+		"uzuki1u":   100075,
+		"uzuki1":    100076,
+		"uzuki2u":   100255,
+		"uzuki2":    100256,
+		"arisu1u":   200205,
+		"arisu1":    200206,
+		"arisu3u":   200643,
+		"arisu3":    200644,
+	}
+	for nameID, id := range testcases {
+		card := cm.Filter().SsrNameID(nameID).First()
+		assert.Equalf(card.ID, id, "Incorrect result for %s. have=%d, want=%d",
+			nameID, card.ID, id,
+		)
 	}
 }
