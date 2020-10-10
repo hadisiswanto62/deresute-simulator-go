@@ -205,7 +205,7 @@ func (p CSVDataParser) InitSongRawData() ([]*models.Song, error) {
 			}
 			level, ok := difficultyLevelMap[*difficulty]
 			if !ok {
-				fmt.Printf("Difficulty %d not found in map.\n", ok)
+				fmt.Printf("Difficulty %d not found in map.\n", level)
 			}
 			chart := models.Song{
 				Name:       song.Name,
