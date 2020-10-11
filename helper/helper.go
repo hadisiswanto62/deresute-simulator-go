@@ -81,6 +81,11 @@ func RollFast(prob float64) bool {
 	return float64(roll)/10000.0 < prob
 }
 
+// WithInt is helper function to use Math methods with int (does not check anything! make sure it is correct)
+func WithInt(f func(float64) float64, val int) int {
+	return int(f(float64(val)))
+}
+
 // SkillProbPotentialBonusLookup is lookup table of skill probability bonus from potential
 var SkillProbPotentialBonusLookup = [11]int{0, 100, 200, 300, 400, 600, 800, 1000, 1300, 1600, 2000}
 
