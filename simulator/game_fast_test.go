@@ -2,6 +2,17 @@ package simulator
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
+	"github.com/hadisiswanto62/deresute-simulator-go/helper"
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
+	"github.com/hadisiswanto62/deresute-simulator-go/songmanager"
+
+	"github.com/hadisiswanto62/deresute-simulator-go/cardmanager"
+
+	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
 
 func TestGameFast(t *testing.T) {
@@ -37,7 +48,7 @@ func BenchmarkGetSkillActive(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for _, timestamp := range notesTimestamp {
-			game.getActiveSkillsOn(timestamp, &skills.activeSkillTimestamps)
+			game.getActiveSkillsOn(timestamp, &skills.activeSkillTimestamps, enum.NoteTypeTap)
 		}
 	}
 }
@@ -48,5 +59,170 @@ func BenchmarkPlay(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		game.Play(false)
+	}
+}
+
+type miniCardData struct {
+	name string
+	skLv int
+	stRa int
+	vo   int
+	vi   int
+	da   int
+	hp   int
+	poSk int
+}
+
+func (data miniCardData) toOwnedCard(cm *cardmanager.CardManager) *usermodel.OwnedCard {
+	card := cm.Filter().SsrNameID(data.name).First()
+	builder := usermodel.NewOwnedCardBuilder()
+	ocard, err := builder.Card(card).SkillLevel(data.skLv).StarRank(data.stRa).PotVocal(data.vo).
+		PotVisual(data.vi).PotDance(data.da).PotHp(data.hp).PotSkill(data.poSk).Build()
+	if err != nil {
+		return nil
+	}
+	return ocard
+}
+
+func TestGameFast_CorrectScore(t *testing.T) {
+	testcases := []struct {
+		guestData       miniCardData
+		cardsData       []miniCardData
+		leadIndex       int
+		supportsData    []miniCardData
+		supportAppeals  int
+		statCalc        statcalculator.StatCalculatorType
+		songName        string
+		diff            enum.SongDifficulty
+		expectedAppeals int
+		expectedScore   int
+		windowAbuse     bool
+	}{
+		{
+			guestData: miniCardData{name: "sachiko2"},
+			cardsData: []miniCardData{
+				miniCardData{name: "karen4", skLv: 10, poSk: 10, da: 9},
+				miniCardData{name: "karen2", skLv: 10, poSk: 10, da: 9},
+				miniCardData{name: "kanade2", skLv: 10, poSk: 10},
+				miniCardData{name: "aiko4", skLv: 10, poSk: 10, da: 3},
+				miniCardData{name: "sato3", skLv: 10, poSk: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       2,
+			supportAppeals:  102727,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 283375,
+			expectedScore:   1189581,
+		},
+		{
+			guestData: miniCardData{name: "hotaru1", vo: 10, da: 2, vi: 10},
+			cardsData: []miniCardData{
+				miniCardData{name: "karen4", skLv: 10, poSk: 10, da: 9},
+				miniCardData{name: "karen2", skLv: 10, poSk: 10, da: 9},
+				miniCardData{name: "kanade2", skLv: 10, poSk: 10},
+				miniCardData{name: "aiko4", skLv: 10, poSk: 10, da: 3},
+				miniCardData{name: "sato3", skLv: 10, poSk: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       2,
+			supportAppeals:  102727,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyRegular,
+			expectedAppeals: 244271,
+			expectedScore:   673762,
+		},
+		{
+			guestData: miniCardData{name: "hotaru1", vo: 10, da: 2, vi: 10},
+			cardsData: []miniCardData{
+				miniCardData{name: "karen4", skLv: 10, poSk: 10, da: 9},
+				miniCardData{name: "karen2", skLv: 10, poSk: 10, da: 9},
+				miniCardData{name: "kanade2", skLv: 10, poSk: 10},
+				miniCardData{name: "aiko4", skLv: 10, poSk: 10, da: 3},
+				miniCardData{name: "sato3", skLv: 10, poSk: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       2,
+			supportAppeals:  102727,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyDebut,
+			expectedAppeals: 244271,
+			expectedScore:   557660,
+		},
+		{
+			guestData: miniCardData{name: "kaede2", vo: 10, da: 10, vi: 10, hp: 5},
+			cardsData: []miniCardData{
+				miniCardData{name: "mayu5", skLv: 10, poSk: 10, da: 5, vo: 10, vi: 10},
+				miniCardData{name: "mio4", skLv: 10, poSk: 10, da: 10, vo: 5, vi: 10},
+				miniCardData{name: "nina4", skLv: 10, poSk: 10, da: 6, vi: 10},
+				miniCardData{name: "yoshino3", skLv: 10, poSk: 10, da: 10, vi: 10},
+				miniCardData{name: "yoshino3u", skLv: 10, poSk: 10, da: 10, vi: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       2,
+			supportAppeals:  113290,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 263468,
+			expectedScore:   1934552,
+			windowAbuse:     true,
+		},
+	}
+	cm, err := cardmanager.Default()
+	if err != nil {
+		t.Errorf("cannot initialize cardmanager: %v", err)
+	}
+	sm, err := songmanager.Default()
+	if err != nil {
+		panic(err)
+	}
+
+	/**
+	difference in score is quite big, possibly because some delay in tapping.
+	For example: if note is on 90011, and a skill ends at 90000, one can simply tap the note at
+	90000 to get larger score.
+
+	Timing window:
+	diff: perfect/great/nice/bad
+	DB: 80ms / 120ms / 150ms / 180ms
+	RG: 80ms / 120ms / 150ms / 180ms
+	PR: 70ms / 90ms / 110ms / 140ms
+	MS: 60ms / 80ms / 100ms / 130ms
+	RMS: 60ms / 80ms / 100ms / 130ms
+	holds are 150ms iirc just like flicks
+	Flick notes window: 150ms / 180ms / 190ms / 200ms
+	Slide checkpoint/entry/exit window: 200ms <-- note (!) slide can only be perfect/miss
+	So note at 90000 can actually still be perfect when tapped on 89940 - 90060.
+	Expected score is taken from rehearsal demo mode. Maybe in that mode, note is not exactly tap'd
+	on the note timestamp?
+	*/
+	scoreThreshold := 10000.0
+	appealThreshold := 50.0
+
+	for i, tc := range testcases {
+		helper.Features.SetWindowAbuse(tc.windowAbuse)
+		if i != 3 {
+			continue
+		}
+		guest := tc.guestData.toOwnedCard(cm)
+		ocards := []*usermodel.OwnedCard{}
+		for _, card := range tc.cardsData {
+			ocards = append(ocards, card.toOwnedCard(cm))
+		}
+		supports := []*usermodel.OwnedCard{}
+		for _, card := range tc.supportsData {
+			supports = append(supports, card.toOwnedCard(cm))
+		}
+		song := sm.Filter().NameLike(tc.songName).Difficulty(tc.diff).First()
+		gc := NewGameConfig(ocards, tc.leadIndex, supports, guest, song, tc.supportAppeals, tc.statCalc)
+		assert.InDeltaf(t, tc.expectedAppeals, gc.appeal, appealThreshold, "Wrong score for test #%d", i)
+
+		game := NewGameFast(gc)
+		result := game.Play(false)
+		assert.InDeltaf(t, tc.expectedScore, result.Score, scoreThreshold, "Wrong score for test #%d", i)
 	}
 }
