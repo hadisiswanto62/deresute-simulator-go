@@ -93,4 +93,9 @@ func TestGameConfig_NormalCalc_WithoutGuestAndSupports(t *testing.T) {
 
 	gc := NewGameConfig(ocards, leaderIndex, nil, nil, &song, 0, statcalculator.NormalStatCalculator)
 	assert.Equal(t, gc.Appeal(), 219476, "Doesn't work! (maybe cm.Filter() returns different card, check!)")
+
+	supports := []*usermodel.OwnedCard{}
+	var guest *usermodel.OwnedCard
+	gc = NewGameConfig(ocards, leaderIndex, supports, guest, &song, 0, statcalculator.NormalStatCalculator)
+	assert.Equal(t, gc.Appeal(), 219476, "Doesn't work! (maybe cm.Filter() returns different card, check!)")
 }
