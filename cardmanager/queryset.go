@@ -149,11 +149,11 @@ func (q *QuerySet) Name(name string) *QuerySet {
 func (q *QuerySet) NameLike(name string) *QuerySet {
 	result := []*models.Card{}
 	for i := range q.cards {
-		if strings.Contains(
-			strings.ToLower(q.cards[i].Idol.Name),
-			strings.ToLower(name),
-		) {
-			result = append(result, q.cards[i])
+		nameSplit := strings.Fields(q.cards[i].Idol.Name)
+		for _, oneName := range nameSplit {
+			if strings.ToLower(oneName) == strings.ToLower(name) {
+				result = append(result, q.cards[i])
+			}
 		}
 	}
 	q.cards = result

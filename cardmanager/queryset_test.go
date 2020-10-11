@@ -114,6 +114,7 @@ func TestSsrNameId(t *testing.T) {
 		"arisu1":    200206,
 		"arisu3u":   200643,
 		"arisu3":    200644,
+		"sato3":     300572,
 	}
 	for nameID, id := range testcases {
 		card := cm.Filter().SsrNameID(nameID).First()
