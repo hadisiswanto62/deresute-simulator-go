@@ -1,6 +1,7 @@
 package simulator
 
 import (
+	"fmt"
 	"math"
 	"sort"
 
@@ -22,6 +23,15 @@ type GameFast struct {
 
 	songDifficultyMultiplier float64
 	comboBonusMap            map[int]float64
+}
+
+func (g GameFast) printState(state *GameState, i, timestamp int,
+	activeSkillsIndex []int, noteType enum.NoteType, tapScore int, multiplierFromSkill float64,
+	baseComboBonus float64) {
+	fmt.Printf("%d Note #%d [%5v]: %d/%d (hp=%d), (skill=+%.5f) (combo=+%.5f). activeSkills = %v\n",
+		timestamp, i, noteType, tapScore, state.Score, state.currentHp,
+		multiplierFromSkill, baseComboBonus, activeSkillsIndex,
+	)
 }
 
 func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
@@ -59,7 +69,7 @@ func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
 		tapHeal := g.getTapHeal(activeSkillsIndex, state, judgement, noteType)
 		state.Score += score
 		state.currentHp += tapHeal
-		// state.printState()
+		// g.printState(state, i, timestamp, activeSkillsIndex, noteType, score, scoreComboBonus, g.comboBonusMap[i])
 	}
 	return state
 }
@@ -146,15 +156,19 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 
 // assuming allSkillTimestamps is sorted by startTimestamp
 func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps *[]*activeSkillTimestamp) []int {
+	windowAbuse := 0
 	ret := []int{}
-	for len(*allSkillTimestamps) > 0 && (*allSkillTimestamps)[0].endTimestamp < timestamp {
+	// if skill ends in the past, it is inactive
+	for len(*allSkillTimestamps) > 0 && (*allSkillTimestamps)[0].endTimestamp+windowAbuse < timestamp {
 		*allSkillTimestamps = (*allSkillTimestamps)[1:]
 	}
 	for _, activeSkill := range *allSkillTimestamps {
+		// because it is sorted, if we reach to future skill, break
 		if activeSkill.startTimestamp > timestamp {
 			break
 		}
-		if activeSkill.endTimestamp >= timestamp {
+		// if skill ends in the future, it is active (!)
+		if activeSkill.endTimestamp+windowAbuse >= timestamp {
 			ret = append(ret, activeSkill.cardIndex)
 		}
 	}
