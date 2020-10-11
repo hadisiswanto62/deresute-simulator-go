@@ -330,24 +330,23 @@ func getJudgementScoreMultiplier(judgement enum.TapJudgement) float64 {
 	}
 	return 0
 }
-
 func getComboBonusMap(notesCount int) map[int]float64 {
 	comboMap := make(map[int]float64)
 	for i := 0; i < notesCount; i++ {
 		progress := float64(i+2) / float64(notesCount) * 100.0
-		if progress >= 90.0 {
+		if progress > 90.0 {
 			comboMap[i] = 2.0
-		} else if progress >= 80.0 {
+		} else if progress > 80.0 {
 			comboMap[i] = 1.7
-		} else if progress >= 70.0 {
+		} else if progress > 70.0 {
 			comboMap[i] = 1.5
-		} else if progress >= 50.0 {
+		} else if progress > 50.0 {
 			comboMap[i] = 1.4
-		} else if progress >= 25.0 {
+		} else if progress > 25.0 {
 			comboMap[i] = 1.3
-		} else if progress >= 10.0 {
+		} else if progress > 10.0 {
 			comboMap[i] = 1.2
-		} else if progress >= 5.0 {
+		} else if progress > 5.0 {
 			comboMap[i] = 1.1
 		} else {
 			comboMap[i] = 1.0
