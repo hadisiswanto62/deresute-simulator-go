@@ -9,6 +9,7 @@ var flags = map[string]bool{
 	"limit-appeals":     true,
 	"limit-score":       true, //true this only when optimizing
 	"use-game-fast":     true,
+	"allow-two-colors":  true,
 
 	// should be FALSE for any valid sims
 	"always-good-rolls": false,
@@ -16,7 +17,8 @@ var flags = map[string]bool{
 	// false for now
 	"use-reso": false,
 
-	"allow-two-colors": true,
+	// depends
+	"use-window-abuse": false,
 }
 
 type feature struct{}
@@ -32,6 +34,14 @@ func (f feature) AllowTwoColors() bool {
 
 func (f feature) UseConcentration() bool {
 	return checkFlag("use-concentration")
+}
+
+func (f feature) UseWindowAbuse() bool {
+	return checkFlag("use-window-abuse")
+}
+
+func (f feature) SetWindowAbuse(val bool) {
+	flags["use-window-abuse"] = val
 }
 
 func (f feature) ReallySimulate() bool {

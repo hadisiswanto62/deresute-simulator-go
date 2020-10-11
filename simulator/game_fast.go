@@ -15,6 +15,7 @@ func NewGameFast(c Playable) *GameFast {
 	}
 	game.songDifficultyMultiplier = helper.GetSongDifficultyMultiplier(c.getSong().Level)
 	game.comboBonusMap = getComboBonusMap(c.getSong().NotesCount())
+	game.windowAbuse = helper.Features.UseWindowAbuse()
 	return &game
 }
 
@@ -23,6 +24,7 @@ type GameFast struct {
 
 	songDifficultyMultiplier float64
 	comboBonusMap            map[int]float64
+	windowAbuse              bool
 }
 
 func (g GameFast) printState(state *GameState, i, timestamp int,
@@ -42,13 +44,14 @@ func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
 	hpCosts := activeSkillsData.hpCostTimestamps
 	for i, note := range state.song.Notes {
 		timestamp := note.TimestampMs
+		noteType := note.NoteType
 		hpCost := g.getHpCost(timestamp, hpCosts)
 		state.currentHp -= hpCost
 		if state.currentHp <= 0 {
 			state.currentHp = 1
 		}
 
-		activeSkillsIndex := g.getActiveSkillsOn(timestamp, &activeSkills)
+		activeSkillsIndex := g.getActiveSkillsOn(timestamp, &activeSkills, noteType)
 		state.concentrationOn = false
 		for _, ID := range activeSkillsIndex {
 			skill := state.skillActivableCards[ID].Card.Skill.SkillType.Name
@@ -59,7 +62,6 @@ func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
 
 		// Play note
 		judgement := getTapJudgement(state)
-		noteType := note.NoteType
 		scoreComboBonus := g.getScoreAndComboBonus(activeSkillsIndex, state, judgement, noteType)
 		noteScoreMultiplier := g.songDifficultyMultiplier *
 			getJudgementScoreMultiplier(judgement) *
@@ -155,20 +157,35 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 }
 
 // assuming allSkillTimestamps is sorted by startTimestamp
-func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps *[]*activeSkillTimestamp) []int {
+func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps *[]*activeSkillTimestamp, noteType enum.NoteType) []int {
 	windowAbuse := 0
+	if g.windowAbuse {
+		switch noteType {
+		case enum.NoteTypeTap:
+			windowAbuse = 60
+		case enum.NoteTypeHold:
+			windowAbuse = 150
+		case enum.NoteTypeFlick:
+			windowAbuse = 150
+		case enum.NoteTypeSlide:
+			windowAbuse = 200
+		}
+	}
 	ret := []int{}
 	// if skill ends in the past, it is inactive
-	for len(*allSkillTimestamps) > 0 && (*allSkillTimestamps)[0].endTimestamp+windowAbuse < timestamp {
+	// windowAbuse -> can tap on timestamp-windowAbuse to get active skill
+	for len(*allSkillTimestamps) > 0 && (*allSkillTimestamps)[0].endTimestamp < timestamp-windowAbuse {
 		*allSkillTimestamps = (*allSkillTimestamps)[1:]
 	}
 	for _, activeSkill := range *allSkillTimestamps {
 		// because it is sorted, if we reach to future skill, break
-		if activeSkill.startTimestamp > timestamp {
+		// windowAbuse -> can tap on timestamp+windowAbuse to get active skill
+		if activeSkill.startTimestamp > timestamp+windowAbuse {
 			break
 		}
 		// if skill ends in the future, it is active (!)
-		if activeSkill.endTimestamp+windowAbuse >= timestamp {
+		//windowAbuse -> can tap on timestamp-windowAbuse to get active skill
+		if activeSkill.endTimestamp >= timestamp-windowAbuse {
 			ret = append(ret, activeSkill.cardIndex)
 		}
 	}
