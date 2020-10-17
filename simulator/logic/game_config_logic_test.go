@@ -88,13 +88,14 @@ func TestGameConfig_UnisonInCorrectSongType(t *testing.T) {
 		},
 	}
 	logic := unisonInCorrectSongType
+
 	for _, tc := range testcases {
 		ocardsSlice := makeOcards(tc.cardIds)
 		guest := makeOcard(tc.guestID)
 		song := models.NewDefaultSong("", 26, tc.songAttr, 100, 100)
 
 		var ocards [5]*usermodel.OwnedCard
-		copy(ocards[:4], ocardsSlice)
+		copy(ocards[:5], ocardsSlice)
 
 		team := &usermodel.Team{Ocards: ocards, LeaderIndex: tc.leaderIndex}
 		activable := []*usermodel.OwnedCard{
