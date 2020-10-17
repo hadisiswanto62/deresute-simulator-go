@@ -7,20 +7,21 @@ import (
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 )
 
-func NewGameFast(c Playable) *GameFast {
+func NewGameFast(c simulatormodels.Playable) *GameFast {
 	game := GameFast{
 		Config: c,
 	}
-	game.songDifficultyMultiplier = helper.GetSongDifficultyMultiplier(c.getSong().Level)
-	game.comboBonusMap = getComboBonusMap(c.getSong().NotesCount())
+	game.songDifficultyMultiplier = helper.GetSongDifficultyMultiplier(c.GetSong().Level)
+	game.comboBonusMap = getComboBonusMap(c.GetSong().NotesCount())
 	game.windowAbuse = helper.Features.UseWindowAbuse()
 	return &game
 }
 
 type GameFast struct {
-	Config Playable
+	Config simulatormodels.Playable
 
 	songDifficultyMultiplier float64
 	comboBonusMap            map[int]float64

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
@@ -48,18 +49,18 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 				continue
 			}
 			guestCount = append(guestCount, guest)
-			gameConfig := NewGameConfig(team.Ocards[:], team.LeaderIndex, supports[:],
+			gameConfig := simulatormodels.NewGameConfig(team.Ocards[:], team.LeaderIndex, supports[:],
 				guest, song, 0, statcalculator.NormalStatCalculator)
 			if helper.Features.LimitAppeals() {
-				if gameConfig.getAppeal() < 310000 {
-					if !gameConfig.isResonantActive() {
+				if gameConfig.GetAppeal() < 310000 {
+					if !gameConfig.IsResonantActive() {
 						continue
 					}
 				}
 			}
 			actualNumberofResults++
 			if beneran {
-				go func(gameConfig *GameConfig, channel chan SimulationSummary) {
+				go func(gameConfig *simulatormodels.GameConfig, channel chan SimulationSummary) {
 					channel <- Simulate(gameConfig, times)
 				}(gameConfig, resultChannel)
 			}
@@ -111,23 +112,23 @@ func FindOptimal(album *usermodel.Album, guests []*usermodel.OwnedCard,
 			continue
 		}
 		ids := []string{}
-		for _, ocard := range summary.GameConfig.getCards() {
+		for _, ocard := range summary.GameConfig.GetCards() {
 			ids = append(ids, strconv.Itoa(ocard.Card.ID))
 		}
 		id := strings.Join(ids, ",")
 		str := fmt.Sprintf("%s %d %d %d %.0f",
-			id, summary.GameConfig.getLeaderIndex(),
-			summary.GameConfig.getGuest().Card.ID, summary.GameConfig.getAppeal(), summary.Average)
+			id, summary.GameConfig.GetLeaderIndex(),
+			summary.GameConfig.GetGuest().Card.ID, summary.GameConfig.GetAppeal(), summary.Average)
 		buffer = append(buffer, str)
 		str = ""
-		for _, ocard := range summary.GameConfig.getCards() {
+		for _, ocard := range summary.GameConfig.GetCards() {
 			str = fmt.Sprintf("%s %s %s | ", str, ocard.Card.Idol.Name, ocard.Card.Skill.SkillType.Name)
 		}
 		str = fmt.Sprintf("%s %s %d %s %s %.0f", str,
-			summary.GameConfig.getCards()[summary.GameConfig.getLeaderIndex()].LeadSkill.Name,
-			summary.GameConfig.getLeaderIndex(),
-			summary.GameConfig.getGuest().Card.Idol.Attribute,
-			summary.GameConfig.getGuest().Card.LeadSkill.Name, summary.Average)
+			summary.GameConfig.GetCards()[summary.GameConfig.GetLeaderIndex()].LeadSkill.Name,
+			summary.GameConfig.GetLeaderIndex(),
+			summary.GameConfig.GetGuest().Card.Idol.Attribute,
+			summary.GameConfig.GetGuest().Card.LeadSkill.Name, summary.Average)
 		readableBuffer = append(readableBuffer, str)
 		if len(buffer) > bufferMaxLength {
 			saveBuffer(&buffer, fmt.Sprintf("log/%s", filename))

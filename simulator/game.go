@@ -7,6 +7,7 @@ import (
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
 
@@ -33,19 +34,19 @@ func (as activeSkill) String() string {
 
 // Game is a game. USE NewGame TO CREATE.
 type Game struct {
-	Config Playable
+	Config simulatormodels.Playable
 
 	songDifficultyMultiplier float64
 	comboBonusMap            map[int]float64
 }
 
 // NewGame creates, initializes, and returns Game
-func NewGame(c Playable) *Game {
+func NewGame(c simulatormodels.Playable) *Game {
 	game := Game{
 		Config: c,
 	}
-	game.songDifficultyMultiplier = helper.GetSongDifficultyMultiplier(c.getSong().Level)
-	game.comboBonusMap = getComboBonusMap(c.getSong().NotesCount())
+	game.songDifficultyMultiplier = helper.GetSongDifficultyMultiplier(c.GetSong().Level)
+	game.comboBonusMap = getComboBonusMap(c.GetSong().NotesCount())
 	return &game
 }
 
@@ -178,19 +179,19 @@ func (g Game) Play(alwaysGoodRolls bool) *GameState {
 	return state
 }
 
-func initConfig(c Playable) *GameState {
-	teamAttributes := c.getTeamAttributesv2()
-	teamSkills := c.getTeamSkillsv2()
+func initConfig(c simulatormodels.Playable) *GameState {
+	teamAttributes := c.GetTeamAttributesv2()
+	teamSkills := c.GetTeamSkillsv2()
 
-	resonantOn := c.isResonantActive()
+	resonantOn := c.IsResonantActive()
 	leadSkillsActive := make([]bool, 0, 2)
-	for _, ocard := range c.getLeadSkillActivableCards() {
+	for _, ocard := range c.GetLeadSkillActivableCards() {
 		active := ocard.LeadSkill.IsActive(teamAttributes, teamSkills)
 		leadSkillsActive = append(leadSkillsActive, active)
 	}
 
 	skillsActive := make([]bool, 0, 5)
-	for _, ocard := range c.getSkillActivableCards() {
+	for _, ocard := range c.GetSkillActivableCards() {
 		active := ocard.Skill.SkillType.IsActive(teamAttributes)
 		skillsActive = append(skillsActive, active)
 	}
@@ -198,20 +199,20 @@ func initConfig(c Playable) *GameState {
 	state := GameState{
 		timestamp:        0,
 		currentNoteIndex: -1,
-		currentHp:        c.getHp(),
+		currentHp:        c.GetHp(),
 
 		leadSkillsActive:        leadSkillsActive,
 		skillsActive:            skillsActive,
 		concentrationOn:         false,
 		resonantOn:              resonantOn,
-		song:                    c.getSong(),
-		skillActivableCards:     c.getSkillActivableCards(),
-		leadSkillActivableCards: c.getLeadSkillActivableCards(),
-		appeal:                  c.getAppeal(),
-		baseVisual:              c.getBaseVisual(),
-		baseVocal:               c.getBaseVocal(),
-		baseDance:               c.getBaseDance(),
-		maxHp:                   c.getHp() * 2,
+		song:                    c.GetSong(),
+		skillActivableCards:     c.GetSkillActivableCards(),
+		leadSkillActivableCards: c.GetLeadSkillActivableCards(),
+		appeal:                  c.GetAppeal(),
+		baseVisual:              c.GetBaseVisual(),
+		baseVocal:               c.GetBaseVocal(),
+		baseDance:               c.GetBaseDance(),
+		maxHp:                   c.GetHp() * 2,
 	}
 	state.baseTapScore = float64(state.appeal) / float64(state.song.NotesCount())
 	return &state

@@ -7,6 +7,7 @@ import (
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
 	"github.com/hadisiswanto62/deresute-simulator-go/songmanager"
 
@@ -14,6 +15,57 @@ import (
 
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
+
+func getGc() *simulatormodels.GameConfig {
+	return getGcCustomCalc(0, statcalculator.NormalStatCalculator)
+}
+
+// do not change card ids, game_fast_test tests the score
+func getGcCustomCalc(bonusAppeal int, calcType statcalculator.StatCalculatorType) *simulatormodels.GameConfig {
+	//
+	songName := "M@GIC"
+	cardIds := [5]int{
+		200726, 300830, 300236, 200314, 100282,
+	}
+	leaderIndex := 2
+	guestId := 200346
+	//
+
+	sm, err := songmanager.Default()
+	if err != nil {
+		panic(err)
+	}
+	song := sm.Filter().NameLike(songName).Difficulty(enum.SongDifficultyMaster).First()
+
+	cm, err := cardmanager.Default()
+	if err != nil {
+		panic(err)
+	}
+	ocards := [5]*usermodel.OwnedCard{}
+	for i, id := range cardIds {
+		request := usermodel.OwnedCardRequest{
+			Card:       cm.Filter().ID(id).First(),
+			SkillLevel: 10,
+			// PotSkill:   10,
+			StarRank: 1,
+		}
+		ocards[i] = usermodel.NewOwnedCard2(request)
+	}
+	guest := usermodel.NewOwnedCard2(usermodel.OwnedCardRequest{
+		Card:       cm.Filter().ID(guestId).First(),
+		SkillLevel: 10,
+		PotSkill:   10,
+		StarRank:   1,
+	})
+	supports := [10]*usermodel.OwnedCard{}
+	for i := 0; i < 10; i++ {
+		supports[i] = usermodel.NewOwnedCard2(usermodel.OwnedCardRequest{
+			Card:     cm.Filter().ID(guestId).First(),
+			StarRank: 15,
+		})
+	}
+	return simulatormodels.NewGameConfig(ocards[:], leaderIndex, supports[:], guest, song, bonusAppeal, calcType)
+}
 
 func TestGameFast(t *testing.T) {
 	gc := getGc()
@@ -39,7 +91,7 @@ func BenchmarkGetSkillActive(b *testing.B) {
 	gc := getGc()
 	game := NewGameFast(gc)
 	notesTimestamp := []int{}
-	for _, note := range gc.song.Notes {
+	for _, note := range gc.GetSong().Notes {
 		notesTimestamp = append(notesTimestamp, note.TimestampMs)
 	}
 	state := initConfig(game.Config)
@@ -199,6 +251,7 @@ func TestGameFast_CorrectScore(t *testing.T) {
 	So note at 90000 can actually still be perfect when tapped on 89940 - 90060.
 	Expected score is taken from rehearsal demo mode. Maybe in that mode, note is not exactly tap'd
 	on the note timestamp?
+	Also for some test, data is taken from leaderboard, so the guy might not be very optimal with their timing window abuse
 	*/
 	scoreThreshold := 10000.0
 	appealThreshold := 50.0
@@ -218,8 +271,8 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			supports = append(supports, card.toOwnedCard(cm))
 		}
 		song := sm.Filter().NameLike(tc.songName).Difficulty(tc.diff).First()
-		gc := NewGameConfig(ocards, tc.leadIndex, supports, guest, song, tc.supportAppeals, tc.statCalc)
-		assert.InDeltaf(t, tc.expectedAppeals, gc.appeal, appealThreshold, "Wrong score for test #%d", i)
+		gc := simulatormodels.NewGameConfig(ocards, tc.leadIndex, supports, guest, song, tc.supportAppeals, tc.statCalc)
+		assert.InDeltaf(t, tc.expectedAppeals, gc.GetAppeal(), appealThreshold, "Wrong score for test #%d", i)
 
 		game := NewGameFast(gc)
 		result := game.Play(false)

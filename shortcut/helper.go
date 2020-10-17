@@ -3,13 +3,13 @@ package shortcut
 import (
 	"fmt"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/cardmanager"
 	"github.com/hadisiswanto62/deresute-simulator-go/csvmodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
-	"github.com/hadisiswanto62/deresute-simulator-go/simulator"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodelmanager"
 )
@@ -54,7 +54,7 @@ func (c BaseOptimizeConfig) getSongAttr() enum.Attribute {
 }
 
 func ToGameConfig(config BaseGameConfig, customCardParams *usermodelmanager.CustomOwnedCardParameters,
-	useDefaultCards bool) (*simulator.GameConfig, error) {
+	useDefaultCards bool) (*simulatormodels.GameConfig, error) {
 	if config.Song == nil {
 		var err error
 		config.Song, err = makeSong(config)
@@ -116,7 +116,7 @@ func ToGameConfig(config BaseGameConfig, customCardParams *usermodelmanager.Cust
 	if err != nil {
 		panic(err)
 	}
-	return simulator.NewGameConfig(ocards[:], config.LeaderIndex, supports[:],
+	return simulatormodels.NewGameConfig(ocards[:], config.LeaderIndex, supports[:],
 		guest, config.Song, 0, statcalculator.NormalStatCalculator), nil
 }
 

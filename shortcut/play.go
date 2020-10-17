@@ -6,6 +6,7 @@ import (
 
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator"
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodelmanager"
 )
 
@@ -26,7 +27,7 @@ func Play(config BaseGameConfig, customCardParams *usermodelmanager.CustomOwnedC
 
 // Shortcut to create GameConfig
 func GameConfig(config BaseGameConfig,
-	customCardParams *usermodelmanager.CustomOwnedCardParameters, useDefaultCards bool) *simulator.GameConfig {
+	customCardParams *usermodelmanager.CustomOwnedCardParameters, useDefaultCards bool) *simulatormodels.GameConfig {
 	gc, err := ToGameConfig(config, customCardParams, useDefaultCards)
 	if err != nil {
 		panic(err)

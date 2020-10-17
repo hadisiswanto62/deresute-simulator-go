@@ -1,7 +1,8 @@
-package simulator
+package simulatormodels
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/cardmanager"
@@ -13,12 +14,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func init() {
+	os.Chdir("../../")
+}
+
 func defaultOcard(cards ...*models.Card) []*usermodel.OwnedCard {
 	ocards := []*usermodel.OwnedCard{}
 	for _, card := range cards {
 		ocard, err := usermodel.NewOwnedCardBuilder().Card(card).Build()
 		if err != nil {
-			fmt.Errorf("cannot create card: %v", err)
+			panic(fmt.Errorf("cannot create card: %v", err))
 		}
 		ocards = append(ocards, ocard)
 	}

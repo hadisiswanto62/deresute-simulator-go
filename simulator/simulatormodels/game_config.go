@@ -1,4 +1,4 @@
-package simulator
+package simulatormodels
 
 import (
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
@@ -35,52 +35,52 @@ func (gc GameConfig) GetOcards() []*usermodel.OwnedCard {
 }
 
 func (gc GameConfig) Appeal() int {
-	return gc.getAppeal()
+	return gc.GetAppeal()
 }
 
-func (gc GameConfig) getSkillActivableCards() []*usermodel.OwnedCard {
+func (gc GameConfig) GetSkillActivableCards() []*usermodel.OwnedCard {
 	return gc.ocards
 }
-func (gc GameConfig) getLeadSkillActivableCards() []*usermodel.OwnedCard {
+func (gc GameConfig) GetLeadSkillActivableCards() []*usermodel.OwnedCard {
 	return []*usermodel.OwnedCard{
 		gc.ocards[gc.leaderIndex],
 		gc.guest,
 	}
 }
-func (gc GameConfig) getSong() *models.Song {
+func (gc GameConfig) GetSong() *models.Song {
 	return gc.song
 }
-func (gc GameConfig) getBaseVisual() int {
+func (gc GameConfig) GetBaseVisual() int {
 	return gc.baseVisual
 }
-func (gc GameConfig) getBaseVocal() int {
+func (gc GameConfig) GetBaseVocal() int {
 	return gc.baseVocal
 }
-func (gc GameConfig) getBaseDance() int {
+func (gc GameConfig) GetBaseDance() int {
 	return gc.baseDance
 }
-func (gc GameConfig) getAppeal() int {
+func (gc GameConfig) GetAppeal() int {
 	return gc.appeal
 }
-func (gc GameConfig) getHp() int {
+func (gc GameConfig) GetHp() int {
 	return gc.hp
 }
-func (gc GameConfig) getTeamAttributesv2() []enum.Attribute {
+func (gc GameConfig) GetTeamAttributesv2() []enum.Attribute {
 	return gc.teamAttributes
 }
-func (gc GameConfig) getTeamSkillsv2() []enum.SkillType {
+func (gc GameConfig) GetTeamSkillsv2() []enum.SkillType {
 	return gc.teamSkills
 }
-func (gc GameConfig) isResonantActive() bool {
+func (gc GameConfig) IsResonantActive() bool {
 	return gc.resonantOn
 }
-func (gc GameConfig) getCards() []*usermodel.OwnedCard {
+func (gc GameConfig) GetCards() []*usermodel.OwnedCard {
 	return gc.ocards
 }
-func (gc GameConfig) getLeaderIndex() int {
+func (gc GameConfig) GetLeaderIndex() int {
 	return gc.leaderIndex
 }
-func (gc GameConfig) getGuest() *usermodel.OwnedCard {
+func (gc GameConfig) GetGuest() *usermodel.OwnedCard {
 	return gc.guest
 }
 

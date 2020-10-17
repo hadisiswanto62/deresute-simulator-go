@@ -2,11 +2,12 @@ package simulator
 
 import (
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
+	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 )
 
 // SimulationSummary is summary of the simulation
 type SimulationSummary struct {
-	GameConfig Playable
+	GameConfig simulatormodels.Playable
 	Min        int
 	Max        int
 	Average    float64
@@ -19,7 +20,7 @@ type GameLike interface {
 }
 
 // Simulate simulates the game `times` times and return the summary in SimulationSummary
-func Simulate(gc Playable, times int) SimulationSummary {
+func Simulate(gc simulatormodels.Playable, times int) SimulationSummary {
 	var game GameLike
 	if helper.Features.UseFastGame() {
 		game = NewGameFast(gc)
@@ -28,8 +29,8 @@ func Simulate(gc Playable, times int) SimulationSummary {
 	}
 	maxScore := game.Play(true).Score
 	if helper.Features.LimitScore() {
-		if !gc.isResonantActive() {
-			threshold := helper.Features.GetScoreLimitForAttr(gc.getSong().Attribute, gc.getSong().Level)
+		if !gc.IsResonantActive() {
+			threshold := helper.Features.GetScoreLimitForAttr(gc.GetSong().Attribute, gc.GetSong().Level)
 			if maxScore < threshold {
 				return SimulationSummary{
 					GameConfig: gc,

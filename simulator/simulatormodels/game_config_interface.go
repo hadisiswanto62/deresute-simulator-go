@@ -1,4 +1,4 @@
-package simulator
+package simulatormodels
 
 import (
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
@@ -9,23 +9,23 @@ import (
 // Playable is an interface for game configs that can be played.
 // for implementers: make sure all O(1)
 type Playable interface {
-	getSkillActivableCards() []*usermodel.OwnedCard
-	getLeadSkillActivableCards() []*usermodel.OwnedCard
-	getSong() *models.Song
-	getBaseVisual() int
-	getBaseVocal() int
-	getBaseDance() int
-	getAppeal() int
-	getHp() int
+	GetSkillActivableCards() []*usermodel.OwnedCard
+	GetLeadSkillActivableCards() []*usermodel.OwnedCard
+	GetSong() *models.Song
+	GetBaseVisual() int
+	GetBaseVocal() int
+	GetBaseDance() int
+	GetAppeal() int
+	GetHp() int
 
-	getTeamAttributesv2() []enum.Attribute
+	GetTeamAttributesv2() []enum.Attribute
 	// note that teamSkills != skills from getSkillActivableCards
 	// teamSkills is used for reso (which include guest's skill that cant be active)
-	getTeamSkillsv2() []enum.SkillType
-	isResonantActive() bool
-	getCards() []*usermodel.OwnedCard
-	getLeaderIndex() int
-	getGuest() *usermodel.OwnedCard
+	GetTeamSkillsv2() []enum.SkillType
+	IsResonantActive() bool
+	GetCards() []*usermodel.OwnedCard
+	GetLeaderIndex() int
+	GetGuest() *usermodel.OwnedCard
 }
 
 var _ Playable = GameConfig{}
