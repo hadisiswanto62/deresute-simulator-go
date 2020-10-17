@@ -5,7 +5,7 @@ import "github.com/hadisiswanto62/deresute-simulator-go/enum"
 var flags = map[string]bool{
 	// should be TRUE for any valid sims
 	"use-concentration": true,
-	"do-simulate":       true,
+	"do-simulate":       false,
 	"limit-appeals":     true,
 	"limit-score":       true, //true this only when optimizing
 	"use-game-fast":     true,
@@ -19,6 +19,9 @@ var flags = map[string]bool{
 
 	// depends
 	"use-window-abuse": false,
+
+	// for debug (if not debug -> false)
+	"debug-no-logic": false,
 }
 
 type feature struct{}
@@ -26,6 +29,10 @@ type feature struct{}
 func checkFlag(flag string) bool {
 	val, _ := flags[flag]
 	return val == true
+}
+
+func (f feature) DebugNoLogic() bool {
+	return checkFlag("debug-no-logic")
 }
 
 func (f feature) AllowTwoColors() bool {
