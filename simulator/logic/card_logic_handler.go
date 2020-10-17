@@ -30,7 +30,9 @@ func makeCardLogicHandler() *cardLogicHandler {
 		cardSkillIsImplemented,
 		// add cardCorrectColor if needed
 	}
-	cardsLogics := []*cardsLogic{}
+	cardsLogics := []*cardsLogic{
+		motifWithHighCorrectStat,
+	}
 
 	if !helper.Features.UseConcentration() {
 		cardLogics = append(cardLogics, cardSkillIsNotConcentration)

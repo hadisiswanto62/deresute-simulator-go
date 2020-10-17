@@ -87,3 +87,40 @@ func TestCardLogic_SkillIsImplemented(t *testing.T) {
 		assert.Equalf(t, tc.expected, actual, "Wrong result for nameID %s", tc.nameID)
 	}
 }
+
+func TestCardLogic_MotifWithHighCorrectStat(t *testing.T) {
+	testcases := []struct {
+		name     string
+		cardIDs  []int
+		expected bool
+	}{
+		{
+			name:     "vocal motif on vocal team",
+			cardIDs:  []int{300711, 300709, 300717, 300743, 300685},
+			expected: true,
+		},
+		{
+			name:     "visual motif on vocal team",
+			cardIDs:  []int{300783, 300709, 300717, 300743, 300685},
+			expected: false,
+		},
+		{
+			name:     "visual and vocal motif on vocal team",
+			cardIDs:  []int{300783, 300711, 300717, 300743, 300685},
+			expected: false,
+		},
+		{
+			name:     "vocal motif on average team",
+			cardIDs:  []int{300711, 300783, 300077, 300125, 300811},
+			expected: false,
+		},
+	}
+	logic := motifWithHighCorrectStat
+	for _, tc := range testcases {
+		ocardsSlice := makeOcards(tc.cardIDs)
+		var ocards [5]*usermodel.OwnedCard
+		copy(ocards[:5], ocardsSlice)
+		actual := logic.isSatisfied(ocards, nil)
+		assert.Equalf(t, tc.expected, actual, "Wrong result on tc %s", tc.name)
+	}
+}
