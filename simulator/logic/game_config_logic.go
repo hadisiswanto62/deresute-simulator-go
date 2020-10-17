@@ -20,7 +20,7 @@ var unisonInCorrectSongType = gameConfigLogic{
 		}
 
 		for _, ocards := range leadSkillActivableCards {
-			for attr, lskill := range enum.UnisonMap {
+			for attr, lskill := range enum.LeadSkillUnisonMap {
 				if lskill != ocards.LeadSkill.Name {
 					continue
 				}

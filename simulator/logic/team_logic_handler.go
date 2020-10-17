@@ -22,7 +22,9 @@ func NewTeamLogicHandler() *teamLogicHandler {
 
 func makeTeamLogicHandler() *teamLogicHandler {
 	teamLogics := []*teamLogic{
-		&leadSkillIsImplemented,
+		leadSkillIsImplemented,
+		attrStatUpLeadSkillOnUnicolorTeamOnly,
+		twoCardSameLeadSkillThenUseLowerID,
 	}
 
 	if helper.Features.DebugNoLogic() {
