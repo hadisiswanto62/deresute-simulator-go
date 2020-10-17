@@ -41,3 +41,8 @@ note when adding new SkillType:
 	- Add to models/skill_type.go/GetSkillType()
 	- Add implementation to models/skill_type_impl.go
 */
+var MotifStatMap = map[Stat]SkillType{
+	StatDance:  SkillTypeDanceMotif,
+	StatVocal:  SkillTypeVocalMotif,
+	StatVisual: SkillTypeVisualMotif,
+}

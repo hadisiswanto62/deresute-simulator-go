@@ -13,12 +13,6 @@ type gameConfigLogic struct {
 	IsViolated func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool
 }
 
-var motifStatMap = map[enum.Stat]enum.SkillType{
-	enum.StatDance:  enum.SkillTypeDanceMotif,
-	enum.StatVocal:  enum.SkillTypeVocalMotif,
-	enum.StatVisual: enum.SkillTypeVisualMotif,
-}
-
 var unisonTypeMap = map[enum.LeadSkill]enum.Attribute{
 	enum.LeadSkillCuteUnison:    enum.AttrCute,
 	enum.LeadSkillCoolUnison:    enum.AttrCool,
@@ -160,7 +154,7 @@ var guestTriColorCorrectStat = gameConfigLogic{
 var guestResonantCorrectStat = gameConfigLogic{
 	Name: "guestResonantCorrectStat",
 	IsViolated: func(team *usermodel.Team, song *models.Song, guest *usermodel.OwnedCard) bool {
-		for stat, lskill := range enum.ResonantMap {
+		for stat, lskill := range enum.LeadSkillResonantMap {
 			if guest.LeadSkill.Name == lskill {
 				da, vo, vi := 0, 0, 0
 				for _, ocard := range team.Ocards {

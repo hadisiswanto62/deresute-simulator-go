@@ -57,16 +57,38 @@ const (
 	LeadSkillResonantMakeup LeadSkill = "レゾナンス・メイク"
 )
 
-// ResonantMap is a map of stat to the resonant lead skill
-var ResonantMap = map[Stat]LeadSkill{
+// LeadSkillResonantMap is a map of stat to the resonant lead skill
+var LeadSkillResonantMap = map[Stat]LeadSkill{
 	StatDance:  LeadSkillResonantStep,
 	StatVisual: LeadSkillResonantMakeup,
 	StatVocal:  LeadSkillResonantVoice,
 }
 
-// UnisonMap is a map of attr to the unison lead skill
-var UnisonMap = map[Attribute]LeadSkill{
+// LeadSkillUnisonMap is a map of attr to the unison lead skill
+var LeadSkillUnisonMap = map[Attribute]LeadSkill{
 	AttrCool:    LeadSkillCoolUnison,
 	AttrPassion: LeadSkillPassionUnison,
 	AttrCute:    LeadSkillCuteUnison,
+}
+
+var LeadSkillAttrStatUpCoolMap = map[Stat]LeadSkill{
+	StatDance:  LeadSkillCoolStep,
+	StatVocal:  LeadSkillCoolVoice,
+	StatVisual: LeadSkillCoolMakeup,
+}
+var LeadSkillAttrStatUpCuteMap = map[Stat]LeadSkill{
+	StatDance:  LeadSkillCuteStep,
+	StatVocal:  LeadSkillCuteVoice,
+	StatVisual: LeadSkillCuteMakeup,
+}
+var LeadSkillAttrStatUpPassionMap = map[Stat]LeadSkill{
+	StatDance:  LeadSkillPassionStep,
+	StatVocal:  LeadSkillPassionVoice,
+	StatVisual: LeadSkillPassionMakeup,
+}
+
+var LeadSkillAttrStatUpMap = map[Attribute]map[Stat]LeadSkill{
+	AttrCool:    LeadSkillAttrStatUpCoolMap,
+	AttrCute:    LeadSkillAttrStatUpCuteMap,
+	AttrPassion: LeadSkillAttrStatUpPassionMap,
 }

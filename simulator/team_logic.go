@@ -192,7 +192,7 @@ var noDuoColor = teamLogic{
 var motifWithHighCorrectStat = teamLogic{
 	Name: "motifWithHighCorrectStat",
 	IsSatisfied: func(team *usermodel.Team, song *models.Song) bool {
-		for stat, skill := range motifStatMap {
+		for stat, skill := range enum.MotifStatMap {
 			for _, ocard := range team.Ocards {
 				if ocard.Card.Skill.SkillType.Name == skill {
 					da, vo, vi := 0, 0, 0

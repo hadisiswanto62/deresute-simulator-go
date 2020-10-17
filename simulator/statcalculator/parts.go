@@ -32,7 +32,7 @@ func populateResonant(data *GameConfigStats, leadSkillActivableCards []*usermode
 		if !leadSkill.IsActive(data.TeamAttributes, data.TeamSkills) {
 			continue
 		}
-		for stat, reso := range enum.ResonantMap {
+		for stat, reso := range enum.LeadSkillResonantMap {
 			if leadSkill.Name == reso {
 				data.resonantStat = stat
 				return
