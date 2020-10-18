@@ -22,7 +22,8 @@ func NewGameConfigLogicHandler() *gameConfigLogicHandler {
 
 func makeGameConfigLogicHandler() *gameConfigLogicHandler {
 	gameConfigLogics := []*gameConfigLogic{
-		&unisonInCorrectSongType,
+		unisonInCorrectSongType,
+		allLeadSkillsActive,
 	}
 
 	if helper.Features.DebugNoLogic() {
@@ -33,9 +34,10 @@ func makeGameConfigLogicHandler() *gameConfigLogicHandler {
 	}
 }
 
-func (gclh gameConfigLogicHandler) IsOk(team *usermodel.Team, leadSkillActivableCards []*usermodel.OwnedCard, song *models.Song) bool {
+func (gclh gameConfigLogicHandler) IsOk(team *usermodel.Team, guest *usermodel.OwnedCard, song *models.Song) bool {
+	leadSkillActivable := []*usermodel.OwnedCard{team.Leader(), guest}
 	for _, logic := range gclh.gameConfigLogics {
-		if logic.isViolated(team, leadSkillActivableCards, song) {
+		if logic.isViolated(team, leadSkillActivable, guest, song) {
 			return false
 		}
 	}

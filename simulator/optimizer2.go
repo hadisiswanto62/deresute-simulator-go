@@ -45,10 +45,7 @@ func GetFilteredGameConfigs(album *usermodel.Album2, guests []*usermodel.OwnedCa
 					panic(err)
 				}
 				for _, guest := range guests {
-					activable := []*usermodel.OwnedCard{
-						team.Leader(), guest,
-					}
-					if !gameConfigLogicHandler.IsOk(team, activable, song) {
+					if !gameConfigLogicHandler.IsOk(team, guest, song) {
 						continue
 					}
 					gcCount++

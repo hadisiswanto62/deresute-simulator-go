@@ -54,7 +54,7 @@ type teamLogicTestcase struct {
 }
 
 func testTeamLogic(t *testing.T, testcases []teamLogicTestcase,
-	logic *teamLogic) {
+	logic *teamLogic) bool {
 	for _, tc := range testcases {
 		ocardsSlice := makeOcards(tc.cardIDs)
 		var ocards [5]*usermodel.OwnedCard
@@ -62,8 +62,12 @@ func testTeamLogic(t *testing.T, testcases []teamLogicTestcase,
 		team := usermodel.Team{Ocards: ocards, LeaderIndex: tc.leaderIndex}
 
 		actual := logic.isSatisfied(&team, nil)
-		assert.Equalf(t, tc.expected, actual, "Wrong for %s", tc.name)
+		result := assert.Equalf(t, tc.expected, actual, "Wrong for %s", tc.name)
+		if !result {
+			return result
+		}
 	}
+	return true
 }
 
 func TestTeamLogic_TwoCardSameLeadSkillUseLowerID(t *testing.T) {

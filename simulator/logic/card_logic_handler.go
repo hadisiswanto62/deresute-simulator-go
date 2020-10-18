@@ -32,6 +32,7 @@ func makeCardLogicHandler() *cardLogicHandler {
 	}
 	cardsLogics := []*cardsLogic{
 		motifWithHighCorrectStat,
+		useUnevolvedWithoutEvolved,
 	}
 
 	if !helper.Features.UseConcentration() {
