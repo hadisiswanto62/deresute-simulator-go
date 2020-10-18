@@ -4,11 +4,11 @@ import (
 	"os"
 	"testing"
 
+	"github.com/hadisiswanto62/deresute-simulator-go/models"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/cardmanager"
-	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 )
 
 var cm *cardmanager.CardManager
@@ -22,105 +22,65 @@ func init() {
 	}
 }
 
-func TestCardLogic_CardIsSSR(t *testing.T) {
-	testcases := []struct {
-		rarity   enum.Rarity
-		expected bool
-	}{
-		{rarity: enum.RaritySSR, expected: true},
-		{rarity: enum.RaritySR, expected: false},
-		{rarity: enum.RarityR, expected: false},
-		{rarity: enum.RarityN, expected: false},
-	}
-	logic := cardCardIsSSR
+type cardLogicTestcase struct {
+	name     string
+	nameID   string
+	cardID   int
+	expected bool
+}
+
+func testCardLogic(t *testing.T, testcases []cardLogicTestcase, logic *cardLogic) bool {
 	for _, tc := range testcases {
-		card := cm.Filter().Rarity(tc.rarity).First()
+		var card *models.Card
+		// prioritize nameID
+		if tc.nameID != "" {
+			card = cm.Filter().SsrNameID(tc.nameID).First()
+		} else if tc.cardID != 0 {
+			card = cm.Filter().ID(tc.cardID).First()
+		} else {
+			t.Error("insufficient test data")
+			return false
+		}
 		ocard, err := usermodel.NewOwnedCardBuilder().Card(card).Build()
 		if err != nil {
 			t.Errorf("cannot create ocard: %v", err)
 		}
 		actual := logic.isSatisfied(ocard, nil)
-		assert.Equalf(t, tc.expected, actual, "Wrong result for rarity %s", tc.rarity)
+		result := assert.Equalf(t, tc.expected, actual, "Wrong result for: %s", tc.name)
+		if !result {
+			return result
+		}
 	}
+	return true
+}
+
+func TestCardLogic_CardIsSSR(t *testing.T) {
+	testcases := []cardLogicTestcase{
+		{name: "SSR", cardID: 100076, expected: true},
+		{name: "SR", cardID: 100044, expected: false},
+		{name: "R", cardID: 100002, expected: false},
+	}
+	logic := cardCardIsSSR
+	testCardLogic(t, testcases, logic)
 }
 
 func TestCardLogic_SkillIsNotConcentration(t *testing.T) {
-	testcases := []struct {
-		nameID   string
-		expected bool
-	}{
-		{nameID: "yoshino4", expected: true},
-		{nameID: "uzuki4", expected: true},
-		{nameID: "megumi1", expected: false},
+	testcases := []cardLogicTestcase{
+		{name: "not concentration1", nameID: "yoshino4", expected: true},
+		{name: "not concentration2", nameID: "uzuki4", expected: true},
+		{name: "concentration", nameID: "megumi1", expected: false},
 	}
 	logic := cardSkillIsNotConcentration
-	for _, tc := range testcases {
-		card := cm.Filter().SsrNameID(tc.nameID).First()
-		ocard, err := usermodel.NewOwnedCardBuilder().Card(card).Build()
-		if err != nil {
-			t.Errorf("cannot create ocard: %v", err)
-		}
-		actual := logic.isSatisfied(ocard, nil)
-		assert.Equalf(t, tc.expected, actual, "Wrong result for nameID %s", tc.nameID)
-	}
+	testCardLogic(t, testcases, logic)
 }
 
 func TestCardLogic_SkillIsImplemented(t *testing.T) {
-	testcases := []struct {
-		nameID   string
-		expected bool
-	}{
-		{nameID: "yoshino4", expected: true},
-		{nameID: "uzuki4", expected: true},
-		{nameID: "megumi1", expected: true},
-		{nameID: "nagi2", expected: false},
+	testcases := []cardLogicTestcase{
+		{name: "implemented1", nameID: "yoshino4", expected: true},
+		{name: "implemented2", nameID: "uzuki4", expected: true},
+		{name: "implemented3", nameID: "megumi1", expected: true},
+		{name: "not implemented", nameID: "nagi2", expected: false},
 	}
 	logic := cardSkillIsImplemented
-	for _, tc := range testcases {
-		card := cm.Filter().SsrNameID(tc.nameID).First()
-		ocard, err := usermodel.NewOwnedCardBuilder().Card(card).Build()
-		// fmt.Println(ocard)
-		if err != nil {
-			t.Errorf("cannot create ocard: %v", err)
-		}
-		actual := logic.isSatisfied(ocard, nil)
-		assert.Equalf(t, tc.expected, actual, "Wrong result for nameID %s", tc.nameID)
-	}
-}
-
-func TestCardLogic_MotifWithHighCorrectStat(t *testing.T) {
-	testcases := []struct {
-		name     string
-		cardIDs  []int
-		expected bool
-	}{
-		{
-			name:     "vocal motif on vocal team",
-			cardIDs:  []int{300711, 300709, 300717, 300743, 300685},
-			expected: true,
-		},
-		{
-			name:     "visual motif on vocal team",
-			cardIDs:  []int{300783, 300709, 300717, 300743, 300685},
-			expected: false,
-		},
-		{
-			name:     "visual and vocal motif on vocal team",
-			cardIDs:  []int{300783, 300711, 300717, 300743, 300685},
-			expected: false,
-		},
-		{
-			name:     "vocal motif on average team",
-			cardIDs:  []int{300711, 300783, 300077, 300125, 300811},
-			expected: false,
-		},
-	}
-	logic := motifWithHighCorrectStat
-	for _, tc := range testcases {
-		ocardsSlice := makeOcards(tc.cardIDs)
-		var ocards [5]*usermodel.OwnedCard
-		copy(ocards[:5], ocardsSlice)
-		actual := logic.isSatisfied(ocards, nil)
-		assert.Equalf(t, tc.expected, actual, "Wrong result on tc %s", tc.name)
-	}
+	testCardLogic(t, testcases, logic)
 }
