@@ -119,3 +119,90 @@ func TestTeamLogic_AttrStatUpLeadSkillOnUnicolorTeamOnly(t *testing.T) {
 	logic := attrStatUpLeadSkillOnUnicolorTeamOnly
 	testTeamLogic(t, testcases, logic)
 }
+
+func TestTeamLogic_TricolorMin2Color(t *testing.T) {
+	testcases := []teamLogicTestcase{
+		{
+			name:        "tricolor 3 color",
+			cardIDs:     []int{300236, 300361, 300367, 100252, 200354},
+			leaderIndex: 0,
+			expected:    true,
+		},
+		{
+			name:        "tricolor 2 color",
+			cardIDs:     []int{300236, 300361, 300367, 100252, 100842},
+			leaderIndex: 0,
+			expected:    true,
+		},
+		{
+			name:        "tricolor 1 color",
+			cardIDs:     []int{300236, 300361, 300367, 300368, 300362},
+			leaderIndex: 0,
+			expected:    false,
+		},
+		{
+			name:        "not tricolor",
+			cardIDs:     []int{200726, 300361, 300367, 300368, 300362},
+			leaderIndex: 0,
+			expected:    true,
+		},
+	}
+	logic := tricolorMin2Color
+	testTeamLogic(t, testcases, logic)
+}
+
+func TestTeamLogic_TricolorMin3Color(t *testing.T) {
+	testcases := []teamLogicTestcase{
+		{
+			name:        "tricolor 3 color",
+			cardIDs:     []int{300236, 300361, 300367, 100252, 200354},
+			leaderIndex: 0,
+			expected:    true,
+		},
+		{
+			name:        "tricolor 2 color",
+			cardIDs:     []int{300236, 300361, 300367, 100252, 100842},
+			leaderIndex: 0,
+			expected:    false,
+		},
+		{
+			name:        "tricolor 1 color",
+			cardIDs:     []int{300236, 300361, 300367, 300368, 300362},
+			leaderIndex: 0,
+			expected:    false,
+		},
+		{
+			name:        "not tricolor",
+			cardIDs:     []int{200726, 300361, 300367, 300368, 300362},
+			leaderIndex: 0,
+			expected:    true,
+		},
+	}
+	logic := tricolorMin3Color
+	testTeamLogic(t, testcases, logic)
+}
+
+func TestTeamLogic_ResoOnThreeSkills(t *testing.T) {
+	testcases := []teamLogicTestcase{
+		{
+			name:        "reso 3 skills",
+			cardIDs:     []int{300712, 300096, 300152, 300080, 300108},
+			leaderIndex: 0,
+			expected:    false,
+		},
+		{
+			name:        "reso 4 skills",
+			cardIDs:     []int{300712, 300096, 300152, 300080, 300120},
+			leaderIndex: 0,
+			expected:    true,
+		},
+		{
+			name:        "not reso 3 skills",
+			cardIDs:     []int{300712, 300096, 300152, 300080, 300108},
+			leaderIndex: 1,
+			expected:    true,
+		},
+	}
+	logic := cardsResoOn3UniqueSkills
+	testTeamLogic(t, testcases, logic)
+}

@@ -25,6 +25,13 @@ func makeTeamLogicHandler() *teamLogicHandler {
 		leadSkillIsImplemented,
 		attrStatUpLeadSkillOnUnicolorTeamOnly,
 		twoCardSameLeadSkillThenUseLowerID,
+		cardsResoOn3UniqueSkills,
+	}
+
+	if helper.Features.AllowTwoColors() {
+		teamLogics = append(teamLogics, tricolorMin2Color)
+	} else {
+		teamLogics = append(teamLogics, tricolorMin3Color)
 	}
 
 	if helper.Features.DebugNoLogic() {

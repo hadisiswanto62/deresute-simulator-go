@@ -64,3 +64,57 @@ var twoCardSameLeadSkillThenUseLowerID = &teamLogic{
 		return true
 	},
 }
+
+var tricolorMin2Color = &teamLogic{
+	name: "tricolorMin2Color",
+	isSatisfied: func(team *usermodel.Team, song *models.Song) bool {
+		mapp := enum.LeadSkillTricolorMap
+		mapp["tmp"] = enum.LeadSkillTricolorAbility
+		for _, lskill := range mapp {
+			if team.Leader().LeadSkill.Name == lskill {
+				attributes := make(map[enum.Attribute]bool)
+				for _, ocard := range team.Ocards {
+					attributes[ocard.Card.Idol.Attribute] = true
+				}
+				return len(attributes) >= 2
+			}
+		}
+		return true
+	},
+}
+
+var tricolorMin3Color = &teamLogic{
+	name: "tricolorMin3Color",
+	isSatisfied: func(team *usermodel.Team, song *models.Song) bool {
+		mapp := enum.LeadSkillTricolorMap
+		mapp["tmp"] = enum.LeadSkillTricolorAbility
+		for _, lskill := range mapp {
+			if team.Leader().LeadSkill.Name == lskill {
+				attributes := make(map[enum.Attribute]bool)
+				for _, ocard := range team.Ocards {
+					attributes[ocard.Card.Idol.Attribute] = true
+				}
+				return len(attributes) == 3
+			}
+		}
+		return true
+	},
+}
+var cardsResoOn3UniqueSkills = &teamLogic{
+	name: "cardsResoOn3UniqueSkills",
+	isSatisfied: func(team *usermodel.Team, song *models.Song) bool {
+		skills := make(map[enum.SkillType]bool)
+		for _, ocard := range team.Ocards {
+			skills[ocard.Card.Skill.SkillType.Name] = true
+		}
+		if len(skills) > 3 {
+			return true
+		}
+		for _, lskill := range enum.LeadSkillResonantMap {
+			if team.Leader().Card.LeadSkill.Name == lskill {
+				return false
+			}
+		}
+		return true
+	},
+}
