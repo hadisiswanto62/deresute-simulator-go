@@ -38,6 +38,11 @@ func makeCardLogicHandler() *cardLogicHandler {
 	if !helper.Features.UseConcentration() {
 		cardLogics = append(cardLogics, cardSkillIsNotConcentration)
 	}
+	if helper.Features.AllowTwoColors() {
+		cardsLogics = append(cardsLogics, cardsTricolorMin2Color)
+	} else {
+		cardsLogics = append(cardsLogics, cardsTricolorMin3Color)
+	}
 
 	if helper.Features.DebugNoLogic() {
 		cardLogics = []*cardLogic{}

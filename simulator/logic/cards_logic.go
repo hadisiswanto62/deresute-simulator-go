@@ -71,3 +71,47 @@ var useUnevolvedWithoutEvolved = &cardsLogic{
 		return true
 	},
 }
+
+var cardsTricolorMin2Color = &cardsLogic{
+	name: "cardsTricolorMin2Color",
+	isSatisfied: func(ocards [5]*usermodel.OwnedCard, song *models.Song) bool {
+		attrs := make(map[enum.Attribute]bool)
+		for _, ocard := range ocards {
+			attrs[ocard.Card.Idol.Attribute] = true
+		}
+		if len(attrs) >= 2 {
+			return true
+		}
+		// if monocolor -> not satisfied if any card is trico
+		for _, skill := range []enum.SkillType{enum.SkillTypeTricolorSymphony, enum.SkillTypeTricolorSynergy} {
+			for _, ocard := range ocards {
+				if ocard.Card.Skill.SkillType.Name == skill {
+					return false
+				}
+			}
+		}
+		return true
+	},
+}
+
+var cardsTricolorMin3Color = &cardsLogic{
+	name: "cardsTricolorMin3Color",
+	isSatisfied: func(ocards [5]*usermodel.OwnedCard, song *models.Song) bool {
+		attrs := make(map[enum.Attribute]bool)
+		for _, ocard := range ocards {
+			attrs[ocard.Card.Idol.Attribute] = true
+		}
+		if len(attrs) >= 3 {
+			return true
+		}
+		// if <3 color -> not satisfied if any card is trico
+		for _, skill := range []enum.SkillType{enum.SkillTypeTricolorSymphony, enum.SkillTypeTricolorSynergy} {
+			for _, ocard := range ocards {
+				if ocard.Card.Skill.SkillType.Name == skill {
+					return false
+				}
+			}
+		}
+		return true
+	},
+}
