@@ -92,3 +92,15 @@ var LeadSkillAttrStatUpMap = map[Attribute]map[Stat]LeadSkill{
 	AttrCute:    LeadSkillAttrStatUpCuteMap,
 	AttrPassion: LeadSkillAttrStatUpPassionMap,
 }
+
+var LeadSkillTricolorMap = map[Stat]LeadSkill{
+	StatDance:  LeadSkillTricolorStep,
+	StatVocal:  LeadSkillTricolorVoice,
+	StatVisual: LeadSkillTricolorMakeup,
+}
+
+var LeadSkillPrincessMap = map[Attribute]LeadSkill{
+	AttrCool:    LeadSkillCoolPrincess,
+	AttrCute:    LeadSkillCutePrincess,
+	AttrPassion: LeadSkillPassionPrincess,
+}
