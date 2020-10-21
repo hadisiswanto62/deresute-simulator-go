@@ -36,6 +36,28 @@ func (oc OwnedCard) String() string {
 	)
 }
 
+func (oc OwnedCard) GetStat(stat enum.Stat) int {
+	switch stat {
+	case enum.StatDance:
+		return oc.Dance
+	case enum.StatVisual:
+		return oc.Visual
+	case enum.StatVocal:
+		return oc.Vocal
+	}
+	return -1
+}
+
+func (oc OwnedCard) MaxStat() enum.Stat {
+	if oc.Visual > oc.Dance && oc.Visual > oc.Vocal {
+		return enum.StatVisual
+	} else if oc.Vocal > oc.Dance && oc.Vocal > oc.Visual {
+		return enum.StatVocal
+	} else {
+		return enum.StatDance
+	}
+}
+
 // Level get the level of the card
 func (oc *OwnedCard) Level() int {
 	return oc.level
