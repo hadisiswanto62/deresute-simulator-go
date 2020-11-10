@@ -3,10 +3,8 @@ package simulator
 import (
 	"fmt"
 	"testing"
-	"time"
 
-	"github.com/hadisiswanto62/deresute-simulator-go/helper"
-
+	"github.com/hadisiswanto62/deresute-simulator-go/songmanager"
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodelmanager"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/csvmodels"
@@ -60,26 +58,40 @@ func TestOptimizer2_FilterConfigs(t *testing.T) {
 	}
 
 	count := 0
-	for range GetFilteredGameConfigs(album, guests, &song, 10, "") {
+	for range GetFilteredGameConfigs(album, guests, &song) {
 		count++
 	}
 	fmt.Println(count)
 }
 
-func TestOptimizer2_FilterConfigsRealData(t *testing.T) {
-	defer helper.MeasureTime(time.Now(), "Test")
+type msg struct {
+	album  *usermodel.Album2
+	guests []*usermodel.OwnedCard
+	song   *models.Song
+}
+
+func getAlbum(songName string) (msg, error) {
 	cardsPath := "userdata/cards.csv"
 	guestPath := "userdata/guest tricolor.csv"
-	song := models.NewDefaultSong("", 26, enum.AttrPassion, 1000, 1000)
+	sm, err := songmanager.Default()
+	if err != nil {
+		panic("")
+	}
+	song := sm.Filter().NameLike(songName).Difficulty(enum.SongDifficultyMaster).First()
+
+	params := usermodelmanager.CustomOwnedCardParameters{
+		SkillLevel: 10,
+		PotSkill:   10,
+	}
 
 	dp := csvmodels.CSVDataParser{}
-	baseOcards, err := usermodelmanager.ParseOwnedCard(dp, cardsPath, nil)
+	baseOcards, err := usermodelmanager.ParseOwnedCard(dp, cardsPath, &params)
 	if err != nil {
-		t.Errorf("cannot create ocards: %v", err)
+		return msg{}, fmt.Errorf("cannot create ocards: %v", err)
 	}
 	guests, err := usermodelmanager.ParseOwnedCard(dp, guestPath, nil)
 	if err != nil {
-		t.Errorf("cannot create guests: %v", err)
+		return msg{}, fmt.Errorf("cannot create guests: %v", err)
 	}
 	ocards := []*usermodel.OwnedCard{}
 	if song.Attribute == enum.AttrAll {
@@ -91,11 +103,40 @@ func TestOptimizer2_FilterConfigsRealData(t *testing.T) {
 			}
 		}
 	}
-	album := usermodel.NewAlbum2(ocards)
+	return msg{
+		album:  usermodel.NewAlbum2(ocards),
+		guests: guests,
+		song:   song,
+	}, nil
+}
+
+func TestOptimizer2_FilterConfigsRealData(t *testing.T) {
+	result, err := getAlbum("TOKIMEKI")
+	if err != nil {
+		t.Errorf("test failed: %v", err)
+	}
+	album := result.album
+	guests := result.guests
+	song := result.song
 
 	count := 0
-	for range GetFilteredGameConfigs(album, guests, &song, 10, "") {
+	for range GetFilteredGameConfigs(album, guests, song) {
 		count++
 	}
 	fmt.Println(count)
+}
+
+func TestOptimizer2_Optimize(t *testing.T) {
+	// result, err := getAlbum("O-Ku-Ri-Mo-No")
+	// result, err := getAlbum("M@GIC")
+	result, err := getAlbum("M@GIC")
+	if err != nil {
+		t.Errorf("test failed: %v", err)
+	}
+	album := result.album
+	guests := result.guests
+	song := result.song
+
+	generator := GetFilteredGameConfigs(album, guests, song)
+	Optimize(generator, 10, "test_all.txt")
 }

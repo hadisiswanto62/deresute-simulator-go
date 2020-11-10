@@ -2,6 +2,7 @@ package simulator
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator/logic"
@@ -14,7 +15,7 @@ import (
 
 // GetFilteredGameConfigs create game configs given the parameters, filtered by some logics
 func GetFilteredGameConfigs(album *usermodel.Album2, guests []*usermodel.OwnedCard,
-	song *models.Song, times int, filename string) <-chan *simulatormodels.GameConfig {
+	song *models.Song) <-chan *simulatormodels.GameConfig {
 	ch := make(chan *simulatormodels.GameConfig)
 
 	cardsCount := 0
@@ -93,4 +94,62 @@ func GetFilteredGameConfigs(album *usermodel.Album2, guests []*usermodel.OwnedCa
 		close(ch)
 	}()
 	return ch
+}
+
+func Optimize(generator <-chan *simulatormodels.GameConfig, times int, filename string) error {
+	beneran := helper.Features.ReallySimulate()
+	// channel := make(chan SimulationSummary)
+	channel2 := make(chan miniReport)
+	count := 0
+	for gc := range generator {
+		if !beneran {
+			continue
+		}
+		count++
+
+		go func(gameConfig *simulatormodels.GameConfig, channel chan miniReport, times int) {
+			result := Simulate(gameConfig, times)
+			channel2 <- result.Minify()
+		}(gc, channel2, times)
+	}
+
+	var results []miniReport
+	i := 0
+	for result := range channel2 {
+		results = append(results, result)
+		i++
+		if i == count {
+			close(channel2)
+		}
+	}
+
+	sort.SliceStable(results, func(i, j int) bool {
+		return results[i].avg > results[j].avg
+	})
+	buffer := []string{}
+	for _, result := range results {
+		buffer = append(buffer, result.report)
+	}
+	saveBuffer(&buffer, filename)
+	return nil
+
+	// var summaries []SimulationSummary
+	// i := 0
+	// for summary := range channel {
+	// 	summaries = append(summaries, summary)
+	// 	i++
+	// 	if i == count {
+	// 		close(channel)
+	// 	}
+	// }
+
+	// sort.SliceStable(summaries, func(i, j int) bool {
+	// 	return summaries[i].Max > summaries[j].Max
+	// })
+	// buffer := []string{}
+	// for _, summary := range summaries {
+	// 	buffer = append(buffer, summary.ReportOneline())
+	// }
+	// saveBuffer(&buffer, filename)
+	// return nil
 }
