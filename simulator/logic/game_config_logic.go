@@ -210,3 +210,22 @@ var tricolorCorrectColor = &gameConfigLogic{
 		return false
 	},
 }
+
+var doNotUseReso = &gameConfigLogic{
+	name: "doNotUseReso",
+	isViolated: func(team *usermodel.Team, leadSkillActivableCards []*usermodel.OwnedCard,
+		guest *usermodel.OwnedCard, song *models.Song) bool {
+		lskills := []*models.LeadSkill{
+			team.Leader().LeadSkill,
+			guest.LeadSkill,
+		}
+		for _, resoLSkill := range enum.LeadSkillResonantMap {
+			for _, lskill := range lskills {
+				if lskill.Name == resoLSkill {
+					return true
+				}
+			}
+		}
+		return false
+	},
+}

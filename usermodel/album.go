@@ -15,10 +15,15 @@ type Album struct {
 	combinationGenerator *combin.CombinationGenerator
 	currentIndices       []int
 	currentLeaderIndex   int
+	indices              []int
 	sortedAll            []*OwnedCard
 	sortedCool           []*OwnedCard
 	sortedCute           []*OwnedCard
 	sortedPassion        []*OwnedCard
+}
+
+func (a Album) String() string {
+	return fmt.Sprintf("(Album of %d cards)", len(a.Ocards))
 }
 
 // NewAlbum creates Album object from owned cards
@@ -45,7 +50,7 @@ func NewAlbum(ocards []*OwnedCard) *Album {
 	album := Album{
 		Ocards: ocards, combinationGenerator: gen, currentLeaderIndex: -1,
 		sortedCute: sortedCute, sortedCool: sortedCool, sortedPassion: sortedPassion,
-		sortedAll: sortedAll,
+		sortedAll: sortedAll, indices: make([]int, 5),
 	}
 	return &album
 }
@@ -68,21 +73,56 @@ func (a *Album) GetTeam() *Team {
 	if a.combinationGenerator == nil {
 		panic("combination generator not set")
 	}
-	indices := make([]int, 5)
 	// if currentLeaderIndex = 0, that means generator will return new combination (from album.Next())
 	// so get the new combination and store it
 	// else, that means generator only change leaderIndex so just retrieve the stored combination
 	if a.currentLeaderIndex == 0 {
-		a.combinationGenerator.Combination(indices)
-		a.currentIndices = indices
+		a.combinationGenerator.Combination(a.indices)
+		a.currentIndices = a.indices
 	} else {
-		indices = a.currentIndices
+		a.indices = a.currentIndices
 	}
 	ocards := [5]*OwnedCard{}
-	for i, index := range indices {
+	for i, index := range a.indices {
 		ocards[i] = a.Ocards[index]
 	}
 	return &Team{Ocards: ocards, LeaderIndex: a.currentLeaderIndex}
+}
+
+type baseTeamData struct {
+	ids         []int
+	leaderIndex int
+}
+
+func (a *Album) GetTeamDebug() *Team {
+	data := a.getTeamDebug()
+	ocards := [5]*OwnedCard{}
+	for i, index := range data.ids {
+		ocards[i] = a.Ocards[index]
+	}
+	return &Team{Ocards: ocards, LeaderIndex: data.leaderIndex}
+}
+
+// GetTeamDebug returns a new Team from generator
+func (a *Album) getTeamDebug() *baseTeamData {
+	if a.combinationGenerator == nil {
+		panic("combination generator not set")
+	}
+	// if currentLeaderIndex = 0, that means generator will return new combination (from album.Next())
+	// so get the new combination and store it
+	// else, that means generator only change leaderIndex so just retrieve the stored combination
+	if a.currentLeaderIndex == 0 {
+		a.combinationGenerator.Combination(a.indices)
+		a.currentIndices = a.indices
+	} else {
+		a.indices = a.currentIndices
+	}
+	return &baseTeamData{ids: a.indices, leaderIndex: a.currentLeaderIndex}
+	// ocards := [5]*OwnedCard{}
+	// for i, index := range a.indices {
+	// 	ocards[i] = a.Ocards[index]
+	// }
+	// return &Team{Ocards: ocards, LeaderIndex: a.currentLeaderIndex}
 }
 
 func (a Album) MaxTeamID() int {
@@ -103,10 +143,15 @@ func (a Album) FindSupportsFor(team *Team, attr enum.Attribute) ([10]*OwnedCard,
 	case enum.AttrPassion:
 		usedSlice = a.sortedPassion
 	}
+
+	ids := [5]int{}
+	for i, ocard := range team.Ocards {
+		ids[i] = ocard.Card.ID
+	}
 	for _, ocard := range usedSlice {
 		isInTeam := false
-		for _, teamOcard := range team.Ocards {
-			if ocard == teamOcard {
+		for _, id := range ids {
+			if id == ocard.Card.ID {
 				isInTeam = true
 				break
 			}

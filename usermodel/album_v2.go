@@ -129,3 +129,12 @@ func (a Album2) FindSupportsFor(team *Team, attr enum.Attribute) ([10]*OwnedCard
 		return [10]*OwnedCard{}, err
 	}
 }
+
+func (a Album2) GetCardByID(cardID int) (*OwnedCard, error) {
+	for _, ocard := range a.Ocards {
+		if ocard.Card.ID == cardID {
+			return ocard, nil
+		}
+	}
+	return nil, fmt.Errorf("card %d not found", cardID)
+}

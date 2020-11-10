@@ -31,6 +31,10 @@ func makeGameConfigLogicHandler() *gameConfigLogicHandler {
 		tricolorCorrectColor, // TODO: investigate why this one cause some team to have 0 guest
 	}
 
+	if !helper.Features.UseReso() {
+		gameConfigLogics = append(gameConfigLogics, doNotUseReso)
+	}
+
 	if helper.Features.DebugNoLogic() {
 		gameConfigLogics = []*gameConfigLogic{}
 	}

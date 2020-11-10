@@ -24,8 +24,8 @@ func benchmarkAlbum2_Next(b *testing.B, i int) {
 	}
 }
 
-func BenchmarkAlbum2_Next6(b *testing.B)  { benchmarkAlbum_Next(b, 6) }
-func BenchmarkAlbum2_Next7(b *testing.B)  { benchmarkAlbum_Next(b, 7) }
-func BenchmarkAlbum2_Next8(b *testing.B)  { benchmarkAlbum_Next(b, 8) }
-func BenchmarkAlbum2_Next9(b *testing.B)  { benchmarkAlbum_Next(b, 9) }
-func BenchmarkAlbum2_Next10(b *testing.B) { benchmarkAlbum_Next(b, 10) }
+func BenchmarkAlbum2_Next6(b *testing.B)  { benchmarkAlbum2_Next(b, 6) }
+func BenchmarkAlbum2_Next7(b *testing.B)  { benchmarkAlbum2_Next(b, 7) }
+func BenchmarkAlbum2_Next8(b *testing.B)  { benchmarkAlbum2_Next(b, 8) }
+func BenchmarkAlbum2_Next9(b *testing.B)  { benchmarkAlbum2_Next(b, 9) }
+func BenchmarkAlbum2_Next10(b *testing.B) { benchmarkAlbum2_Next(b, 10) }
