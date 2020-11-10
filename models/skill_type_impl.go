@@ -617,12 +617,21 @@ var SkillTypeVisualMotif = SkillType{
 			32000: 17, 36000: 18, 40000: 19, 42000: 20, 43000: 21,
 			45000: 23, 47000: 25, 49000: 26, 52000: 27,
 		}
+		keys := []int{
+			10, 3000, 6000, 9000, 12000, 15000, 17000, 19000, 21000, 22000,
+			23000, 24000, 26000, 27000, 29000, 32000, 36000, 40000, 42000, 43000,
+			45000, 47000, 49000, 52000,
+		}
 		if judgement == enum.TapJudgementPerfect {
 			nearest, chosenBonus := 99999999, 0
 			// algorithm:
 			// iterate over every key, if key is lower than the team's appeal, check if it is the closest
 			// then return the value of closest key
-			for appeal, bonus := range bonusTable {
+			for _, appeal := range keys {
+				bonus, ok := bonusTable[appeal]
+				if !ok {
+					return -100.0
+				}
 				appealDiff := baseVisual - appeal
 				if appealDiff < 0 {
 					continue
@@ -630,6 +639,8 @@ var SkillTypeVisualMotif = SkillType{
 				if appealDiff < nearest {
 					nearest = appealDiff
 					chosenBonus = bonus
+				} else {
+					break
 				}
 			}
 			return float64(chosenBonus) / 100.0
@@ -660,12 +671,21 @@ var SkillTypeVocalMotif = SkillType{
 			32000: 17, 36000: 18, 40000: 19, 42000: 20, 43000: 21,
 			45000: 23, 47000: 25, 49000: 26, 52000: 27,
 		}
+		keys := []int{
+			10, 3000, 6000, 9000, 12000, 15000, 17000, 19000, 21000, 22000,
+			23000, 24000, 26000, 27000, 29000, 32000, 36000, 40000, 42000, 43000,
+			45000, 47000, 49000, 52000,
+		}
 		if judgement == enum.TapJudgementPerfect {
 			nearest, chosenBonus := 99999999, 0
 			// algorithm:
 			// iterate over every key, if key is lower than the team's appeal, check if it is the closest
 			// then return the value of closest key
-			for appeal, bonus := range bonusTable {
+			for _, appeal := range keys {
+				bonus, ok := bonusTable[appeal]
+				if !ok {
+					return -100.0
+				}
 				appealDiff := baseVocal - appeal
 				if appealDiff < 0 {
 					continue
@@ -673,6 +693,8 @@ var SkillTypeVocalMotif = SkillType{
 				if appealDiff < nearest {
 					nearest = appealDiff
 					chosenBonus = bonus
+				} else {
+					break
 				}
 			}
 			return float64(chosenBonus) / 100.0
@@ -703,12 +725,21 @@ var SkillTypeDanceMotif = SkillType{
 			32000: 17, 36000: 18, 40000: 19, 42000: 20, 43000: 21,
 			45000: 23, 47000: 25, 49000: 26, 52000: 27,
 		}
+		keys := []int{
+			10, 3000, 6000, 9000, 12000, 15000, 17000, 19000, 21000, 22000,
+			23000, 24000, 26000, 27000, 29000, 32000, 36000, 40000, 42000, 43000,
+			45000, 47000, 49000, 52000,
+		}
 		if judgement == enum.TapJudgementPerfect {
 			nearest, chosenBonus := 99999999, 0
 			// algorithm:
 			// iterate over every key, if key is lower than the team's appeal, check if it is the closest
 			// then return the value of closest key
-			for appeal, bonus := range bonusTable {
+			for _, appeal := range keys {
+				bonus, ok := bonusTable[appeal]
+				if !ok {
+					return -100.0
+				}
 				appealDiff := baseDance - appeal
 				if appealDiff < 0 {
 					continue
@@ -716,6 +747,8 @@ var SkillTypeDanceMotif = SkillType{
 				if appealDiff < nearest {
 					nearest = appealDiff
 					chosenBonus = bonus
+				} else {
+					break
 				}
 			}
 			return float64(chosenBonus) / 100.0
