@@ -71,7 +71,7 @@ func TestGameFast(t *testing.T) {
 	gc := getGc()
 	game := NewGameFast(gc)
 	result := game.Play(true)
-	if want, have := 1369869, result.Score; want != have {
+	if want, have := 1363846, result.Score; want != have {
 		t.Errorf("Score should be %d. (it is %d)", want, have)
 	}
 }
@@ -265,7 +265,7 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			skillAlwaysOn:   true,
 		},
 		{
-			// Playground here
+			// Current team
 			guestData: miniCardData{name: "sachiko2", da: 10, vo: 10, vi: 5},
 			cardsData: []miniCardData{
 				miniCardData{name: "mio2", skLv: 10, poSk: 7},            // Skill boost, [8s, 7.5s]
@@ -281,7 +281,27 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			songName:        "M@GIC",
 			diff:            enum.SongDifficultyMaster,
 			expectedAppeals: 341386,
-			expectedScore:   1200194,
+			expectedScore:   1455332,
+			skillAlwaysOn:   true,
+		},
+		{
+			// Playground here
+			guestData: miniCardData{name: "kaede1"},
+			cardsData: []miniCardData{
+				miniCardData{name: "nao4", skLv: 10},   // Skill boost, [8s, 7.5s]
+				miniCardData{name: "kaede4", skLv: 10}, // Dance motif [7s, 4.5s]
+				miniCardData{name: "karen3", skLv: 10}, // Combo bonus /18% [4s, 3s]
+				miniCardData{name: "akira1", skLv: 10}, // Trico symphony
+				miniCardData{name: "haru2", skLv: 10},  // Trico synergy 16%/15% [9s, 6s]
+			},
+			supportsData:    nil,
+			leadIndex:       0,
+			supportAppeals:  102866,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 291195,
+			expectedScore:   1217648,
 			skillAlwaysOn:   true,
 		},
 	}
@@ -318,9 +338,9 @@ func TestGameFast_CorrectScore(t *testing.T) {
 	appealThreshold := 5.0
 
 	for i, tc := range testcases {
-		if i != len(testcases)-1 {
-			continue
-		}
+		// if i != len(testcases)-1 {
+		// 	continue
+		// }
 		helper.Features.SetWindowAbuse(tc.windowAbuse)
 		guest := tc.guestData.toOwnedCard(cm)
 		ocards := []*usermodel.OwnedCard{}

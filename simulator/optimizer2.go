@@ -1,7 +1,6 @@
 package simulator
 
 import (
-	"fmt"
 	"sort"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
@@ -84,12 +83,12 @@ func GetFilteredGameConfigs(album *usermodel.Album2, guests []*usermodel.OwnedCa
 		}
 
 		// debug stats
-		m := album.MaxTeamID() + 1
-		fmt.Printf("Without filter = %10d -> %10d -> %10d\n", m, m*5, m*5*len(guests))
-		fmt.Printf("Cards filter   = %10d -> %10d -> %10d\n", cardsCount, cardsCount*5, cardsCount*5*len(guests))
-		fmt.Printf("Team filter    = %10d -> %10d -> %10d\n", 0, teamCount, teamCount*len(guests))
-		fmt.Printf("Gc filter      = %10d -> %10d -> %10d\n", 0, 0, gcCount)
-		fmt.Printf("Appeal filter  = %10d -> %10d -> %10d\n", 0, 0, final)
+		// m := album.MaxTeamID() + 1
+		// fmt.Printf("Without filter = %10d -> %10d -> %10d\n", m, m*5, m*5*len(guests))
+		// fmt.Printf("Cards filter   = %10d -> %10d -> %10d\n", cardsCount, cardsCount*5, cardsCount*5*len(guests))
+		// fmt.Printf("Team filter    = %10d -> %10d -> %10d\n", 0, teamCount, teamCount*len(guests))
+		// fmt.Printf("Gc filter      = %10d -> %10d -> %10d\n", 0, 0, gcCount)
+		// fmt.Printf("Appeal filter  = %10d -> %10d -> %10d\n", 0, 0, final)
 		//
 		close(ch)
 	}()

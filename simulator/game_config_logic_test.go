@@ -1,14 +1,11 @@
 package simulator
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
-	"github.com/hadisiswanto62/deresute-simulator-go/csvmodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/models"
-	"github.com/hadisiswanto62/deresute-simulator-go/usermodelmanager"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
@@ -124,38 +121,39 @@ func TestUnisonInCorrectSongType(t *testing.T) {
 // 	}
 // }
 
-func TestTriColorCorrectStat(t *testing.T) {
-	dp := csvmodels.CSVDataParser{}
-	ocards, err := usermodelmanager.ParseOwnedCard(dp, "userdata/cards.csv", nil)
-	if err != nil {
-		panic(err)
-	}
-	guests, err := usermodelmanager.ParseOwnedCard(dp, "userdata/guest tricolor.csv", nil)
-	if err != nil {
-		panic(err)
-	}
-	cardIDs := [5]int{
-		// 300572, 300571, 300856, 100798, 300740, (card orang, leader=2)
-		300830, 300572, 300236, 200314, 200726,
-	}
-	leaderIndex := 2
+// func TestTriColorCorrectStat(t *testing.T) {
+// 	dp := csvmodels.CSVDataParser{}
+// 	ocards, err := usermodelmanager.ParseOwnedCard(dp, "userdata/cards.csv", nil)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	guests, err := usermodelmanager.ParseOwnedCard(dp, "userdata/guest tricolor.csv", nil)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	cardIDs := [5]int{
+// 		// 300572, 300571, 300856, 100798, 300740, (card orang, leader=2)
+// 		300830, 300572, 300236, 200314, 200726,
+// 	}
+// 	leaderIndex := 2
 
-	cards := [5]*usermodel.OwnedCard{}
-	for i, id := range cardIDs {
-		for _, ocard := range ocards {
-			if id == ocard.Card.ID {
-				cards[i] = ocard
-				break
-			}
-		}
-	}
-	team := usermodel.Team{Ocards: cards, LeaderIndex: leaderIndex}
-	song := &models.Song{Attribute: enum.AttrAll}
-	if isTeamOk(&team, song) {
-		for _, guest := range guests {
-			fmt.Println(guest.LeadSkill.Name, isGameConfigOkDebug(&team, song, guest))
-		}
-	} else {
-		fmt.Println(isTeamOkDebug(&team, song))
-	}
-}
+// 	cards := [5]*usermodel.OwnedCard{}
+// 	for i, id := range cardIDs {
+// 		for _, ocard := range ocards {
+// 			if id == ocard.Card.ID {
+// 				cards[i] = ocard
+// 				break
+// 			}
+// 		}
+// 	}
+// 	team := usermodel.Team{Ocards: cards, LeaderIndex: leaderIndex}
+// 	song := &models.Song{Attribute: enum.AttrAll}
+// 	assert.Equalf(t, isGameConfigOkDebug(&team, song, guests[0]))
+// 	// if isTeamOk(&team, song) {
+// 	// 	for _, guest := range guests {
+// 	// 		fmt.Println(guest.LeadSkill.Name, isGameConfigOkDebug(&team, song, guest))
+// 	// 	}
+// 	// } else {
+// 	// 	fmt.Println(isTeamOkDebug(&team, song))
+// 	// }
+// }

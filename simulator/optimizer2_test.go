@@ -123,13 +123,13 @@ func TestOptimizer2_FilterConfigsRealData(t *testing.T) {
 	for range GetFilteredGameConfigs(album, guests, song) {
 		count++
 	}
-	fmt.Println(count)
+	// fmt.Println(count)
 }
 
 func TestOptimizer2_Optimize(t *testing.T) {
-	// result, err := getAlbum("O-Ku-Ri-Mo-No")
+	result, err := getAlbum("O-Ku-Ri-Mo-No")
 	// result, err := getAlbum("M@GIC")
-	result, err := getAlbum("M@GIC")
+	// result, err := getAlbum("M@GIC")
 	if err != nil {
 		t.Errorf("test failed: %v", err)
 	}
@@ -138,5 +138,5 @@ func TestOptimizer2_Optimize(t *testing.T) {
 	song := result.song
 
 	generator := GetFilteredGameConfigs(album, guests, song)
-	Optimize(generator, 10, "test_all.txt")
+	Optimize(generator, 2, "test_all.txt")
 }

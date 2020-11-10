@@ -9,7 +9,7 @@ import (
 // Note is a single note in the song
 type Note struct {
 	TimestampMs int
-	NoteType    enum.NoteType
+	NoteType    enum.NoteType // TODO: a note can have more than one NoteType!!! e.g. flick at the end of long is both LONG and FLICK
 }
 
 // Song is a song

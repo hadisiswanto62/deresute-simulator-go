@@ -50,7 +50,6 @@ func ParseOwnedCard(dp dataParser, path string, params *CustomOwnedCardParameter
 		if params.PotSkill != 0 {
 			ocd.PotSkill = params.PotSkill
 		}
-		// TODO: add for the rest of the params
 		request := usermodel.OwnedCardRequest{
 			Card:       card,
 			SkillLevel: ocd.SkillLevel,
