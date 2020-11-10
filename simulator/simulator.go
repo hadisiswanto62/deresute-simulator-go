@@ -1,9 +1,18 @@
 package simulator
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 )
+
+type miniReport struct {
+	avg    float64
+	report string
+}
 
 // SimulationSummary is summary of the simulation
 type SimulationSummary struct {
@@ -13,6 +22,48 @@ type SimulationSummary struct {
 	Average    float64
 	SimCount   int
 	Results    []int
+}
+
+func (ss SimulationSummary) Minify() miniReport {
+	return miniReport{ss.Average, ss.ReportOneline()}
+}
+
+func (ss SimulationSummary) ReportOneline() string {
+	// Score: 100123 (Score Bonus 80.00%), ........, Leader Index = 4, 300096 <LEad Skill>
+	ret := []string{
+		fmt.Sprintf("Score: %.2f", ss.Average),
+	}
+	cards := []string{}
+	for _, ocard := range ss.GameConfig.GetCards() {
+		cards = append(cards, fmt.Sprintf("%d (%s %.2f%%)", ocard.Card.ID,
+			ocard.Card.Skill.SkillType.Name, float64(ocard.SkillProcChance)/100.0))
+	}
+	ret = append(ret, strings.Join(cards, ","))
+	ret = append(ret, fmt.Sprintf("Leader index: %d", ss.GameConfig.GetLeaderIndex()))
+	for _, ocard := range ss.GameConfig.GetLeadSkillActivableCards() {
+		ret = append(ret, fmt.Sprintf("%d %s", ocard.Card.ID, ocard.Card.LeadSkill.Name))
+	}
+	ret = append(ret, fmt.Sprintf("%d times", ss.SimCount))
+	return strings.Join(ret, "|")
+}
+
+func (ss SimulationSummary) Report() string {
+	ret := []string{
+		"-----Simulation Summary-----",
+		fmt.Sprintf("Max score = %d", ss.Max),
+	}
+	cards := []string{}
+	for _, ocard := range ss.GameConfig.GetCards() {
+		cards = append(cards, fmt.Sprintf("%d (%s %.2f%%)", ocard.Card.ID,
+			ocard.Card.Skill.SkillType.Name, float64(ocard.SkillProcChance)/100.0))
+	}
+	ret = append(ret, strings.Join(cards, ","))
+	ret = append(ret, fmt.Sprintf("Leader index = %d", ss.GameConfig.GetLeaderIndex()))
+	for _, ocard := range ss.GameConfig.GetLeadSkillActivableCards() {
+		ret = append(ret, fmt.Sprintf("Lead skill activable: %d %s", ocard.Card.ID, ocard.Card.LeadSkill.Name))
+	}
+	ret = append(ret, "---------------------")
+	return strings.Join(ret, "\n")
 }
 
 type GameLike interface {
@@ -31,6 +82,7 @@ func Simulate(gc simulatormodels.Playable, times int) SimulationSummary {
 	if helper.Features.LimitScore() {
 		if !gc.IsResonantActive() {
 			threshold := helper.Features.GetScoreLimitForAttr(gc.GetSong().Attribute, gc.GetSong().Level)
+			// fmt.Println(threshold)
 			if maxScore < threshold {
 				return SimulationSummary{
 					GameConfig: gc,
@@ -42,6 +94,27 @@ func Simulate(gc simulatormodels.Playable, times int) SimulationSummary {
 				}
 			}
 		}
+	}
+	allSkills100Percent := true
+	for _, ocard := range gc.GetSkillActivableCards() {
+		if ocard.Skill.SkillType.IsActive(gc.GetTeamAttributesv2()) {
+			probMultiplier := 1.0
+			if ocard.Card.Idol.Attribute == gc.GetSong().Attribute || gc.GetSong().Attribute == enum.AttrAll {
+				probMultiplier += 0.3
+			}
+			for _, leader := range gc.GetLeadSkillActivableCards() {
+				probMultiplier += leader.LeadSkill.SkillProbBonus(
+					leader.Card.Rarity.Rarity,
+					ocard.Card.Idol.Attribute,
+				)
+			}
+			if float64(ocard.SkillProcChance)/10000.0*probMultiplier < 100.0 {
+				allSkills100Percent = false
+			}
+		}
+	}
+	if allSkills100Percent {
+		times = 1
 	}
 	// game := NewGame(gc)
 	resultChannel := make(chan int, times)
