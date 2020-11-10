@@ -47,9 +47,21 @@ var skillMap = map[string]*SkillType{
 	string(enum.SkillTypePassionEnsemble):  &SkillTypePassionEnsemble,
 }
 
+var newSkillMap = map[int]*SkillType{
+	28: &SkillTypeHoldAct,
+	29: &SkillTypeFlickAct,
+	30: &SkillTypeSlideAct,
+}
+
 // GetSkillType returns pointer to skill type with the requested name
-func GetSkillType(name string) (*SkillType, error) {
-	skill, ok := skillMap[name]
+func GetSkillType(name string, ID int) (*SkillType, error) {
+	// check new map first
+	skill, ok := newSkillMap[ID]
+	if ok {
+		return skill, nil
+	}
+	//
+	skill, ok = skillMap[name]
 	if ok {
 		return skill, nil
 	}
@@ -71,5 +83,5 @@ func GetSkillType(name string) (*SkillType, error) {
 // GetSkillTypeFromEnum returns pointer to skill type with the requested name
 // (but in enum.SkillType)
 func GetSkillTypeFromEnum(name enum.SkillType) (*SkillType, error) {
-	return GetSkillType(string(name))
+	return GetSkillType(string(name), -1)
 }

@@ -16,7 +16,7 @@ func sampleCard() Card {
 		IsEvolved: true,
 		MaxLevel:  70,
 	}
-	skillType, _ := GetSkillType("Perfect Score Bonus")
+	skillType, _ := GetSkillType("Perfect Score Bonus", -1)
 	skill := &Skill{
 		ID:           200803,
 		Timer:        13,

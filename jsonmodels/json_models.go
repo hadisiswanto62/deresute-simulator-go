@@ -28,6 +28,7 @@ type TmpSkill struct {
 	SkillTriggerType  int    `json:"skill_trigger_type"`
 	SkillTriggerValue int    `json:"skill_trigger_value"`
 	SkillType         string `json:"skill_type"`
+	SkillTypeID       int    `json:"skill_type_id"`
 	Value             int
 }
 

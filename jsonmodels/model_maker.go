@@ -17,7 +17,7 @@ func makeLeadSkill(tmp TmpLeadSkill) (*models.LeadSkill, error) {
 }
 
 func makeSkill(tmp TmpSkill) (*models.Skill, error) {
-	skillType, err := models.GetSkillType(tmp.SkillType)
+	skillType, err := models.GetSkillType(tmp.SkillType, tmp.SkillTypeID)
 	if err != nil {
 		return nil, fmt.Errorf("could not make skill: %v", err)
 	}
@@ -33,7 +33,6 @@ func makeSkill(tmp TmpSkill) (*models.Skill, error) {
 		Timer:          tmp.Condition,
 		ActivationCost: activationCost,
 	}
-	// TODO: Add ActivationCost for Overload when Overload is implemented
 	return &skill, nil
 }
 

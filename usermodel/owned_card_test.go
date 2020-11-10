@@ -20,7 +20,7 @@ func sampleCard() models.Card {
 		IsEvolved: true,
 		MaxLevel:  70,
 	}
-	skillType, _ := models.GetSkillType("Perfect Score Bonus")
+	skillType, _ := models.GetSkillType("Perfect Score Bonus", -1)
 	skill := &models.Skill{
 		ID:           200803,
 		Timer:        13,

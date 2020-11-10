@@ -32,6 +32,9 @@ const (
 	SkillTypeCuteEnsemble     SkillType = "Cute Ensemble"
 	SkillTypeCoolEnsemble     SkillType = "Cool Ensemble"
 	SkillTypePassionEnsemble  SkillType = "Passion Ensemble"
+	SkillTypeFlickAct         SkillType = "Flick Act"
+	SkillTypeHoldAct          SkillType = "Long Act"
+	SkillTypeSlideAct         SkillType = "Slide Act"
 )
 
 /*

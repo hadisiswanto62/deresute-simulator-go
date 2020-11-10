@@ -834,3 +834,93 @@ var SkillTypePassionEnsemble = SkillType{
 		return 0.0
 	},
 }
+
+// SkillTypeFlickAct = "Every 11 seconds: there is a 40..60% chance that
+// Perfect notes will receive a 8/10% score bonus, and flick notes a 24/30% score bonus for 6..9 seconds."
+var SkillTypeFlickAct = SkillType{
+	Name: enum.SkillTypeFlickAct,
+	IsActive: func(attr []enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		required := enum.NoteTypeFlick
+		rarityMap := map[enum.Rarity][2]float64{
+			enum.RaritySR:  [2]float64{0.08, 0.24},
+			enum.RaritySSR: [2]float64{0.1, 0.3},
+		}
+		value, ok := rarityMap[rarity]
+		if !ok {
+			return -100
+		}
+		if noteType == required {
+			return value[1]
+		}
+		return value[0]
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeSlideAct = "Every 11 seconds: there is a 40..60% chance that
+// Perfect notes will receive a 8/10% score bonus, and slide notes a 24/30% score bonus for 6..9 seconds."
+var SkillTypeSlideAct = SkillType{
+	Name: enum.SkillTypeSlideAct,
+	IsActive: func(attr []enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		required := enum.NoteTypeSlide
+		rarityMap := map[enum.Rarity][2]float64{
+			enum.RaritySR:  [2]float64{0.08, 0.24},
+			enum.RaritySSR: [2]float64{0.1, 0.3},
+		}
+		value, ok := rarityMap[rarity]
+		if !ok {
+			return -100
+		}
+		if noteType == required {
+			return value[1]
+		}
+		return value[0]
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
+
+// SkillTypeHoldAct = "Every 11 seconds: there is a 40..60% chance that
+// Perfect notes will receive a 8/10% score bonus, and long notes a 24/30% score bonus for 6..9 seconds."
+var SkillTypeHoldAct = SkillType{
+	Name: enum.SkillTypeHoldAct,
+	IsActive: func(attr []enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+		required := enum.NoteTypeHold
+		rarityMap := map[enum.Rarity][2]float64{
+			enum.RaritySR:  [2]float64{0.08, 0.24},
+			enum.RaritySSR: [2]float64{0.1, 0.3},
+		}
+		value, ok := rarityMap[rarity]
+		if !ok {
+			return -100
+		}
+		if noteType == required {
+			return value[1]
+		}
+		return value[0]
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int {
+		return 0
+	},
+}
