@@ -5,7 +5,7 @@ import "github.com/hadisiswanto62/deresute-simulator-go/enum"
 var flags = map[string]bool{
 	// should be TRUE for any valid sims
 	"use-concentration": true,
-	"do-simulate":       false,
+	"do-simulate":       true,
 	"limit-appeals":     true,
 	"limit-score":       true, //true this only when optimizing
 	"use-game-fast":     true,
