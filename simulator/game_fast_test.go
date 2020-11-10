@@ -149,6 +149,7 @@ func TestGameFast_CorrectScore(t *testing.T) {
 		expectedAppeals int
 		expectedScore   int
 		windowAbuse     bool
+		skillAlwaysOn   bool
 	}{
 		{
 			guestData: miniCardData{name: "sachiko2"},
@@ -223,6 +224,44 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			expectedScore:   1934552,
 			windowAbuse:     true,
 		},
+		{
+			guestData: miniCardData{name: "uzuki2", vo: 10, da: 10, vi: 10},
+			cardsData: []miniCardData{
+				miniCardData{name: "anastasia4", skLv: 10, poSk: 10, da: 4, vo: 0, vi: 10},
+				miniCardData{name: "sakuma5", skLv: 10, poSk: 10, da: 0, vo: 1, vi: 10},
+				miniCardData{name: "nina4", skLv: 10, poSk: 10, da: 3, vo: 0, vi: 10},
+				miniCardData{name: "yoshino3", skLv: 10, poSk: 10, da: 10, vi: 10},
+				miniCardData{name: "yoshino3u", skLv: 10, poSk: 10, da: 10, vi: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       2,
+			supportAppeals:  113290,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 262916,
+			expectedScore:   1909443, // actual = 1924782
+		},
+		{
+			// Confirmed with reddit score sim (!)
+			guestData: miniCardData{name: "kaede2", vo: 10, da: 10, vi: 10}, // trico make
+			cardsData: []miniCardData{
+				miniCardData{name: "sae4", skLv: 10, vo: 2, vi: 10, da: 0, hp: 0, poSk: 0},     // visual motif/reso [motif% idk]
+				miniCardData{name: "chieri4", skLv: 10, vo: 0, vi: 10, da: 9, hp: 0, poSk: 0},  // trico synergy [16%/15%]
+				miniCardData{name: "yoshino3", skLv: 10, vo: 8, vi: 10, da: 0, hp: 0, poSk: 0}, // trico synergy [16%/15%] [11s, 7.5s]
+				miniCardData{name: "rika4", skLv: 10, vo: 8, vi: 10, da: 0, hp: 0, poSk: 0},    // trico symphony
+				miniCardData{name: "mio4", skLv: 10, vo: 0, vi: 5, da: 0, hp: 0, poSk: 0},      // coordinate [10%/15%]
+			},
+			supportsData:    nil,
+			leadIndex:       0,
+			supportAppeals:  113290 + 2735,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "印象",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 270000,
+			expectedScore:   1582088,
+			skillAlwaysOn:   true,
+		},
 	}
 	cm, err := cardmanager.Default()
 	if err != nil {
@@ -258,9 +297,9 @@ func TestGameFast_CorrectScore(t *testing.T) {
 
 	for i, tc := range testcases {
 		helper.Features.SetWindowAbuse(tc.windowAbuse)
-		if i != 3 {
-			continue
-		}
+		// if i != len(testcases)-1 {
+		// 	continue
+		// }
 		guest := tc.guestData.toOwnedCard(cm)
 		ocards := []*usermodel.OwnedCard{}
 		for _, card := range tc.cardsData {
@@ -272,10 +311,9 @@ func TestGameFast_CorrectScore(t *testing.T) {
 		}
 		song := sm.Filter().NameLike(tc.songName).Difficulty(tc.diff).First()
 		gc := simulatormodels.NewGameConfig(ocards, tc.leadIndex, supports, guest, song, tc.supportAppeals, tc.statCalc)
-		assert.InDeltaf(t, tc.expectedAppeals, gc.GetAppeal(), appealThreshold, "Wrong score for test #%d", i)
-
+		assert.InDeltaf(t, tc.expectedAppeals, gc.GetAppeal(), appealThreshold, "Wrong appeal for test #%d", i)
 		game := NewGameFast(gc)
-		result := game.Play(false)
+		result := game.Play(tc.skillAlwaysOn)
 		assert.InDeltaf(t, tc.expectedScore, result.Score, scoreThreshold, "Wrong score for test #%d", i)
 	}
 }

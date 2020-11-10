@@ -116,9 +116,24 @@ func (g GameFast) getTapHeal(activeSkillsIndex []int, state *GameState, judgemen
 }
 
 func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+	DELTA := 0.0001
 	maxScoreBonus := 0.0
 	maxComboBonus := 0.0
 	maxBonusBonus := 0.0
+	for _, id := range activeCardIds {
+		ocard := state.skillActivableCards[id]
+		bonusBonus := 0.0
+		if ocard.Skill.SkillType.ScoreComboBonusBonus != nil {
+			bonusBonus = ocard.Skill.SkillType.ScoreComboBonusBonus(
+				ocard.Card.Idol.Attribute,
+			)
+		}
+		if state.resonantOn {
+			maxBonusBonus += bonusBonus
+		} else {
+			maxBonusBonus = math.Max(bonusBonus, maxBonusBonus)
+		}
+	}
 
 	for _, id := range activeCardIds {
 		ocard := state.skillActivableCards[id]
@@ -136,24 +151,19 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 			judgement,
 			noteType,
 		)
-		bonusBonus := 0.0
-		if ocard.Skill.SkillType.ScoreComboBonusBonus != nil {
-			bonusBonus = ocard.Skill.SkillType.ScoreComboBonusBonus(
-				ocard.Card.Idol.Attribute,
-			)
-		}
+		sb := math.Ceil(scoreBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
+		cb := math.Ceil(comboBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
+		fmt.Printf("%s: %.2fs/%.2fs ", ocard.Card.Idol.Name, sb, cb)
 		if state.resonantOn {
-			maxScoreBonus += scoreBonus
-			maxComboBonus += comboBonus
-			maxBonusBonus += bonusBonus
+			maxScoreBonus += sb
+			maxComboBonus += cb
 		} else {
-			maxScoreBonus = math.Max(maxScoreBonus, scoreBonus)
-			maxComboBonus = math.Max(maxComboBonus, comboBonus)
-			maxBonusBonus = math.Max(maxBonusBonus, bonusBonus)
+			maxScoreBonus = math.Max(sb, scoreBonus)
+			maxComboBonus = math.Max(cb, comboBonus)
 		}
 	}
-	maxScoreBonus = math.Ceil(maxScoreBonus*(1+maxBonusBonus)*100.0) / 100.0
-	maxComboBonus = math.Ceil(maxComboBonus*(1+maxBonusBonus)*100.0) / 100.0
+	fmt.Println()
+	fmt.Println(maxScoreBonus, maxComboBonus)
 	return (1 + maxScoreBonus) * (1 + maxComboBonus)
 }
 
@@ -197,7 +207,7 @@ func rollSkill(state *GameState) activeSkillData {
 	activeSkillTimestamps := []*activeSkillTimestamp{}
 	hpCostTimestamps := []*hpCostTimestamp{}
 
-	timestampLimit := state.song.DurationMs
+	timestampLimit := state.song.Notes[state.song.NotesCount()-1].TimestampMs
 	for i, ocard := range state.skillActivableCards {
 		if !state.skillsActive[i] {
 			continue
@@ -224,6 +234,9 @@ func rollSkill(state *GameState) activeSkillData {
 					continue
 				}
 			}
+			// this is to match DEMO live, since skill activation is technically after tap,
+			// if skill timer and tap at the same tick -> skill should not active (workaround = add 1 millisecond)
+			timestamp++
 			activeSkillTimestamps = append(activeSkillTimestamps, &activeSkillTimestamp{
 				cardIndex:      i,
 				startTimestamp: timestamp,
