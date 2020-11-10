@@ -153,17 +153,14 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 		)
 		sb := math.Ceil(scoreBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
 		cb := math.Ceil(comboBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
-		fmt.Printf("%s: %.2fs/%.2fs ", ocard.Card.Idol.Name, sb, cb)
 		if state.resonantOn {
 			maxScoreBonus += sb
 			maxComboBonus += cb
 		} else {
-			maxScoreBonus = math.Max(sb, scoreBonus)
-			maxComboBonus = math.Max(cb, comboBonus)
+			maxScoreBonus = math.Max(sb, maxScoreBonus)
+			maxComboBonus = math.Max(cb, maxComboBonus)
 		}
 	}
-	fmt.Println()
-	fmt.Println(maxScoreBonus, maxComboBonus)
 	return (1 + maxScoreBonus) * (1 + maxComboBonus)
 }
 
@@ -236,15 +233,15 @@ func rollSkill(state *GameState) activeSkillData {
 			}
 			// this is to match DEMO live, since skill activation is technically after tap,
 			// if skill timer and tap at the same tick -> skill should not active (workaround = add 1 millisecond)
-			timestamp++
+			t := timestamp + 1
 			activeSkillTimestamps = append(activeSkillTimestamps, &activeSkillTimestamp{
 				cardIndex:      i,
-				startTimestamp: timestamp,
-				endTimestamp:   timestamp + duration,
+				startTimestamp: t,
+				endTimestamp:   t + duration,
 			})
 			if hpCost != 0 {
 				hpCostTimestamps = append(hpCostTimestamps, &hpCostTimestamp{
-					timestamp: timestamp,
+					timestamp: t,
 					hpCost:    hpCost,
 				})
 			}
