@@ -252,7 +252,7 @@ func getTapJudgement(state *GameState) enum.TapJudgement {
 	return judgement
 }
 
-func (g Game) getScoreAndComboBonus(state *GameState, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+func (g Game) getScoreAndComboBonus(state *GameState, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64 {
 	maxScoreBonus := 0.0
 	maxComboBonus := 0.0
 	maxBonusBonus := 0.0
@@ -264,13 +264,13 @@ func (g Game) getScoreAndComboBonus(state *GameState, judgement enum.TapJudgemen
 			state.baseDance,
 			state.baseVocal,
 			judgement,
-			noteType,
+			noteTypes,
 		)
 		comboBonus := activeSkill.ocard.Skill.SkillType.ComboBonus(
 			activeSkill.ocard.Card.Rarity.Rarity,
 			state.currentHp,
 			judgement,
-			noteType,
+			noteTypes,
 		)
 		bonusBonus := 0.0
 		if activeSkill.ocard.Skill.SkillType.ScoreComboBonusBonus != nil {
@@ -291,13 +291,13 @@ func (g Game) getScoreAndComboBonus(state *GameState, judgement enum.TapJudgemen
 	return (1 + maxScoreBonus) * (1 + maxComboBonus)
 }
 
-func (g Game) getTapHeal(state *GameState, judgement enum.TapJudgement, noteType enum.NoteType) int {
+func (g Game) getTapHeal(state *GameState, judgement enum.TapJudgement, noteTypes []enum.NoteType) int {
 	maxHeal := 0
 	maxHealBonus := 0.0
 	for _, activeSkill := range state.activeSkills {
 		heal := activeSkill.ocard.Skill.SkillType.TapHeal(
 			activeSkill.ocard.Card.Rarity.Rarity,
-			judgement, noteType,
+			judgement, noteTypes,
 		)
 		healBonus := 0.0
 		if activeSkill.ocard.Skill.SkillType.TapHealBonus != nil {

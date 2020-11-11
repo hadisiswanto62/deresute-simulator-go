@@ -11,9 +11,9 @@ import (
 type SkillType struct {
 	Name                 enum.SkillType
 	IsActive             func(attr []enum.Attribute) bool
-	ComboBonus           func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteType enum.NoteType) float64
-	ScoreBonus           func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteType enum.NoteType) float64
-	TapHeal              func(rarity enum.Rarity, judgement enum.TapJudgement, noteType enum.NoteType) int
+	ComboBonus           func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64
+	ScoreBonus           func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64
+	TapHeal              func(rarity enum.Rarity, judgement enum.TapJudgement, noteTypes []enum.NoteType) int
 	ScoreComboBonusBonus func(attr enum.Attribute) float64
 	TapHealBonus         func() float64
 }

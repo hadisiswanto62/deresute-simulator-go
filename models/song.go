@@ -9,7 +9,7 @@ import (
 // Note is a single note in the song
 type Note struct {
 	TimestampMs int
-	NoteType    enum.NoteType // TODO: a note can have more than one NoteType!!! e.g. flick at the end of long is both LONG and FLICK
+	NoteType    []enum.NoteType // TODO: a note can have more than one NoteType!!! e.g. flick at the end of long is both LONG and FLICK
 }
 
 // Song is a song
@@ -40,7 +40,7 @@ func NewDefaultSong(name string, level int, attr enum.Attribute, durationMs int,
 	for i := 0; i < notesCount; i++ {
 		note := Note{
 			TimestampMs: startBuffer + (effectiveDuration * i / (notesCount - 1)),
-			NoteType:    enum.NoteTypeTap,
+			NoteType:    []enum.NoteType{enum.NoteTypeTap},
 		}
 		notes = append(notes, note)
 	}

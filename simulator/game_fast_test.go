@@ -100,7 +100,7 @@ func BenchmarkGetSkillActive(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for _, timestamp := range notesTimestamp {
-			game.getActiveSkillsOn(timestamp, &skills.activeSkillTimestamps, enum.NoteTypeTap)
+			game.getActiveSkillsOn(timestamp, &skills.activeSkillTimestamps, []enum.NoteType{enum.NoteTypeTap})
 		}
 	}
 }
@@ -288,11 +288,11 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			// Playground here
 			guestData: miniCardData{name: "kaede1"},
 			cardsData: []miniCardData{
-				miniCardData{name: "nao4", skLv: 10},   // Skill boost, [8s, 7.5s]
-				miniCardData{name: "kaede4", skLv: 10}, // Dance motif [7s, 4.5s]
-				miniCardData{name: "karen3", skLv: 10}, // Combo bonus /18% [4s, 3s]
-				miniCardData{name: "akira1", skLv: 10}, // Trico symphony
-				miniCardData{name: "haru2", skLv: 10},  // Trico synergy 16%/15% [9s, 6s]
+				miniCardData{name: "nao4", skLv: 10},
+				miniCardData{name: "kaede4", skLv: 10},
+				miniCardData{name: "karen3", skLv: 10},
+				miniCardData{name: "akira1", skLv: 10},
+				miniCardData{name: "haru2", skLv: 10},
 			},
 			supportsData:    nil,
 			leadIndex:       0,
@@ -301,7 +301,7 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			songName:        "M@GIC",
 			diff:            enum.SongDifficultyMaster,
 			expectedAppeals: 291195,
-			expectedScore:   1217648,
+			expectedScore:   1222815,
 			skillAlwaysOn:   true,
 		},
 	}

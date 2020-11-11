@@ -28,17 +28,26 @@ type TmpNoteRawData struct {
 }
 
 func (note TmpNoteRawData) toNote() *models.Note {
-	var noteType enum.NoteType
+	/* TODO:
+	handle
+		- hold and slide
+		- slide and hold
+		- slide and flick
+	*/
+	noteType := []enum.NoteType{}
 	if note.Type == 1 {
 		if note.Status == 0 {
-			noteType = enum.NoteTypeTap
+			noteType = append(noteType, enum.NoteTypeTap)
 		} else {
-			noteType = enum.NoteTypeFlick
+			noteType = append(noteType, enum.NoteTypeFlick)
 		}
 	} else if note.Type == 2 {
-		noteType = enum.NoteTypeHold
+		noteType = append(noteType, enum.NoteTypeHold)
+		if note.Status == 1 || note.Status == 2 {
+			noteType = append(noteType, enum.NoteTypeFlick)
+		}
 	} else if note.Type == 3 {
-		noteType = enum.NoteTypeSlide
+		noteType = append(noteType, enum.NoteTypeSlide)
 	} else {
 		return nil
 	}

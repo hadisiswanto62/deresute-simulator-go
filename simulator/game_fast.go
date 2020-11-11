@@ -29,9 +29,9 @@ type GameFast struct {
 }
 
 func (g GameFast) printState(state *GameState, i, timestamp int,
-	activeSkillsIndex []int, noteType enum.NoteType, tapScore int, multiplierFromSkill float64,
+	activeSkillsIndex []int, noteType []enum.NoteType, tapScore int, multiplierFromSkill float64,
 	baseComboBonus float64) {
-	fmt.Printf("%d Note #%d [%5v]: %d/%d (hp=%d), (skill=+%.5f) (combo=+%.5f). activeSkills = %v\n",
+	fmt.Printf("%d Note #%d [%v]: %d/%d (hp=%d), (skill=+%.5f) (combo=+%.5f). activeSkills = %v\n",
 		timestamp, i, noteType, tapScore, state.Score, state.currentHp,
 		multiplierFromSkill, baseComboBonus, activeSkillsIndex,
 	)
@@ -63,15 +63,15 @@ func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
 
 		// Play note
 		judgement := getTapJudgement(state)
+		tapHeal := g.getTapHeal(activeSkillsIndex, state, judgement, noteType)
+		state.currentHp += tapHeal
 		scoreComboBonus := g.getScoreAndComboBonus(activeSkillsIndex, state, judgement, noteType)
 		noteScoreMultiplier := g.songDifficultyMultiplier *
 			getJudgementScoreMultiplier(judgement) *
 			g.comboBonusMap[i] *
 			scoreComboBonus
 		score := int(math.Round(noteScoreMultiplier * state.baseTapScore))
-		tapHeal := g.getTapHeal(activeSkillsIndex, state, judgement, noteType)
 		state.Score += score
-		state.currentHp += tapHeal
 		// g.printState(state, i, timestamp, activeSkillsIndex, noteType, score, scoreComboBonus, g.comboBonusMap[i])
 	}
 	return state
@@ -89,14 +89,14 @@ func (g GameFast) getHpCost(timestamp int, hpCosts []*hpCostTimestamp) int {
 	return cost
 }
 
-func (g GameFast) getTapHeal(activeSkillsIndex []int, state *GameState, judgement enum.TapJudgement, noteType enum.NoteType) int {
+func (g GameFast) getTapHeal(activeSkillsIndex []int, state *GameState, judgement enum.TapJudgement, noteTypes []enum.NoteType) int {
 	maxHeal := 0
 	maxHealBonus := 0.0
 	for _, id := range activeSkillsIndex {
 		ocard := state.skillActivableCards[id]
 		heal := ocard.Skill.SkillType.TapHeal(
 			ocard.Card.Rarity.Rarity,
-			judgement, noteType,
+			judgement, noteTypes,
 		)
 		healBonus := 0.0
 		if ocard.Skill.SkillType.TapHealBonus != nil {
@@ -115,7 +115,7 @@ func (g GameFast) getTapHeal(activeSkillsIndex []int, state *GameState, judgemen
 	return heal
 }
 
-func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, judgement enum.TapJudgement, noteType enum.NoteType) float64 {
+func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64 {
 	DELTA := 0.0001
 	maxScoreBonus := 0.0
 	maxComboBonus := 0.0
@@ -143,13 +143,13 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 			state.baseDance,
 			state.baseVocal,
 			judgement,
-			noteType,
+			noteTypes,
 		)
 		comboBonus := ocard.Skill.SkillType.ComboBonus(
 			ocard.Card.Rarity.Rarity,
 			state.currentHp,
 			judgement,
-			noteType,
+			noteTypes,
 		)
 		sb := math.Ceil(scoreBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
 		cb := math.Ceil(comboBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
@@ -161,14 +161,16 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 			maxComboBonus = math.Max(cb, maxComboBonus)
 		}
 	}
+	// fmt.Println(maxScoreBonus, maxComboBonus)
 	return (1 + maxScoreBonus) * (1 + maxComboBonus)
 }
 
 // assuming allSkillTimestamps is sorted by startTimestamp
-func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps *[]*activeSkillTimestamp, noteType enum.NoteType) []int {
+func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps *[]*activeSkillTimestamp, noteType []enum.NoteType) []int {
 	windowAbuse := 0
+	// TODO: check this
 	if g.windowAbuse {
-		switch noteType {
+		switch noteType[0] {
 		case enum.NoteTypeTap:
 			windowAbuse = 60
 		case enum.NoteTypeHold:
