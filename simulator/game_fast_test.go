@@ -16,6 +16,10 @@ import (
 	"github.com/hadisiswanto62/deresute-simulator-go/usermodel"
 )
 
+func init() {
+	helper.Features.SetLimitScore(false)
+}
+
 func getGc() *simulatormodels.GameConfig {
 	return getGcCustomCalc(0, statcalculator.NormalStatCalculator)
 }
@@ -285,14 +289,14 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			skillAlwaysOn:   true,
 		},
 		{
-			// Playground here
+			// Act test
 			guestData: miniCardData{name: "kaede1"},
 			cardsData: []miniCardData{
-				miniCardData{name: "nao4", skLv: 10},
-				miniCardData{name: "kaede4", skLv: 10},
-				miniCardData{name: "karen3", skLv: 10},
-				miniCardData{name: "akira1", skLv: 10},
-				miniCardData{name: "haru2", skLv: 10},
+				miniCardData{name: "nao4", skLv: 10, poSk: 10},
+				miniCardData{name: "kaede4", skLv: 10, poSk: 10},
+				miniCardData{name: "karen3", skLv: 10, poSk: 10},
+				miniCardData{name: "akira1", skLv: 10, poSk: 10},
+				miniCardData{name: "haru2", skLv: 10, poSk: 10},
 			},
 			supportsData:    nil,
 			leadIndex:       0,
@@ -302,6 +306,26 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			diff:            enum.SongDifficultyMaster,
 			expectedAppeals: 291195,
 			expectedScore:   1222815,
+			skillAlwaysOn:   true,
+		},
+		{
+			// Alternate test
+			guestData: miniCardData{name: "uzuki5", da: 10, vo: 10, vi: 10, hp: 0, poSk: 5},
+			cardsData: []miniCardData{
+				miniCardData{name: "miku4", skLv: 10, da: 10, vo: 10, vi: 5, hp: 0, poSk: 10},
+				miniCardData{name: "chiyo1", skLv: 10, da: 10, vo: 10, vi: 10, hp: 0, poSk: 5},
+				miniCardData{name: "kana1", skLv: 10, da: 10, vo: 10, vi: 2, hp: 0, poSk: 10},
+				miniCardData{name: "uzuki2", skLv: 10, da: 10, vo: 10, vi: 5, hp: 0, poSk: 10},
+				miniCardData{name: "anzu5", skLv: 10, da: 10, vo: 10, vi: 5, hp: 0, poSk: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       0,
+			supportAppeals:  113290,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "秘密のトワレ",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 369171,
+			expectedScore:   1823774,
 			skillAlwaysOn:   true,
 		},
 	}
@@ -356,6 +380,9 @@ func TestGameFast_CorrectScore(t *testing.T) {
 		assert.InDeltaf(t, tc.expectedAppeals, gc.GetAppeal(), appealThreshold, "Wrong appeal for test #%d", i)
 		game := NewGameFast(gc)
 		result := game.Play(tc.skillAlwaysOn)
+		// fmt.Println(result.Score)
+		// result2 := Simulate(gc, 100)
+		// fmt.Println(result2.Report())
 		assert.InDeltaf(t, tc.expectedScore, result.Score, scoreThreshold, "Wrong score for test #%d", i)
 	}
 }

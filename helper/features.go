@@ -67,6 +67,11 @@ func (f feature) LimitScore() bool {
 	return checkFlag("limit-score")
 }
 
+func (f feature) SetLimitScore(val bool) {
+	flags["limit-score"] = val
+
+}
+
 func (f feature) AlwaysGoodRolls() bool {
 	return checkFlag("always-good-rolls")
 }
