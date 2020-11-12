@@ -14,7 +14,7 @@ import (
 const (
 	tickRate               = 30
 	greatProb              = 0.0
-	concentrationGreatProb = 0.1
+	concentrationGreatProb = 0.0
 )
 
 type activeSkill struct {
@@ -75,6 +75,7 @@ type GameState struct {
 	baseTapScore            float64
 
 	alwaysGoodRolls bool
+	caches
 }
 
 func (s GameState) printState() {
@@ -213,6 +214,14 @@ func initConfig(c simulatormodels.Playable) *GameState {
 		baseVocal:               c.GetBaseVocal(),
 		baseDance:               c.GetBaseDance(),
 		maxHp:                   c.GetHp() * 2,
+		caches: caches{
+			alternateScoreBonusCache: map[enum.NoteType]float64{
+				enum.NoteTypeFlick: 0.0,
+				enum.NoteTypeHold:  0.0,
+				enum.NoteTypeSlide: 0.0,
+				enum.NoteTypeTap:   0.0,
+			},
+		},
 	}
 	state.baseTapScore = float64(state.appeal) / float64(state.song.NotesCount())
 	return &state

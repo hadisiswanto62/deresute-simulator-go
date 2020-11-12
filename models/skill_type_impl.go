@@ -588,9 +588,10 @@ var SkillTypeAlternate = SkillType{
 		return true
 	},
 	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64 {
-		return 0.0
+		return -0.2
 	},
 	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64 {
+		// not handled here
 		return 0.0
 	},
 	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteTypes []enum.NoteType) int {

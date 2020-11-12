@@ -30,8 +30,8 @@ type GameFast struct {
 
 func (g GameFast) printState(state *GameState, i, timestamp int,
 	activeSkillsIndex []int, noteType []enum.NoteType, tapScore int, multiplierFromSkill float64,
-	baseComboBonus float64) {
-	fmt.Printf("%d Note #%d [%v]: %d/%d (hp=%d), (skill=+%.5f) (combo=+%.5f). activeSkills = %v\n",
+	baseComboBonus float64) string {
+	return fmt.Sprintf("%d Note #%d [%v]: %d/%d (hp=%d), (skill=+%.5f) (combo=+%.5f). activeSkills = %v\n",
 		timestamp, i, noteType, tapScore, state.Score, state.currentHp,
 		multiplierFromSkill, baseComboBonus, activeSkillsIndex,
 	)
@@ -135,8 +135,13 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 		}
 	}
 
+	altActive := false
+	sbForAlt := 0.0
 	for _, id := range activeCardIds {
 		ocard := state.skillActivableCards[id]
+		if ocard.Skill.SkillType.Name == enum.SkillTypeAlternate {
+			altActive = true
+		}
 		scoreBonus := ocard.Skill.SkillType.ScoreBonus(
 			ocard.Card.Rarity.Rarity,
 			state.baseVisual,
@@ -156,12 +161,23 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 		if state.resonantOn {
 			maxScoreBonus += sb
 			maxComboBonus += cb
+			sbForAlt += scoreBonus
 		} else {
 			maxScoreBonus = math.Max(sb, maxScoreBonus)
 			maxComboBonus = math.Max(cb, maxComboBonus)
+			sbForAlt = math.Max(sbForAlt, scoreBonus)
 		}
 	}
-	// fmt.Println(maxScoreBonus, maxComboBonus)
+	updateAlternateCache(&state.caches, noteTypes, sbForAlt)
+	if altActive {
+		sb := handleAlternate(&state.caches, judgement, noteTypes)
+		sb = math.Ceil(sb*(1+maxBonusBonus)*100.0-DELTA) / 100
+		if state.resonantOn {
+			maxScoreBonus += sb
+		} else {
+			maxScoreBonus = math.Max(sb, maxScoreBonus)
+		}
+	}
 	return (1 + maxScoreBonus) * (1 + maxComboBonus)
 }
 
