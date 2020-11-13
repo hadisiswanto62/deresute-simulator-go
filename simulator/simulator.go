@@ -78,7 +78,7 @@ func (ss SimulationSummary) Report() string {
 }
 
 type GameLike interface {
-	Play(bool) *GameState
+	Play(bool, int) *GameState
 }
 
 var _ GameLike = GameFast{}
@@ -91,7 +91,7 @@ func Simulate(gc simulatormodels.Playable, times int) SimulationSummary {
 	} else {
 		game = NewGame(gc)
 	}
-	maxScore := game.Play(true).Score
+	maxScore := game.Play(true, 0).Score
 	if helper.Features.LimitScore() {
 		if !gc.IsResonantActive() {
 			threshold := helper.Features.GetScoreLimitForAttr(gc.GetSong().Attribute, gc.GetSong().Level)
@@ -135,18 +135,17 @@ func Simulate(gc simulatormodels.Playable, times int) SimulationSummary {
 	for i := 0; i < times; i++ {
 		go func(game GameLike, i int) {
 			// randSeed := (time.Now().UnixNano() * int64(i+1)) % math.MaxInt64
-			// game.Play
-			state := game.Play(goodRolls)
-			fmt.Printf("outside = %d\n", state.Score)
+			state := game.Play(goodRolls, (i+1)*83)
 			resultChannel <- state.Score
 		}(game, i)
+		// state := game.Play(goodRolls)
+		// fmt.Printf("Inside = %d\n", state.Score)
+		// resultChannel <- state.Score
 	}
 	i := 0
 	sum := 0
 	result := SimulationSummary{GameConfig: gc, Min: 999999999, Results: make([]int, 0, times)}
-	// fmt.Println("-----")
 	for score := range resultChannel {
-		// fmt.Println(score)
 		result.Results = append(result.Results, score)
 		result.resultsFloat = append(result.resultsFloat, float64(score))
 		if score > result.Max {

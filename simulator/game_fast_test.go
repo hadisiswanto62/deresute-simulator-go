@@ -3,13 +3,12 @@ package simulator
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 	"github.com/hadisiswanto62/deresute-simulator-go/helper"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator/simulatormodels"
 	"github.com/hadisiswanto62/deresute-simulator-go/simulator/statcalculator"
 	"github.com/hadisiswanto62/deresute-simulator-go/songmanager"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/cardmanager"
 
@@ -74,7 +73,7 @@ func getGcCustomCalc(bonusAppeal int, calcType statcalculator.StatCalculatorType
 func TestGameFast(t *testing.T) {
 	gc := getGc()
 	game := NewGameFast(gc)
-	result := game.Play(true)
+	result := game.Play(true, 0)
 	if want, have := 1363846, result.Score; want != have {
 		t.Errorf("Score should be %d. (it is %d)", want, have)
 	}
@@ -87,7 +86,7 @@ func BenchmarkRoll(b *testing.B) {
 	state.alwaysGoodRolls = true
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		rollSkill(state)
+		rollSkill(state, 0)
 	}
 }
 
@@ -100,7 +99,7 @@ func BenchmarkGetSkillActive(b *testing.B) {
 	}
 	state := initConfig(game.Config)
 	state.alwaysGoodRolls = true
-	skills := rollSkill(state)
+	skills := rollSkill(state, 0)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for _, timestamp := range notesTimestamp {
@@ -114,7 +113,7 @@ func BenchmarkPlay(b *testing.B) {
 	game := NewGameFast(gc)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		game.Play(false)
+		game.Play(false, 0)
 	}
 }
 
@@ -171,8 +170,8 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			statCalc:        statcalculator.NormalStatCalculator,
 			songName:        "M@GIC",
 			diff:            enum.SongDifficultyMaster,
-			expectedAppeals: 285977,
-			expectedScore:   1200194,
+			expectedAppeals: 285975,
+			expectedScore:   1200192,
 			skillAlwaysOn:   true,
 		},
 		{
@@ -191,7 +190,7 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			songName:        "M@GIC",
 			diff:            enum.SongDifficultyRegular,
 			expectedAppeals: 244271,
-			expectedScore:   673762,
+			expectedScore:   673919,
 		},
 		{
 			guestData: miniCardData{name: "hotaru1", vo: 10, da: 2, vi: 10},
@@ -209,7 +208,7 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			songName:        "M@GIC",
 			diff:            enum.SongDifficultyDebut,
 			expectedAppeals: 244271,
-			expectedScore:   557660,
+			expectedScore:   558108,
 		},
 		{
 			// Confirmed!
@@ -304,8 +303,8 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			statCalc:        statcalculator.NormalStatCalculator,
 			songName:        "M@GIC",
 			diff:            enum.SongDifficultyMaster,
-			expectedAppeals: 291195,
-			expectedScore:   1222815,
+			expectedAppeals: 291194,
+			expectedScore:   1222812,
 			skillAlwaysOn:   true,
 		},
 		{
@@ -326,6 +325,26 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			diff:            enum.SongDifficultyMaster,
 			expectedAppeals: 369171,
 			expectedScore:   1823774,
+			skillAlwaysOn:   true,
+		},
+		{
+			// Current team, edited
+			guestData: miniCardData{name: "sachiko2"},
+			cardsData: []miniCardData{
+				miniCardData{name: "yumi2", skLv: 10, poSk: 10},   // Combo bonus [13s, 9s]
+				miniCardData{name: "riamu2", skLv: 10, poSk: 10},  // Dance motif [9s, 6s]
+				miniCardData{name: "yukimi3", skLv: 10, poSk: 10}, // Alternate [13s, 9s]
+				miniCardData{name: "aiko4", skLv: 10, poSk: 10},   // Trico symphony
+				miniCardData{name: "shin3", skLv: 10, poSk: 10},   // Trico synergy 16%/15% [9s, 6s]
+			},
+			supportsData:    nil,
+			leadIndex:       0,
+			supportAppeals:  113290,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 323828,
+			expectedScore:   1398377,
 			skillAlwaysOn:   true,
 		},
 	}
@@ -358,8 +377,8 @@ func TestGameFast_CorrectScore(t *testing.T) {
 	on the note timestamp?
 	Also for some test, data is taken from leaderboard, so the guy might not be very optimal with their timing window abuse
 	*/
-	scoreThreshold := 10000.0
-	appealThreshold := 5.0
+	scoreThreshold := 0.0
+	appealThreshold := 0.0
 
 	for i, tc := range testcases {
 		// if i != len(testcases)-1 {
@@ -377,12 +396,14 @@ func TestGameFast_CorrectScore(t *testing.T) {
 		}
 		song := sm.Filter().NameLike(tc.songName).Difficulty(tc.diff).First()
 		gc := simulatormodels.NewGameConfig(ocards, tc.leadIndex, supports, guest, song, tc.supportAppeals, tc.statCalc)
+		// fmt.Println(gc.GetAppeal())
 		assert.InDeltaf(t, tc.expectedAppeals, gc.GetAppeal(), appealThreshold, "Wrong appeal for test #%d", i)
 		game := NewGameFast(gc)
-		result := game.Play(tc.skillAlwaysOn)
+		result := game.Play(tc.skillAlwaysOn, 0)
 		// fmt.Println(result.Score)
-		// result2 := Simulate(gc, 100)
+		// result2 := Simulate(gc, 10000)
 		// fmt.Println(result2.Report())
+		// fmt.Println(scoreThreshold)
 		assert.InDeltaf(t, tc.expectedScore, result.Score, scoreThreshold, "Wrong score for test #%d", i)
 	}
 }

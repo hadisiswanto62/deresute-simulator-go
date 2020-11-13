@@ -29,18 +29,18 @@ type GameFast struct {
 }
 
 func (g GameFast) printState(state *GameState, i, timestamp int,
-	activeSkillsIndex []int, noteType []enum.NoteType, tapScore int, multiplierFromSkill float64,
+	activeSkillsIndex []int, noteType []enum.NoteType, tapScore int, sb, cb,
 	baseComboBonus float64) string {
-	return fmt.Sprintf("%d Note #%d [%v]: %d/%d (hp=%d), (skill=+%.5f) (combo=+%.5f). activeSkills = %v\n",
+	return fmt.Sprintf("%d Note #%d [%v]: %d/%d (hp=%d), (skill=+%.2f/%.2f) (combo=+%.5f). activeSkills = %v\n",
 		timestamp, i, noteType, tapScore, state.Score, state.currentHp,
-		multiplierFromSkill, baseComboBonus, activeSkillsIndex,
+		sb, cb, baseComboBonus, activeSkillsIndex,
 	)
 }
 
-func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
+func (g GameFast) Play(alwaysGoodRolls bool, seed int) *GameState {
 	state := initConfig(g.Config)
 	state.alwaysGoodRolls = alwaysGoodRolls
-	activeSkillsData := rollSkill(state)
+	activeSkillsData := rollSkill(state, seed)
 	activeSkills := activeSkillsData.activeSkillTimestamps
 	hpCosts := activeSkillsData.hpCostTimestamps
 	for i, note := range state.song.Notes {
@@ -65,14 +65,14 @@ func (g GameFast) Play(alwaysGoodRolls bool) *GameState {
 		judgement := getTapJudgement(state)
 		tapHeal := g.getTapHeal(activeSkillsIndex, state, judgement, noteType)
 		state.currentHp += tapHeal
-		scoreComboBonus := g.getScoreAndComboBonus(activeSkillsIndex, state, judgement, noteType)
+		sb, cb := g.getScoreAndComboBonus(activeSkillsIndex, state, judgement, noteType)
 		noteScoreMultiplier := g.songDifficultyMultiplier *
 			getJudgementScoreMultiplier(judgement) *
 			g.comboBonusMap[i] *
-			scoreComboBonus
+			float64(sb*cb) / 10000.0
 		score := int(math.Round(noteScoreMultiplier * state.baseTapScore))
 		state.Score += score
-		// g.printState(state, i, timestamp, activeSkillsIndex, noteType, score, scoreComboBonus, g.comboBonusMap[i])
+		// fmt.Println(g.printState(state, i, timestamp, activeSkillsIndex, noteType, score, float64(sb), float64(cb), g.comboBonusMap[i]))
 	}
 	return state
 }
@@ -115,7 +115,8 @@ func (g GameFast) getTapHeal(activeSkillsIndex []int, state *GameState, judgemen
 	return heal
 }
 
-func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64 {
+func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState,
+	judgement enum.TapJudgement, noteTypes []enum.NoteType) (int, int) {
 	DELTA := 0.0001
 	maxScoreBonus := 0.0
 	maxComboBonus := 0.0
@@ -168,7 +169,10 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 			sbForAlt = math.Max(sbForAlt, scoreBonus)
 		}
 	}
+	// fmt.Printf("Before Alt: %.2f %.2f\n", maxScoreBonus, maxComboBonus)
+	// fmt.Printf("Cache = %v\n", state.caches.alternateScoreBonusCache)
 	updateAlternateCache(&state.caches, noteTypes, sbForAlt)
+	// fmt.Printf("Cache = %v\n", state.caches.alternateScoreBonusCache)
 	if altActive {
 		sb := handleAlternate(&state.caches, judgement, noteTypes)
 		sb = math.Ceil(sb*(1+maxBonusBonus)*100.0-DELTA) / 100
@@ -177,8 +181,14 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState, j
 		} else {
 			maxScoreBonus = math.Max(sb, maxScoreBonus)
 		}
+		if maxComboBonus == 0.0 {
+			maxComboBonus = -0.2
+		}
 	}
-	return (1 + maxScoreBonus) * (1 + maxComboBonus)
+	// fmt.Printf("After  Alt: %.2f %.2f\n", maxScoreBonus, maxComboBonus)
+	sb := 100 + int(math.Round(maxScoreBonus*100))
+	cb := 100 + int(math.Round(maxComboBonus*100))
+	return sb, cb
 }
 
 // assuming allSkillTimestamps is sorted by startTimestamp
@@ -218,7 +228,7 @@ func (g GameFast) getActiveSkillsOn(timestamp int, allSkillTimestamps *[]*active
 	return ret
 }
 
-func rollSkill(state *GameState) activeSkillData {
+func rollSkill(state *GameState, seed int) activeSkillData {
 	activeSkillTimestamps := []*activeSkillTimestamp{}
 	hpCostTimestamps := []*hpCostTimestamp{}
 
@@ -243,8 +253,10 @@ func rollSkill(state *GameState) activeSkillData {
 		prob := float64(ocard.SkillProcChance) / 10000.0 * probMultiplier
 		duration := ocard.SkillEffectLength * 10
 		timer := ocard.Skill.Timer * 1000
+		times := 1
 		for timestamp := timer; timestamp < timestampLimit-3000; timestamp += timer {
-			if !helper.RollFast(prob) {
+			times++
+			if !helper.RollFast(prob, seed+times*131) {
 				if !state.alwaysGoodRolls {
 					continue
 				}

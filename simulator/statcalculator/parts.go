@@ -72,7 +72,8 @@ func populateAppealHp(data *GameConfigStats, ocards, leadSkillActivableCards []*
 			if (ocard.Card.Idol.Attribute == song.Attribute) || (song.Attribute == enum.AttrAll) {
 				multiplier += 0.3
 			}
-			appeal += int(math.Ceil(multiplier * float64(statValue)))
+			cardAppeal := int(math.Ceil(multiplier*float64(statValue) - 0.000001))
+			appeal += cardAppeal
 		}
 		multiplier := 1.0
 		for _, leadOcard := range leadSkillActivableCards {
