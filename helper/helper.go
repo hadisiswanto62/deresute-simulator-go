@@ -5,7 +5,6 @@ import (
 	"math/rand"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/config"
-	"github.com/valyala/fastrand"
 
 	"github.com/hadisiswanto62/deresute-simulator-go/enum"
 )
@@ -76,8 +75,9 @@ func RollSafe(prob float64, generator *rand.Rand) bool {
 	// return float64(roll)/100000.0 < prob
 }
 
-func RollFast(prob float64) bool {
-	roll := fastrand.Uint32n(10000)
+func RollFast(prob float64, seed int) bool {
+	// roll := fastrand.Uint32n(10000)
+	roll := Uint32n(10000, seed)
 	return float64(roll)/10000.0 < prob
 }
 
