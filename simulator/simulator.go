@@ -91,7 +91,20 @@ func Simulate(gc simulatormodels.Playable, times int) SimulationSummary {
 	} else {
 		game = NewGame(gc)
 	}
-	maxScore := game.Play(true, 0).Score
+	goodRolls := helper.Features.AlwaysGoodRolls()
+
+	theoMax := game.Play(true, 0)
+	maxScore := theoMax.Score
+	if goodRolls {
+		return SimulationSummary{
+			GameConfig: gc,
+			Min:        maxScore,
+			Max:        maxScore,
+			Average:    float64(maxScore),
+			SimCount:   1,
+			Results:    []int{maxScore},
+		}
+	}
 	if helper.Features.LimitScore() {
 		if !gc.IsResonantActive() {
 			threshold := helper.Features.GetScoreLimitForAttr(gc.GetSong().Attribute, gc.GetSong().Level)
@@ -131,7 +144,6 @@ func Simulate(gc simulatormodels.Playable, times int) SimulationSummary {
 	}
 	// game := NewGame(gc)
 	resultChannel := make(chan int, times)
-	goodRolls := helper.Features.AlwaysGoodRolls()
 	for i := 0; i < times; i++ {
 		go func(game GameLike, i int) {
 			// randSeed := (time.Now().UnixNano() * int64(i+1)) % math.MaxInt64
