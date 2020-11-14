@@ -83,9 +83,9 @@ func getGcCustomCalc(bonusAppeal int, calcType statcalculator.StatCalculatorType
 
 func TestGameConfig_NormalCalc_Appeal(t *testing.T) {
 	gc := getGcCustomCalc(0, statcalculator.NormalStatCalculator)
-	assert.Equal(t, gc.Appeal(), 324685, "Wrong appeals")
+	assert.Equal(t, gc.Appeal(), 324682, "Wrong appeals")
 	gc = getGcCustomCalc(1000, statcalculator.NormalStatCalculator)
-	assert.Equal(t, gc.Appeal(), 325685, "Wrong appeals")
+	assert.Equal(t, gc.Appeal(), 325682, "Wrong appeals")
 }
 
 func TestGameConfig_NormalCalc_WithoutGuestAndSupports(t *testing.T) {
@@ -97,10 +97,10 @@ func TestGameConfig_NormalCalc_WithoutGuestAndSupports(t *testing.T) {
 	song := models.NewDefaultSong("", 26, enum.AttrAll, 100000, 100)
 
 	gc := NewGameConfig(ocards, leaderIndex, nil, nil, &song, 0, statcalculator.NormalStatCalculator)
-	assert.Equal(t, gc.Appeal(), 219476, "Doesn't work! (maybe cm.Filter() returns different card, check!)")
+	assert.Equal(t, gc.Appeal(), 219473, "Doesn't work! (maybe cm.Filter() returns different card, check!)")
 
 	supports := []*usermodel.OwnedCard{}
 	var guest *usermodel.OwnedCard
 	gc = NewGameConfig(ocards, leaderIndex, supports, guest, &song, 0, statcalculator.NormalStatCalculator)
-	assert.Equal(t, gc.Appeal(), 219476, "Doesn't work! (maybe cm.Filter() returns different card, check!)")
+	assert.Equal(t, gc.Appeal(), 219473, "Doesn't work! (maybe cm.Filter() returns different card, check!)")
 }

@@ -74,7 +74,7 @@ func TestGameFast(t *testing.T) {
 	gc := getGc()
 	game := NewGameFast(gc)
 	result := game.Play(true, 0)
-	if want, have := 1363846, result.Score; want != have {
+	if want, have := 1363785, result.Score; want != have {
 		t.Errorf("Score should be %d. (it is %d)", want, have)
 	}
 }
