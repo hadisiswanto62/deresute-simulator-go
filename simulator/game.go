@@ -227,7 +227,7 @@ func initConfig(c simulatormodels.Playable) *GameState {
 				enum.NoteTypeSlide: 0.0,
 				enum.NoteTypeTap:   0.0,
 			},
-			// refrainData: make(map[int]map[enum.NoteType]sbcb, 2),
+			refCache: make(map[int]map[enum.NoteType][2]float64, 2),
 		},
 	}
 	state.baseTapScore = float64(state.appeal) / float64(state.song.NotesCount())

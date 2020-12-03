@@ -140,7 +140,7 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState,
 	altIndices := []int{}
 	refIndices := []int{}
 	sbForCache := 0.0
-	// cbForCache := 0.0
+	cbForCache := 0.0
 	// process other skills
 	for _, id := range activeCardIds {
 		ocard := state.skillActivableCards[id]
@@ -169,6 +169,7 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState,
 		sb := math.Ceil(scoreBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
 		cb := math.Ceil(comboBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
 		sbForCache = math.Max(sbForCache, scoreBonus)
+		cbForCache = math.Max(cbForCache, comboBonus)
 		if state.resonantOn {
 			maxScoreBonus += sb
 			maxComboBonus += cb
@@ -177,10 +178,35 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState,
 			maxComboBonus = math.Max(cb, maxComboBonus)
 		}
 	}
-	// fmt.Printf("Before Alt: %.2f %.2f\n", maxScoreBonus, maxComboBonus)
-	// fmt.Printf("Cache = %v\n", state.caches.scoreBonusCache)
-	updateAlternateCache(&state.caches, noteTypes, sbForCache)
-	// fmt.Printf("Cache = %v\n", state.caches.scoreBonusCache)
+	// Remove non-activateds from refrain cache
+	for id := range state.caches.refCache {
+		found := false
+		for _, activatedID := range activeCardIds {
+			if id == activatedID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			resetRefrainCache(&state.caches, id)
+		}
+	}
+	// Process Refrain
+	for q := 0; q < len(refIndices); q++ {
+		sb, cb := handleRefrain(&state.caches, judgement, noteTypes, refIndices[q])
+		sb = math.Ceil(sb*(1+maxBonusBonus)*100.0-DELTA) / 100
+		cb = math.Ceil(cb*(1+maxBonusBonus)*100.0-DELTA) / 100
+		if state.resonantOn {
+			maxScoreBonus += sb
+			maxComboBonus += cb
+		} else {
+			maxScoreBonus = math.Max(sb, maxScoreBonus)
+			maxComboBonus = math.Max(cb, maxComboBonus)
+		}
+	}
+	// update cache
+	updateCache(&state.caches, noteTypes, sbForCache, cbForCache)
+	// process Alternate
 	for q := 0; q < len(altIndices); q++ {
 		sb := handleAlternate(&state.caches, judgement, noteTypes)
 		sb = math.Ceil(sb*(1+maxBonusBonus)*100.0-DELTA) / 100
@@ -193,7 +219,6 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState,
 			maxComboBonus = -0.2
 		}
 	}
-	// fmt.Printf("After  Alt: %.2f %.2f\n", maxScoreBonus, maxComboBonus)
 	sb := 100 + int(math.Round(maxScoreBonus*100))
 	cb := 100 + int(math.Round(maxComboBonus*100))
 	return sb, cb
