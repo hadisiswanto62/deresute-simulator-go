@@ -215,12 +215,19 @@ func initConfig(c simulatormodels.Playable) *GameState {
 		baseDance:               c.GetBaseDance(),
 		maxHp:                   c.GetHp() * 2,
 		caches: caches{
-			alternateScoreBonusCache: map[enum.NoteType]float64{
+			scoreBonusCache: map[enum.NoteType]float64{
 				enum.NoteTypeFlick: 0.0,
 				enum.NoteTypeHold:  0.0,
 				enum.NoteTypeSlide: 0.0,
 				enum.NoteTypeTap:   0.0,
 			},
+			comboBonusCache: map[enum.NoteType]float64{
+				enum.NoteTypeFlick: 0.0,
+				enum.NoteTypeHold:  0.0,
+				enum.NoteTypeSlide: 0.0,
+				enum.NoteTypeTap:   0.0,
+			},
+			// refrainData: make(map[int]map[enum.NoteType]sbcb, 2),
 		},
 	}
 	state.baseTapScore = float64(state.appeal) / float64(state.song.NotesCount())

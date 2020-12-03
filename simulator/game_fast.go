@@ -121,6 +121,7 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState,
 	maxScoreBonus := 0.0
 	maxComboBonus := 0.0
 	maxBonusBonus := 0.0
+	// get bonusBonus first because for reso, we multiply by bonusBonus first before adding
 	for _, id := range activeCardIds {
 		ocard := state.skillActivableCards[id]
 		bonusBonus := 0.0
@@ -136,13 +137,21 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState,
 		}
 	}
 
-	altActive := false
-	sbForAlt := 0.0
+	altIndices := []int{}
+	refIndices := []int{}
+	sbForCache := 0.0
+	// cbForCache := 0.0
+	// process other skills
 	for _, id := range activeCardIds {
 		ocard := state.skillActivableCards[id]
 		if ocard.Skill.SkillType.Name == enum.SkillTypeAlternate {
-			altActive = true
+			altIndices = append(altIndices, id)
+			continue
+		} else if ocard.Skill.SkillType.Name == enum.SkillTypeRefrain {
+			refIndices = append(refIndices, id)
+			continue
 		}
+
 		scoreBonus := ocard.Skill.SkillType.ScoreBonus(
 			ocard.Card.Rarity.Rarity,
 			state.baseVisual,
@@ -159,21 +168,20 @@ func (g GameFast) getScoreAndComboBonus(activeCardIds []int, state *GameState,
 		)
 		sb := math.Ceil(scoreBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
 		cb := math.Ceil(comboBonus*(1+maxBonusBonus)*100.0-DELTA) / 100
+		sbForCache = math.Max(sbForCache, scoreBonus)
 		if state.resonantOn {
 			maxScoreBonus += sb
 			maxComboBonus += cb
-			sbForAlt += scoreBonus
 		} else {
 			maxScoreBonus = math.Max(sb, maxScoreBonus)
 			maxComboBonus = math.Max(cb, maxComboBonus)
-			sbForAlt = math.Max(sbForAlt, scoreBonus)
 		}
 	}
 	// fmt.Printf("Before Alt: %.2f %.2f\n", maxScoreBonus, maxComboBonus)
-	// fmt.Printf("Cache = %v\n", state.caches.alternateScoreBonusCache)
-	updateAlternateCache(&state.caches, noteTypes, sbForAlt)
-	// fmt.Printf("Cache = %v\n", state.caches.alternateScoreBonusCache)
-	if altActive {
+	// fmt.Printf("Cache = %v\n", state.caches.scoreBonusCache)
+	updateAlternateCache(&state.caches, noteTypes, sbForCache)
+	// fmt.Printf("Cache = %v\n", state.caches.scoreBonusCache)
+	for q := 0; q < len(altIndices); q++ {
 		sb := handleAlternate(&state.caches, judgement, noteTypes)
 		sb = math.Ceil(sb*(1+maxBonusBonus)*100.0-DELTA) / 100
 		if state.resonantOn {

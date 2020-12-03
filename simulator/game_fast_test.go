@@ -368,6 +368,26 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			skillAlwaysOn:   true,
 		},
 		{
+			// alt + reso (bugged, should be 893199)
+			guestData: miniCardData{name: "yui2"},
+			cardsData: []miniCardData{
+				miniCardData{name: "nina4", skLv: 10, poSk: 10},
+				miniCardData{name: "anzu5", skLv: 10, poSk: 10},
+				miniCardData{name: "izumi1", skLv: 10, poSk: 10},
+				miniCardData{name: "makino2", skLv: 10, poSk: 10},
+				miniCardData{name: "mayu5", skLv: 10, poSk: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       0,
+			supportAppeals:  113290,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 228648,
+			expectedScore:   909190,
+			skillAlwaysOn:   true,
+		},
+		{
 			// refrain
 			guestData: miniCardData{name: "yui2"},
 			cardsData: []miniCardData{
@@ -421,7 +441,7 @@ func TestGameFast_CorrectScore(t *testing.T) {
 	appealThreshold := 0.0
 
 	for i, tc := range testcases {
-		if i != len(testcases)-1 {
+		if i != len(testcases)-2 {
 			continue
 		}
 		helper.Features.SetWindowAbuse(tc.windowAbuse)
