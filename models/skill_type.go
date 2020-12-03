@@ -51,6 +51,7 @@ var newSkillMap = map[int]*SkillType{
 	28: &SkillTypeHoldAct,
 	29: &SkillTypeFlickAct,
 	30: &SkillTypeSlideAct,
+	40: &SkillTypeRefrain,
 }
 
 // GetSkillType returns pointer to skill type with the requested name

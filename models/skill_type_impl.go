@@ -931,3 +931,23 @@ var SkillTypeHoldAct = SkillType{
 		return 0
 	},
 }
+
+// SkillTypeRefrain = "Every 7 seconds: there is a 40..60% chance to
+// apply the effect of the best score or combo bonus skill activated so far for 3..4.5 seconds."
+var SkillTypeRefrain = SkillType{
+	Name: enum.SkillTypeRefrain,
+	IsActive: func(attr []enum.Attribute) bool {
+		return true
+	},
+	ComboBonus: func(rarity enum.Rarity, currentHp int, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64 {
+		// not handled here
+		return 0.0
+	},
+	ScoreBonus: func(rarity enum.Rarity, baseVisual int, baseDance int, baseVocal int, judgement enum.TapJudgement, noteTypes []enum.NoteType) float64 {
+		// not handled here
+		return 0.0
+	},
+	TapHeal: func(rarity enum.Rarity, judgement enum.TapJudgement, noteTypes []enum.NoteType) int {
+		return 0
+	},
+}

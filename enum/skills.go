@@ -35,6 +35,7 @@ const (
 	SkillTypeFlickAct         SkillType = "Flick Act"
 	SkillTypeHoldAct          SkillType = "Long Act"
 	SkillTypeSlideAct         SkillType = "Slide Act"
+	SkillTypeRefrain          SkillType = "Refrain"
 )
 
 /*

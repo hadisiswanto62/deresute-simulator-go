@@ -347,6 +347,46 @@ func TestGameFast_CorrectScore(t *testing.T) {
 			expectedScore:   1398377,
 			skillAlwaysOn:   true,
 		},
+		{
+			// life sparkle tests
+			guestData: miniCardData{name: "kaede1"},
+			cardsData: []miniCardData{
+				miniCardData{name: "nao4", skLv: 10, poSk: 10},
+				miniCardData{name: "kaede4", skLv: 10, poSk: 10},
+				miniCardData{name: "karen3", skLv: 10, poSk: 10},
+				miniCardData{name: "akira1", skLv: 10, poSk: 10},
+				miniCardData{name: "haru2", skLv: 10, poSk: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       0,
+			supportAppeals:  113290,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 301618,
+			expectedScore:   1266492,
+			skillAlwaysOn:   true,
+		},
+		{
+			// refrain
+			guestData: miniCardData{name: "yui2"},
+			cardsData: []miniCardData{
+				miniCardData{name: "nina4", skLv: 10, poSk: 10},
+				miniCardData{name: "riina5", skLv: 10, poSk: 10},
+				miniCardData{name: "riina5u", skLv: 10, poSk: 10},
+				miniCardData{name: "yoshino3", skLv: 10, poSk: 10},
+				miniCardData{name: "mayu5", skLv: 10, poSk: 10},
+			},
+			supportsData:    nil,
+			leadIndex:       0,
+			supportAppeals:  113290,
+			statCalc:        statcalculator.NormalStatCalculator,
+			songName:        "M@GIC",
+			diff:            enum.SongDifficultyMaster,
+			expectedAppeals: 255195,
+			expectedScore:   1860264,
+			skillAlwaysOn:   true,
+		},
 	}
 	cm, err := cardmanager.Default()
 	if err != nil {
@@ -381,9 +421,9 @@ func TestGameFast_CorrectScore(t *testing.T) {
 	appealThreshold := 0.0
 
 	for i, tc := range testcases {
-		// if i != len(testcases)-1 {
-		// 	continue
-		// }
+		if i != len(testcases)-1 {
+			continue
+		}
 		helper.Features.SetWindowAbuse(tc.windowAbuse)
 		guest := tc.guestData.toOwnedCard(cm)
 		ocards := []*usermodel.OwnedCard{}
